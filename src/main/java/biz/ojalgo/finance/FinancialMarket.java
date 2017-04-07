@@ -132,7 +132,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
             final CalendarDateSeries<Double> tmpAssetSeries = asset.getAssetSeries();
 
-            final PrimitiveSeries tmpSamples = tmpAssetSeries.getPrimitiveSeries();
+            final PrimitiveSeries tmpSamples = tmpAssetSeries.asPrimitive();
             final double tmpSamplePeriod = CalendarDateUnit.YEAR.convert(tmpAssetSeries.getResolution());
 
             final GeometricBrownianMotion retVal = GeometricBrownianMotion.estimate(tmpSamples, tmpSamplePeriod);
@@ -389,7 +389,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
             final CalendarDateSeries<Double> tmpAssetSeries = asset.getAssetSeries();
 
-            final PrimitiveSeries tmpValues = tmpAssetSeries.getPrimitiveSeries();
+            final PrimitiveSeries tmpValues = tmpAssetSeries.asPrimitive();
 
             final PrimitiveSeries tmpQuotients = tmpValues.quotients();
 
