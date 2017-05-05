@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.ojalgo.constant.PrimitiveMath;
+import org.ojalgo.netio.BasicLogger;
+import org.ojalgo.random.SampleSet;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.series.CoordinationSet;
 import org.ojalgo.type.CalendarDateUnit;
@@ -45,7 +47,10 @@ public interface PriceSeries extends BusinessObject {
             final CoordinationSet<Double> retVal = new CoordinationSet<Double>(resolution);
 
             for (final PriceSeries tmpSeries : series) {
-                retVal.put(tmpSeries.getQuotesSeries());
+                final CalendarDateSeries<Double> tmpQuotesSeries = tmpSeries.getQuotesSeries();
+                BasicLogger.debug(tmpQuotesSeries);
+                BasicLogger.debug("\t" + SampleSet.wrap(tmpQuotesSeries.asPrimitive()));
+                retVal.put(tmpQuotesSeries);
             }
 
             return retVal;
