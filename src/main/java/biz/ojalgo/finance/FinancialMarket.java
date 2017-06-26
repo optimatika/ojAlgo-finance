@@ -46,7 +46,6 @@ import org.ojalgo.matrix.BasicMatrix.Builder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.random.process.GeometricBrownianMotion;
-import org.ojalgo.series.BasicSeries.NaturallySequenced;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.series.CoordinationSet;
 import org.ojalgo.series.primitive.PrimitiveSeries;
@@ -148,7 +147,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
             final CalendarDate tmpHistoricalHorizon = market.getHistoricalHorizon();
 
             CoordinationSet<Double> tmpMarketData = market.getCoordinatedMarketData();
-            NaturallySequenced<CalendarDate, N> tmpCalendarDateSeries = tmpMarketData.get(tmpSeriesKey);
+            CalendarDateSeries<Double> tmpCalendarDateSeries = tmpMarketData.get(tmpSeriesKey);
 
             if (tmpCalendarDateSeries == null) {
                 final CalendarDateSeries<Double> tmpRawHistoricalValues = asset.getRawHistoricalValues();
@@ -162,9 +161,9 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
             if (market.isHistoricalRiskFreeReturn()) {
 
-                final NaturallySequenced<CalendarDate, N> tmpRawHistoricalRiskFreeReturns = market.getRawHistoricalRiskFreeReturns();
+                final CalendarDateSeries<Double> tmpRawHistoricalRiskFreeReturns = market.getRawHistoricalRiskFreeReturns();
                 final String tmpName = tmpRawHistoricalRiskFreeReturns.getName();
-                final NaturallySequenced<CalendarDate, N> tmpRiskFreeInterestRateSeries = tmpMarketData.get(tmpName).tailMap(tmpHistoricalHorizon);
+                final CalendarDateSeries<Double> tmpRiskFreeInterestRateSeries = tmpMarketData.get(tmpName).tailMap(tmpHistoricalHorizon);
 
                 retVal = FinanceUtils.makeNormalisedExcessPrice(retVal, tmpRiskFreeInterestRateSeries);
             }
@@ -373,7 +372,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
             BigDecimal retVal = BigMath.ZERO;
 
             if (market.isHistoricalRiskFreeReturn()) {
-                final NaturallySequenced<CalendarDate, N> tmpRiskFreeSeries = market.getRiskFreeSeries();
+                final CalendarDateSeries<Double> tmpRiskFreeSeries = market.getRiskFreeSeries();
                 final Double tmpLastValue = tmpRiskFreeSeries.lastValue();
                 retVal = BigFunction.DIVIDE.invoke(new BigDecimal(tmpLastValue), BigMath.HUNDRED);
             }
@@ -388,7 +387,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         public static SampleSet makeSampleSet(final FinancialMarket.Asset asset) {
 
-            final NaturallySequenced<CalendarDate, N> tmpAssetSeries = asset.getAssetSeries();
+            final CalendarDateSeries<Double> tmpAssetSeries = asset.getAssetSeries();
 
             final PrimitiveSeries tmpValues = tmpAssetSeries.asPrimitive();
 
@@ -433,7 +432,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
     /**
      * Should be able to used with {@linkplain FinancialMarket.Asset#getAssetSeries()}.
      */
-    NaturallySequenced<CalendarDate, N> getRiskFreeSeries();
+    CalendarDateSeries<Double> getRiskFreeSeries();
 
     boolean isCorrelationsCorrected();
 
