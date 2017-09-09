@@ -1,6 +1,6 @@
 # ojAlgo-finance
 
-      <h2>Modern Portfolio Theory</h2>
+<h2>Modern Portfolio Theory</h2>
       <p> <em>"Modern portfolio theory (MPT)—or portfolio theory—was introduced
           by Harry Markowitz with his paper "Portfolio Selection," which
           appeared in the 1952 Journal of Finance. Thirty-eight years later, he
