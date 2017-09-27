@@ -15,6 +15,14 @@
         <name>Optimatika</name>
         <url>http://optimatika.se</url>
     </organization>
+    <developers>
+        <developer>
+            <name>Anders Peterson</name>
+            <email>apete@optimatika.se</email>
+            <organization>Optimatika</organization>
+            <organizationUrl>http://optimatika.se</organizationUrl>
+        </developer>
+    </developers>
     <licenses>
         <license>
             <name>MIT</name>
@@ -63,6 +71,35 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                            <quiet>true</quiet>
+                            <serialwarn>false</serialwarn>
+                        </configuration>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
