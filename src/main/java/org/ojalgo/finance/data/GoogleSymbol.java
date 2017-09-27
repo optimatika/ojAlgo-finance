@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2017 Optimatika (www.optimatika.se)
+ * Copyright 1997-2017 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -173,7 +173,7 @@ public class GoogleSymbol extends DataSource<GoogleSymbol.Data> {
     }
 
     @Override
-    void handleException(final String symbol, final CalendarDateUnit resolution, final ResourceLocator locator, Exception exception) {
+    void handleException(final String symbol, final CalendarDateUnit resolution, final ResourceLocator locator, final Exception exception) {
         BasicLogger.error("Problem downloading from Google!");
         BasicLogger.error("Symbol & Resolution: {} & {}", symbol, resolution);
         BasicLogger.error("Resource locator: {}", locator);

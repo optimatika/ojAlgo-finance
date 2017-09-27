@@ -272,6 +272,15 @@ public class GitHubIssue24 extends FinancePortfolioTests {
         TestUtils.assertTrue(markowitzModel.optimiser().getState().isOptimal()); // Won't reach here...
     }
 
+    public void testP20160705() {
+
+        final MarkowitzModel tmpModel = GitHubIssue24.buildProblematicMarkowitzModel(true, true, DEBUG);
+
+        tmpModel.getWeights();
+
+        TestUtils.assertTrue(tmpModel.optimiser().getState().isFeasible());
+    }
+
     public void testSuccess() throws Exception {
 
         final MarkowitzModel markowitzModel = GitHubIssue24.buildMarkowitzModel(0.015, false, false, false);
@@ -283,15 +292,6 @@ public class GitHubIssue24 extends FinancePortfolioTests {
 
         final State tmpOptimisationState = markowitzModel.optimiser().getState();
         TestUtils.assertTrue(tmpOptimisationState.isOptimal());
-    }
-
-    public void testP20160705() {
-
-        final MarkowitzModel tmpModel = GitHubIssue24.buildProblematicMarkowitzModel(true, true, DEBUG);
-
-        tmpModel.getWeights();
-
-        TestUtils.assertTrue(tmpModel.optimiser().getState().isFeasible());
     }
 
 }

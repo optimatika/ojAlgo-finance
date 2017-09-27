@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -223,7 +223,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
             final BasicMatrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
 
-            final List<SimpleAsset> tmpAssets = new ArrayList<SimpleAsset>();
+            final List<SimpleAsset> tmpAssets = new ArrayList<>();
             for (final MarketView.Asset tmpAsset : assets) {
                 tmpAssets.add(tmpAsset.toDefinitionPortfolio());
             }

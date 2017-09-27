@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2015 Optimatika (www.optimatika.se)
+ * Copyright 1997-2015 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,12 @@ package biz.ojalgo.survey;
 
 public interface Question {
 
-    String getText();
+    String getBullit();
 
     String getDescripion();
 
-    String getBullit();
-
     int getSortOrder();
+
+    String getText();
 
 }

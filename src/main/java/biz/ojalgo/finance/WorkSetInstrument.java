@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -124,15 +124,14 @@ public interface WorkSetInstrument extends BusinessObject {
     InstrumentCategory getEffectiveCategory();
 
     /**
-     * May return null; the instrument may not be specified. In this case
-     * the instrument category must be specified.
+     * May return null; the instrument may not be specified. In this case the instrument category must be
+     * specified.
      */
     Instrument getInstrument();
 
     /**
-     * May return null; if the instrument is specified the category does
-     * not need to be specified as well. If the category is specified then
-     * the instrument may be changed or reset.
+     * May return null; if the instrument is specified the category does not need to be specified as well. If
+     * the category is specified then the instrument may be changed or reset.
      */
     InstrumentCategory getInstrumentCategory();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,8 @@ import org.ojalgo.finance.portfolio.FinancePortfolio;
 interface ModernPortfolio {
 
     /**
-     * The {@link FinancePortfolio} that defines this {@link ModernPortfolio}
-     * (primarily in terms of portfolio asset weights).
+     * The {@link FinancePortfolio} that defines this {@link ModernPortfolio} (primarily in terms of portfolio
+     * asset weights).
      */
     FinancePortfolio toDefinitionPortfolio();
 

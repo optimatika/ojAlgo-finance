@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ public interface WorkSet extends BusinessObject {
 
         public static List<? extends Change> getChanges(final WorkSet aWorkSet, final Portfolio aPortfolio) {
 
-            final List<Change> retVal = new ArrayList<Change>();
+            final List<Change> retVal = new ArrayList<>();
 
             for (final Change tmpChange : aWorkSet.getChanges()) {
                 if (tmpChange.getWorkSetPortfolio().getPortfolio().equals(aPortfolio)) {

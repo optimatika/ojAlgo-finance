@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -162,7 +162,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
 
             final WorkSetPortfolio tmpWorkSetPortfolio = aChange.getWorkSetPortfolio();
 
-            final BigDecimal tmpOldPortfVal = tmpWorkSetPortfolio.getCurrentAmount();
+            tmpWorkSetPortfolio.getCurrentAmount();
             final BigDecimal tmpNewPortfVal = tmpWorkSetPortfolio.getAdjustedFutureAmount();
             final BigDecimal tmpCurWeight = Logic.getCurrentWeight(aChange);
 
@@ -171,9 +171,8 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
                     retVal = tmpCurWeight;
                 } else if (Logic.isForcedToSell(aChange)) {
                     if (tmpWorkSetPortfolio.getWorkSet().getSellShare() != null) {
-                        retVal = BigFunction.DIVIDE.invoke(
-                                BigFunction.MULTIPLY.invoke(aChange.getHolding().getAmount(),
-                                        BigFunction.SUBTRACT.invoke(BigMath.ONE, tmpWorkSetPortfolio.getWorkSet().getSellShare())), tmpNewPortfVal);
+                        retVal = BigFunction.DIVIDE.invoke(BigFunction.MULTIPLY.invoke(aChange.getHolding().getAmount(),
+                                BigFunction.SUBTRACT.invoke(BigMath.ONE, tmpWorkSetPortfolio.getWorkSet().getSellShare())), tmpNewPortfVal);
                     } else {
                         // It's not specified how much you have to sell
                         if ((Logic.isDefault(aChange))) {
@@ -382,7 +381,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
 
             final WorkSetPortfolio tmpWorkSetPortfolio = aChange.getWorkSetPortfolio();
 
-            final BigDecimal tmpOldPortfVal = tmpWorkSetPortfolio.getCurrentAmount();
+            tmpWorkSetPortfolio.getCurrentAmount();
             final BigDecimal tmpNewPortfVal = tmpWorkSetPortfolio.getAdjustedFutureAmount();
             final BigDecimal tmpCurWeight = Logic.getCurrentWeight(aChange);
 
@@ -391,9 +390,8 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
                     retVal = tmpCurWeight;
                 } else if (Logic.isForcedToSell(aChange)) {
                     if (tmpWorkSetPortfolio.getWorkSet().getSellShare() != null) {
-                        retVal = BigFunction.DIVIDE.invoke(
-                                BigFunction.MULTIPLY.invoke(aChange.getHolding().getAmount(),
-                                        BigFunction.SUBTRACT.invoke(BigMath.ONE, tmpWorkSetPortfolio.getWorkSet().getSellShare())), tmpNewPortfVal);
+                        retVal = BigFunction.DIVIDE.invoke(BigFunction.MULTIPLY.invoke(aChange.getHolding().getAmount(),
+                                BigFunction.SUBTRACT.invoke(BigMath.ONE, tmpWorkSetPortfolio.getWorkSet().getSellShare())), tmpNewPortfVal);
                     } else {
                         retVal = tmpCurWeight;
                     }
@@ -466,7 +464,8 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
             } else {
 
                 final InstrumentCategory tmpWorkSetBuyInstrumentCategory = tmpWorkSetPortfolio.getWorkSet().getBuyInstrumentCategory();
-                if ((tmpWorkSetBuyInstrumentCategory != null) && tmpWorkSetBuyInstrumentCategory.equals(tmpChangeInstrumentIdentifier.getInstrumentCategory())) {
+                if ((tmpWorkSetBuyInstrumentCategory != null)
+                        && tmpWorkSetBuyInstrumentCategory.equals(tmpChangeInstrumentIdentifier.getInstrumentCategory())) {
 
                     return true;
 
@@ -478,8 +477,8 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
         }
 
         /**
-         * @return true if the {@linkplain WorkSet} defines a {@linkplain WorkSet#getSellInstrument()}
-         * and that instrument equals the instrument of aChange.
+         * @return true if the {@linkplain WorkSet} defines a {@linkplain WorkSet#getSellInstrument()} and
+         *         that instrument equals the instrument of aChange.
          */
         public static boolean isForcedToSell(final Change aChange) {
 
@@ -537,9 +536,8 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
     Limit getLimit();
 
     /**
-     * List of changes (regardless of work set) with the same portfolio
-     * and instrument/category, but with different work set. The list
-     * should not include "this" and is rather likely to be an empty list.
+     * List of changes (regardless of work set) with the same portfolio and instrument/category, but with
+     * different work set. The list should not include "this" and is rather likely to be an empty list.
      */
     List<? extends Change> getMatchingChanges();
 

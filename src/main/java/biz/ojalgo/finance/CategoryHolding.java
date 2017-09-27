@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,11 +28,10 @@ import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
 
 /**
- * A {@linkplain CategoryHolding} has its "item" limited to being an
- * {@linkplain InstrumentCategory}. Since {@linkplain Instrument}s can
- * be locked the aggregated "amount" and "weight" needs
- * to be differentiated on wether they are locked or free.
- * 
+ * A {@linkplain CategoryHolding} has its "item" limited to being an {@linkplain InstrumentCategory}. Since
+ * {@linkplain Instrument}s can be locked the aggregated "amount" and "weight" needs to be differentiated on
+ * wether they are locked or free.
+ *
  * @author apete
  */
 public interface CategoryHolding<C extends ValueStructure.Container, I extends InstrumentCategory> extends Holding<C, I> {

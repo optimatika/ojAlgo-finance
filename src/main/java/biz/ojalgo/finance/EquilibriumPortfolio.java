@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,9 +46,8 @@ interface EquilibriumPortfolio extends ModernPortfolio {
     }
 
     /**
-     * Complete set of (historical) data; return, risk, correlations and market
-     * portfolio weights.
-     * 
+     * Complete set of (historical) data; return, risk, correlations and market portfolio weights.
+     *
      * @see biz.ojalgo.finance.ModernPortfolio#toDefinitionPortfolio()
      */
     SimplePortfolio toDefinitionPortfolio();

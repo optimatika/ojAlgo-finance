@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ public interface Quote extends BusinessObject {
     abstract class Logic {
 
         public static final KeyValue<CalendarDate, Double> getDateQuotePair(final Quote aQuote) {
-            return new ComparableToDouble<CalendarDate>(aQuote.getQuoteDate(), aQuote.getQuoteValue());
+            return new ComparableToDouble<>(aQuote.getQuoteDate(), aQuote.getQuoteValue());
         }
 
         public static String toDisplayString(final Quote aQuote) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * A ValueStructure represents some sort of content (that has value).
- * It has references to its Item (what is held) and Container (where is
- * it held). Think of a ValueStructure.Container as a Portfolio and a
- * ValueStructure.Item as an instrument/asset, but they really could
- * be anything.
+ * A ValueStructure represents some sort of content (that has value). It has references to its Item (what is
+ * held) and Container (where is it held). Think of a ValueStructure.Container as a Portfolio and a
+ * ValueStructure.Item as an instrument/asset, but they really could be anything.
  *
  * @author apete
  */

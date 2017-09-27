@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -181,7 +181,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
         public static CoordinationSet<Double> makeCoordinatedMarketData(final FinancialMarket market, final Collection<? extends FinancialMarket.Asset> assets,
                 final CalendarDateUnit resolution) {
 
-            final CoordinationSet<Double> retVal = new CoordinationSet<Double>(resolution);
+            final CoordinationSet<Double> retVal = new CoordinationSet<>(resolution);
 
             for (final FinancialMarket.Asset tmpAsset : assets) {
                 retVal.put(tmpAsset.getRawHistoricalValues());
@@ -218,7 +218,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
             final int tmpSize = assets.size();
 
-            final ArrayList<SimpleAsset> tmpAssets = new ArrayList<SimpleAsset>(tmpSize);
+            final ArrayList<SimpleAsset> tmpAssets = new ArrayList<>(tmpSize);
             for (int i = 0; i < tmpSize; i++) {
                 tmpAssets.add(assets.get(i).toDefinitionPortfolio());
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,6 @@ import org.ojalgo.matrix.BasicMatrix;
 import biz.ojalgo.BusinessObject;
 
 /**
- *
  * @author apete
  */
 public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
@@ -107,7 +106,7 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
 
             final BasicMatrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
 
-            final List<SimpleAsset> tmpAssets = new ArrayList<SimpleAsset>();
+            final List<SimpleAsset> tmpAssets = new ArrayList<>();
             for (final TargetPortfolio.Asset tmpAsset : assets) {
                 tmpAssets.add(tmpAsset.toDefinitionPortfolio());
             }
@@ -127,8 +126,8 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
 
     enum WeightsContext {
 
-        DEFINITION(FinancialMarket.EvaluationContext.DEFINITION, false), EQUILIBRIUM(FinancialMarket.EvaluationContext.EQUILIBRIUM, false), OPINIONATED(
-                FinancialMarket.EvaluationContext.OPINIONATED, false), RESTRICTED(FinancialMarket.EvaluationContext.OPINIONATED, true);
+        DEFINITION(FinancialMarket.EvaluationContext.DEFINITION, false), EQUILIBRIUM(FinancialMarket.EvaluationContext.EQUILIBRIUM,
+                false), OPINIONATED(FinancialMarket.EvaluationContext.OPINIONATED, false), RESTRICTED(FinancialMarket.EvaluationContext.OPINIONATED, true);
 
         public static WeightsContext getInstance(final String name) {
 

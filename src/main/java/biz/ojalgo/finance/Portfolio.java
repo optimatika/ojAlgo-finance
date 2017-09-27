@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,8 @@ import org.ojalgo.function.BigFunction;
 import biz.ojalgo.BusinessObject;
 
 /**
- * A (financial) {@linkplain Portfolio} is anything that can contain
- * any kind of (financial) {@linkplain Instrument}.
+ * A (financial) {@linkplain Portfolio} is anything that can contain any kind of (financial)
+ * {@linkplain Instrument}.
  *
  * @author apete
  */
@@ -57,7 +57,7 @@ public interface Portfolio extends BusinessObject, ValueStructure.Container {
 
         public static int countActiveWorkSets(final Portfolio aPortfolio) {
 
-            final Set<WorkSet> tmpUniqueWorkSets = new TreeSet<WorkSet>();
+            final Set<WorkSet> tmpUniqueWorkSets = new TreeSet<>();
 
             for (final Change tmpChange : aPortfolio.getActiveChanges()) {
                 tmpUniqueWorkSets.add(tmpChange.getWorkSetPortfolio().getWorkSet());
@@ -68,7 +68,7 @@ public interface Portfolio extends BusinessObject, ValueStructure.Container {
 
         public static List<Instrument> getInstruments(final Portfolio aPortfolio) {
 
-            final List<Instrument> retVal = new ArrayList<Instrument>();
+            final List<Instrument> retVal = new ArrayList<>();
 
             for (final Holding<?, ? extends Instrument> tmpHolding : aPortfolio.getHoldings()) {
                 retVal.add(tmpHolding.getContentItem());
@@ -79,7 +79,7 @@ public interface Portfolio extends BusinessObject, ValueStructure.Container {
 
         public static List<BigDecimal> getShares(final Portfolio aPortfolio) {
 
-            final List<BigDecimal> retVal = new ArrayList<BigDecimal>();
+            final List<BigDecimal> retVal = new ArrayList<>();
 
             for (final Holding<?, ?> tmpHolding : aPortfolio.getHoldings()) {
                 retVal.add(BigFunction.DIVIDE.invoke(tmpHolding.getAmount(), aPortfolio.getAggregatedAmount()));

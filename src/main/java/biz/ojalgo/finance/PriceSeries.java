@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ public interface PriceSeries extends BusinessObject {
          */
         public static CoordinationSet<Double> collectQuotesSeries(final Collection<? extends PriceSeries> series, final CalendarDateUnit resolution) {
 
-            final CoordinationSet<Double> retVal = new CoordinationSet<Double>(resolution);
+            final CoordinationSet<Double> retVal = new CoordinationSet<>(resolution);
 
             for (final PriceSeries tmpSeries : series) {
                 final CalendarDateSeries<Double> tmpQuotesSeries = tmpSeries.getQuotesSeries();
@@ -60,7 +60,7 @@ public interface PriceSeries extends BusinessObject {
 
             final CalendarDateUnit tmpResolution = aSeries.getSeriesResolution();
 
-            final CalendarDateSeries<Double> retVal = tmpResolution != null ? new CalendarDateSeries<Double>(tmpResolution) : new CalendarDateSeries<Double>();
+            final CalendarDateSeries<Double> retVal = tmpResolution != null ? new CalendarDateSeries<>(tmpResolution) : new CalendarDateSeries<>();
 
             if (aSeries.getSeriesName() != null) {
                 retVal.name(aSeries.getSeriesName());

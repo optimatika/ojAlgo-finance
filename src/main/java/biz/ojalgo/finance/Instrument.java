@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2014 Optimatika (www.optimatika.se)
+ * Copyright 1997-2014 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,7 @@ import java.util.List;
 import biz.ojalgo.BusinessObject;
 
 /**
- * An {@linkplain Instrument} is anything that can be put in some kind
- * of {@linkplain Portfolio}.
+ * An {@linkplain Instrument} is anything that can be put in some kind of {@linkplain Portfolio}.
  *
  * @author apete
  */
