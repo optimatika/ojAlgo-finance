@@ -40,7 +40,6 @@ import org.ojalgo.finance.portfolio.MarketEquilibrium;
 import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
 import org.ojalgo.function.BigFunction;
-import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.BasicMatrix.Builder;
 import org.ojalgo.matrix.PrimitiveMatrix;
@@ -168,7 +167,8 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
                 retVal = FinanceUtils.makeNormalisedExcessPrice(retVal, tmpRiskFreeInterestRateSeries);
             }
 
-            retVal.modifyAll(PrimitiveFunction.MULTIPLY.second(PrimitiveMath.HUNDRED / retVal.firstValue().doubleValue()));
+            // TODO Fix this
+            // retVal.modifyAll(PrimitiveFunction.MULTIPLY.second(PrimitiveMath.HUNDRED / retVal.firstValue().doubleValue()));
 
             final String tmpAssetKey = asset.getAssetKey();
             retVal.name(tmpAssetKey);
