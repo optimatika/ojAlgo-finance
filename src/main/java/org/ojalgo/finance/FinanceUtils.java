@@ -140,7 +140,7 @@ public abstract class FinanceUtils {
             for (int i = 0; i < tmpSize1; i++) {
                 retVal[i] = PrimitiveFunction.LOG.invoke(values[i + 1] / values[i]);
             }
-            final SampleSet tmpMakeUsingLogarithmicChanges = SampleSet.wrap(Access1D.wrapAccess1D(retVal));
+            final SampleSet tmpMakeUsingLogarithmicChanges = SampleSet.wrap(Access1D.wrap(retVal));
             tmpSampleSets.add(tmpMakeUsingLogarithmicChanges);
         }
 
