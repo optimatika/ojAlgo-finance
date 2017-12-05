@@ -205,7 +205,7 @@ abstract class EquilibriumModel extends FinancePortfolio implements FinancePortf
 
         final Scalar<?> tmpRiskAvesrion = myMarketEquilibrium.calculateImpliedRiskAversion(aWeightsVctr, aReturnsVctr);
 
-        this.setRiskAversion(tmpRiskAvesrion.getNumber());
+        this.setRiskAversion(tmpRiskAvesrion.get());
     }
 
     @Override

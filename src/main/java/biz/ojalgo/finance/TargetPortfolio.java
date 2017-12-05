@@ -58,7 +58,7 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
         public static FinancePortfolio makeComparableEqulibriumPortfolio(final TargetPortfolio targetPortfolio, final FinancialMarket market) {
 
             final Context tmpWeightsContext = market.getEquilibriumContext();
-            final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().getNumber();
+            final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
 
             final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
             tmpWeightsModel.setRiskAversion(tmpRiskAversion);
@@ -70,7 +70,7 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
         public static FinancePortfolio makeComparableOpinionatedPortfolio(final TargetPortfolio targetPortfolio, final FinancialMarket market) {
 
             final Context tmpWeightsContext = market.getOpinionatedContext();
-            final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().getNumber();
+            final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
 
             final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
             tmpWeightsModel.setRiskAversion(tmpRiskAversion);
@@ -83,7 +83,7 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
                 final List<? extends TargetPortfolio.Asset> assets, final FinancialMarket market) {
 
             final Context tmpWeightsContext = market.getOpinionatedContext();
-            final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().getNumber();
+            final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
 
             final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
             tmpWeightsModel.setRiskAversion(tmpRiskAversion);

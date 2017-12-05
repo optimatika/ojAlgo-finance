@@ -116,7 +116,7 @@ public class MarketEquilibrium {
     }
 
     MarketEquilibrium(final MarketEquilibrium marketEquilibrium) {
-        this(marketEquilibrium.getAssetKeys(), marketEquilibrium.getCovariances(), marketEquilibrium.getRiskAversion().getNumber());
+        this(marketEquilibrium.getAssetKeys(), marketEquilibrium.getCovariances(), marketEquilibrium.getRiskAversion().get());
     }
 
     /**
@@ -169,7 +169,7 @@ public class MarketEquilibrium {
 
         final Scalar<?> tmpImpliedRiskAversion = this.calculateImpliedRiskAversion(assetWeights, assetReturns);
 
-        this.setRiskAversion(tmpImpliedRiskAversion.getNumber());
+        this.setRiskAversion(tmpImpliedRiskAversion.get());
     }
 
     /**

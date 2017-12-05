@@ -219,7 +219,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         if (myMeanReturn == null) {
             final BasicMatrix tmpWeightsVector = this.getAssetWeights();
             final BasicMatrix tmpReturnsVector = this.getAssetReturns();
-            myMeanReturn = MarketEquilibrium.calculatePortfolioReturn(tmpWeightsVector, tmpReturnsVector).getNumber();
+            myMeanReturn = MarketEquilibrium.calculatePortfolioReturn(tmpWeightsVector, tmpReturnsVector).get();
         }
 
         return myMeanReturn.doubleValue();
@@ -235,7 +235,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         if (myReturnVariance == null) {
             final MarketEquilibrium tmpMarketEquilibrium = new MarketEquilibrium(this.getCovariances());
             final BasicMatrix tmpWeightsVector = this.getAssetWeights();
-            myReturnVariance = tmpMarketEquilibrium.calculatePortfolioVariance(tmpWeightsVector).getNumber();
+            myReturnVariance = tmpMarketEquilibrium.calculatePortfolioVariance(tmpWeightsVector).get();
         }
 
         return myReturnVariance.doubleValue();

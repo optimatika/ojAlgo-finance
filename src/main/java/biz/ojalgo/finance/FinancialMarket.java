@@ -338,7 +338,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
             final BlackLittermanModel retVal = new BlackLittermanModel(tmpEquilibriumContext, market.toDefinitionPortfolio());
 
-            retVal.setRiskAversion(tmpEquilibriumContext.getRiskAversion().getNumber());
+            retVal.setRiskAversion(tmpEquilibriumContext.getRiskAversion().get());
 
             for (final List<? extends MarketView> tmppViewSet : views) {
                 for (final MarketView tmpInstrument : tmppViewSet) {
