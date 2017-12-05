@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 import org.ojalgo.TestUtils;
 import org.ojalgo.function.BigFunction;
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BigMatrix;
+import org.ojalgo.matrix.RationalMatrix;
 import org.ojalgo.matrix.store.BigDenseStore;
 import org.ojalgo.type.TypeUtils;
 import org.ojalgo.type.context.NumberContext;
@@ -194,7 +194,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
     }
 
     private static BasicMatrix make(final double[][] anArray) {
-        return BigMatrix.FACTORY.rows(anArray).enforce(BlackLittermanTest.DEF_CNTXT);
+        return RationalMatrix.FACTORY.rows(anArray).enforce(BlackLittermanTest.DEF_CNTXT);
     }
 
     public BlackLittermanTest() {
