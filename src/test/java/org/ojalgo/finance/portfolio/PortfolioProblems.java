@@ -31,7 +31,7 @@ import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
 import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.BasicMatrix.Builder;
-import org.ojalgo.matrix.BigMatrix;
+import org.ojalgo.matrix.RationalMatrix;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
@@ -195,7 +195,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
      */
     public void testP20130329() {
 
-        final BasicMatrix tmpCovariances = BigMatrix.FACTORY.rows(new double[][] { { 0.00360000, 0.001800000000 }, { 0.001800000000, 0.00090000 } });
+        final BasicMatrix tmpCovariances = RationalMatrix.FACTORY.rows(new double[][] { { 0.00360000, 0.001800000000 }, { 0.001800000000, 0.00090000 } });
 
         //        final Eigenvalue<Double> tmpEvD = Eigenvalue.makePrimitive(true);
         //        tmpEvD.compute(tmpCovariances, true);
@@ -203,7 +203,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
 
         final MarketEquilibrium tmpMarketEquilibrium = new MarketEquilibrium(tmpCovariances, BigMath.THOUSAND);
 
-        final Builder<BigMatrix> tmpExcessReturnsBuilder = BigMatrix.FACTORY.getBuilder(2, 1);
+        final Builder<RationalMatrix> tmpExcessReturnsBuilder = RationalMatrix.FACTORY.getBuilder(2, 1);
         tmpExcessReturnsBuilder.set(0, 0, 0.1400);
         tmpExcessReturnsBuilder.set(1, 0, 0.0800);
         final BasicMatrix tmpExcessReturns = tmpExcessReturnsBuilder.build();
