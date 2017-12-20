@@ -1,4 +1,4 @@
-# ojAlgo-finance
+# ojAlgo-finance [![Build Status](https://travis-ci.org/optimatika/ojAlgo-finance.svg?branch=master)](https://travis-ci.org/optimatika/ojAlgo-finance)
 
 <h2>Modern Portfolio Theory</h2>
       <p> <em>"Modern portfolio theory (MPT)—or portfolio theory—was introduced
