@@ -205,7 +205,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
 
         myOptimisationModel.getExpression(VARIANCE).weight(riskAversion / 2.0);
 
-        if (this.getOptimisationOptions().debug_appender != null) {
+        if (this.getOptimisationOptions().logger_appender != null) {
             BasicLogger.debug();
             BasicLogger.debug("@@@@@@@@@@@");
             BasicLogger.debug("Iteration RAF: {}", riskAversion);
@@ -223,7 +223,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
     @Override
     protected BasicMatrix calculateAssetWeights() {
 
-        if (this.getOptimisationOptions().debug_appender != null) {
+        if (this.getOptimisationOptions().logger_appender != null) {
             BasicLogger.debug();
             BasicLogger.debug("###################################################");
             BasicLogger.debug("BEGIN RAF: {} MarkowitzModel optimisation", this.getRiskAversion());
@@ -280,7 +280,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
                     }
                     tmpTargetDiff = tmpTargetNow - tmpTargetValue;
 
-                    if (this.getOptimisationOptions().debug_appender != null) {
+                    if (this.getOptimisationOptions().logger_appender != null) {
                         BasicLogger.debug();
                         BasicLogger.debug("RAF:   {}", tmpCurrent);
                         BasicLogger.debug("Last: {}", tmpTargetLast);
