@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2017 Optimatika
+ * Copyright 1997-2018 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@ package org.ojalgo.finance.portfolio;
 
 import java.math.BigDecimal;
 
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.function.BigFunction;
 import org.ojalgo.matrix.BasicMatrix;
@@ -201,10 +202,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         super();
     }
 
-    public BlackLittermanTest(final String arg0) {
-        super(arg0);
-    }
-
+    @Test
     public void testCAPMData() {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
@@ -226,6 +224,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         TestUtils.assertEquals(tmpExp, tmpAct, EVAL_CNTXT);
     }
 
+    @Test
     public void testCovarianceData() {
 
         final BasicMatrix tmpCovar = BlackLittermanTest.getCovariances();
@@ -236,6 +235,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         TestUtils.assertEquals(tmpExp, tmpAct, DEF_CNTXT);
     }
 
+    @Test
     public void testHistoricalData() {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
@@ -257,6 +257,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         TestUtils.assertEquals(tmpExp, tmpAct, EVAL_CNTXT);
     }
 
+    @Test
     public void testMarketData() {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
@@ -278,6 +279,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         TestUtils.assertEquals(tmpExp, tmpAct, EVAL_CNTXT);
     }
 
+    @Test
     public void testModifiedData() {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
@@ -299,6 +301,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         TestUtils.assertEquals(tmpExp, tmpAct, EVAL_CNTXT);
     }
 
+    @Test
     public void testVarianceOfInvestorViewPortfolios() {
 
         final BasicMatrix tmpViews = BlackLittermanTest.getInvestorPortfoliosMatrix();
@@ -315,6 +318,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         }
     }
 
+    @Test
     public void testViewsWithDeferredConfidence() {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
@@ -337,6 +341,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         this.testBLM(tmpBLM);
     }
 
+    @Test
     public void testViewsWithStandardDeviation() {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();

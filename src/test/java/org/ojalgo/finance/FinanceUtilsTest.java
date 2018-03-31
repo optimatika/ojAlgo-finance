@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2017 Optimatika
+ * Copyright 1997-2018 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  */
 package org.ojalgo.finance;
 
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
@@ -77,14 +78,12 @@ public class FinanceUtilsTest extends FinanceTests {
         super();
     }
 
-    public FinanceUtilsTest(final String name) {
-        super(name);
-    }
-
+    @Test
     public void testCleaningNextGen50() {
         FinanceUtilsTest.doTestCleaning(DirtyCovarianceMatrices.NextGen50);
     }
 
+    @Test
     public void testConversions() {
 
         for (int r = 10; r <= 20; r++) {

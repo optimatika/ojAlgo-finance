@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2017 Optimatika
+ * Copyright 1997-2018 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@ package org.ojalgo.finance.portfolio.simulator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.access.Access2D;
 import org.ojalgo.constant.PrimitiveMath;
@@ -47,11 +49,9 @@ public class MultidimensionalSimulatorTest extends PortfolioSimulatorTests {
         super();
     }
 
-    public MultidimensionalSimulatorTest(final String aName) {
-        super(aName);
-    }
-
-    public void _testFirstSebCase() {
+    @Test
+    @Disabled("")
+    public void testFirstSebCase() {
 
         final double[][] tmpCorrelations = new double[][] {
                 { 1.0, 4.818910644591628E-4, -0.2073732878173141, -0.2570196357409301, -0.2288355302753617, -0.06622162366629052, 0.9995107173168294,
@@ -123,6 +123,7 @@ public class MultidimensionalSimulatorTest extends PortfolioSimulatorTests {
 
     }
 
+    @Test
     public void testStepping() {
 
         final PrimitiveDenseStore tmpCorrelation = PrimitiveDenseStore.FACTORY.makeEye(3, 3);

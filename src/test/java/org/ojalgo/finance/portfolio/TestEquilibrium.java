@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2017 Optimatika
+ * Copyright 1997-2018 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.PrimitiveFunction;
@@ -119,10 +120,6 @@ public class TestEquilibrium extends FinancePortfolioTests {
         super();
     }
 
-    public TestEquilibrium(final String newName) {
-        super(newName);
-    }
-
     public BasicMatrix getACovariances(final double[][] returns) {
 
         final int row = returns.length;
@@ -140,6 +137,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
         return covariances.build();
     }
 
+    @Test
     public void testRandomProblemsComparedToEquilibrium() {
 
         final NumberContext tmpWeightsContext = StandardType.PERCENT.newPrecision(5);

@@ -1,6 +1,6 @@
 package org.ojalgo;
 /*
- * Copyright 1997-2017 Optimatika Permission is hereby granted, free of charge, to any person
+ * Copyright 1997-2018 Optimatika Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software
  * without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute,
  * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
@@ -12,19 +12,13 @@ package org.ojalgo;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import junit.framework.TestCase;
-
 /**
  * @author apete
  */
-public abstract class FunctionalityTest extends TestCase {
+public abstract class FunctionalityTest extends Object {
 
     protected FunctionalityTest() {
         super();
-    }
-
-    protected FunctionalityTest(final String name) {
-        super(name);
     }
 
 }

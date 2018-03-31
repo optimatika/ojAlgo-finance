@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2017 Optimatika
+ * Copyright 1997-2018 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,14 +25,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.access.Access1D;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
 import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.BasicMatrix.Builder;
-import org.ojalgo.matrix.RationalMatrix;
 import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.RationalMatrix;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
 import org.ojalgo.netio.BasicLogger;
@@ -48,14 +49,11 @@ public class PortfolioProblems extends FinancePortfolioTests {
         super();
     }
 
-    public PortfolioProblems(final String someName) {
-        super(someName);
-    }
-
     /**
      * The user got, constraint breaking, negative portfolio weights. The model is "wrong" - should not have
      * negative excess returns - but he still should not get a constraint breaking solution.
      */
+    @Test
     public void testP20090115() {
 
         final int assetNum = 7;
@@ -98,6 +96,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
     /**
      * A user claimed he got constraint breaking weights using these figures.
      */
+    @Test
     public void testP20110614() {
 
         final Builder<PrimitiveMatrix> tmpCovarsBuilder = PrimitiveMatrix.FACTORY.getBuilder(3, 3);
@@ -193,6 +192,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
      * target of 0.08 or 0.13 or 0.12 you can see a correct solution. With a target of 0.10 MarkowitzModel is
      * not able to find a valid solution.
      */
+    @Test
     public void testP20130329() {
 
         final BasicMatrix tmpCovariances = RationalMatrix.FACTORY.rows(new double[][] { { 0.00360000, 0.001800000000 }, { 0.001800000000, 0.00090000 } });
@@ -257,6 +257,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
      * 2015-04-14: Changed test evaluation context from <7,14> to <4,4>.
      * </p>
      */
+    @Test
     public void testP20141202() {
 
         final double[][] assets_return = {
@@ -322,6 +323,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
      * the model allows shorting the pure profit maximisation is unbounded (initial LP). The algorithm did not
      * handle the case where "target" could be >= the max possible when shorting not allowed (bounded LP).
      */
+    @Test
     public void testP20160608() {
 
         final BasicMatrix.Factory<PrimitiveMatrix> matrixFactory = PrimitiveMatrix.FACTORY;
@@ -361,6 +363,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
         TestUtils.assertEquals(0.1933, tmpWeights.get(2).doubleValue(), tmpTestPrecision); // 0.1933
     }
 
+    @Test
     public void testP20170508() {
 
         Builder<PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(2, 2);

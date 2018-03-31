@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2017 Optimatika
+ * Copyright 1997-2018 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@ package org.ojalgo.finance.data;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
@@ -46,10 +48,8 @@ public class SymbolDataTest extends FinanceDataTests {
         super();
     }
 
-    public SymbolDataTest(final String arg0) {
-        super(arg0);
-    }
-
+    @Test
+    @Disabled("Google Finance stopped working")
     public void testDailyComparison() {
 
         final String tmpYahooSymbol = "AAPL";
@@ -83,6 +83,8 @@ public class SymbolDataTest extends FinanceDataTests {
         //        }
     }
 
+    @Test
+    @Disabled("Google Finance stopped working")
     public void testGoogleDaily() {
 
         final GoogleSymbol tmpGoogle = new GoogleSymbol("NASDAQ:AAPL", CalendarDateUnit.DAY);
@@ -92,6 +94,8 @@ public class SymbolDataTest extends FinanceDataTests {
         }
     }
 
+    @Test
+    @Disabled("Google Finance stopped working")
     public void testGoogleWeekly() {
 
         final GoogleSymbol tmpGoogle = new GoogleSymbol("NASDAQ:AAPL", CalendarDateUnit.WEEK);
@@ -101,6 +105,7 @@ public class SymbolDataTest extends FinanceDataTests {
         }
     }
 
+    @Test
     public void testYahooDaily() {
 
         final YahooSymbol tmpYahoo = new YahooSymbol("AAPL", CalendarDateUnit.DAY);
@@ -110,6 +115,7 @@ public class SymbolDataTest extends FinanceDataTests {
         }
     }
 
+    @Test
     public void testYahooMonthly() {
 
         final YahooSymbol tmpYahoo = new YahooSymbol("AAPL", CalendarDateUnit.MONTH);
@@ -119,6 +125,7 @@ public class SymbolDataTest extends FinanceDataTests {
         }
     }
 
+    @Test
     public void testYahooWeekly() {
 
         final YahooSymbol tmpYahoo = new YahooSymbol("AAPL", CalendarDateUnit.WEEK);
@@ -128,6 +135,7 @@ public class SymbolDataTest extends FinanceDataTests {
         }
     }
 
+    @Test
     public void testYahooWeeklyAAPL() {
 
         final YahooSymbol tmpYahoo = new YahooSymbol("AAPL", CalendarDateUnit.WEEK);

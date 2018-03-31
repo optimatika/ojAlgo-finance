@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2017 Optimatika Permission is hereby granted, free of charge, to any person
+ * Copyright 1997-2018 Optimatika Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software
  * without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute,
  * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.netio.BasicLogger;
@@ -32,10 +33,7 @@ public class StrategyMixer extends FinancePortfolioTests {
         super();
     }
 
-    public StrategyMixer(final String someName) {
-        super(someName);
-    }
-
+    @Test
     public void testStratCombPortfolioMixer() {
 
         final FinancePortfolio tmpTarget = new SimplePortfolio(THIRD, THIRD, THIRD).normalise();
@@ -63,6 +61,7 @@ public class StrategyMixer extends FinancePortfolioTests {
         TestUtils.assertEquals(PrimitiveMath.ONE, tmpTotalWeight, 1E-14 / PrimitiveMath.THREE);
     }
 
+    @Test
     public void testStratCombPortfolioMixerRandom() {
 
         final FinancePortfolio tmpTarget = new SimplePortfolio(QUARTER, QUARTER, QUARTER, QUARTER).normalise();
@@ -98,6 +97,7 @@ public class StrategyMixer extends FinancePortfolioTests {
     /**
      * This is test case using a reimplementation of the algorithm in {@link PortfolioMixer}.
      */
+    @Test
     public void testStratCombQuadraticExpressionModel() {
 
         final BigDecimal[] tmpTarget = new BigDecimal[] { THIRD, THIRD, THIRD };

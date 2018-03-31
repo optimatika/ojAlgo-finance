@@ -1,7 +1,8 @@
 language: java
 
 
-.before_script:
+
+before_script:
     - git clone https://github.com/optimatika/ojAlgo.git
     - mvn install -DskipTests=true -Dmaven.javadoc.skip=true  -f ojAlgo/pom.xml
-    
+ 
