@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.access.Access1D;
 import org.ojalgo.constant.BigMath;
@@ -48,14 +49,11 @@ public class PortfolioProblems extends FinancePortfolioTests {
         super();
     }
 
-    public PortfolioProblems(final String someName) {
-        super(someName);
-    }
-
     /**
      * The user got, constraint breaking, negative portfolio weights. The model is "wrong" - should not have
      * negative excess returns - but he still should not get a constraint breaking solution.
      */
+    @Test
     public void testP20090115() {
 
         final int assetNum = 7;
@@ -98,6 +96,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
     /**
      * A user claimed he got constraint breaking weights using these figures.
      */
+    @Test
     public void testP20110614() {
 
         final Builder<PrimitiveMatrix> tmpCovarsBuilder = PrimitiveMatrix.FACTORY.getBuilder(3, 3);
@@ -193,6 +192,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
      * target of 0.08 or 0.13 or 0.12 you can see a correct solution. With a target of 0.10 MarkowitzModel is
      * not able to find a valid solution.
      */
+    @Test
     public void testP20130329() {
 
         final BasicMatrix tmpCovariances = RationalMatrix.FACTORY.rows(new double[][] { { 0.00360000, 0.001800000000 }, { 0.001800000000, 0.00090000 } });
@@ -257,6 +257,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
      * 2015-04-14: Changed test evaluation context from <7,14> to <4,4>.
      * </p>
      */
+    @Test
     public void testP20141202() {
 
         final double[][] assets_return = {
@@ -322,6 +323,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
      * the model allows shorting the pure profit maximisation is unbounded (initial LP). The algorithm did not
      * handle the case where "target" could be >= the max possible when shorting not allowed (bounded LP).
      */
+    @Test
     public void testP20160608() {
 
         final BasicMatrix.Factory<PrimitiveMatrix> matrixFactory = PrimitiveMatrix.FACTORY;
@@ -361,6 +363,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
         TestUtils.assertEquals(0.1933, tmpWeights.get(2).doubleValue(), tmpTestPrecision); // 0.1933
     }
 
+    @Test
     public void testP20170508() {
 
         Builder<PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(2, 2);

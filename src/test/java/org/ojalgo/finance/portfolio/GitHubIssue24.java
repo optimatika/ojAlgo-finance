@@ -2,6 +2,8 @@ package org.ojalgo.finance.portfolio;
 
 import java.math.BigDecimal;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.netio.BasicLogger;
@@ -248,7 +250,9 @@ public class GitHubIssue24 extends FinancePortfolioTests {
         return retVal;
     }
 
-    public void _testHanging() throws Exception {
+    @Test
+    @Disabled("Google Finance stopped working")
+    public void testHanging() throws Exception {
 
         final MarkowitzModel markowitzModel = GitHubIssue24.buildMarkowitzModel(2.5E-5, false, false, false);
 
@@ -260,6 +264,7 @@ public class GitHubIssue24 extends FinancePortfolioTests {
         TestUtils.assertTrue(markowitzModel.optimiser().getState().isOptimal()); // Won't reach here...
     }
 
+    @Test
     public void testOriginallyHangingButNowCleaned() throws Exception {
 
         final MarkowitzModel markowitzModel = GitHubIssue24.buildMarkowitzModel(2.5E-5, true, false, false);
@@ -272,6 +277,7 @@ public class GitHubIssue24 extends FinancePortfolioTests {
         TestUtils.assertTrue(markowitzModel.optimiser().getState().isOptimal()); // Won't reach here...
     }
 
+    @Test
     public void testP20160705() {
 
         final MarkowitzModel tmpModel = GitHubIssue24.buildProblematicMarkowitzModel(true, true, DEBUG);
@@ -281,6 +287,7 @@ public class GitHubIssue24 extends FinancePortfolioTests {
         TestUtils.assertTrue(tmpModel.optimiser().getState().isFeasible());
     }
 
+    @Test
     public void testSuccess() throws Exception {
 
         final MarkowitzModel markowitzModel = GitHubIssue24.buildMarkowitzModel(0.015, false, false, false);

@@ -31,8 +31,4 @@ public abstract class FinancePortfolioTests extends FunctionalityTest {
         super();
     }
 
-    protected FinancePortfolioTests(final String name) {
-        super(name);
-    }
-
 }

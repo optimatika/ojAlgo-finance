@@ -21,6 +21,7 @@
  */
 package org.ojalgo.finance;
 
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
@@ -77,14 +78,12 @@ public class FinanceUtilsTest extends FinanceTests {
         super();
     }
 
-    public FinanceUtilsTest(final String name) {
-        super(name);
-    }
-
+    @Test
     public void testCleaningNextGen50() {
         FinanceUtilsTest.doTestCleaning(DirtyCovarianceMatrices.NextGen50);
     }
 
+    @Test
     public void testConversions() {
 
         for (int r = 10; r <= 20; r++) {

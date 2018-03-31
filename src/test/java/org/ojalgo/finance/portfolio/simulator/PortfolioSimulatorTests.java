@@ -31,8 +31,4 @@ public abstract class PortfolioSimulatorTests extends FunctionalityTest {
         super();
     }
 
-    protected PortfolioSimulatorTests(final String name) {
-        super(name);
-    }
-
 }

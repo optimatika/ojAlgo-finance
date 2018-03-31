@@ -24,6 +24,7 @@ package org.ojalgo.finance.data;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.random.Uniform;
@@ -41,10 +42,7 @@ public class CalendarDateSeriesTest extends FinanceDataTests {
         super();
     }
 
-    public CalendarDateSeriesTest(final String arg0) {
-        super(arg0);
-    }
-
+    @Test
     public void testDoubleKeys() {
 
         final int dim = 1000;
@@ -67,6 +65,7 @@ public class CalendarDateSeriesTest extends FinanceDataTests {
 
     }
 
+    @Test
     public void testResample() {
 
         final YahooSymbol tmpYahooSymbol = new YahooSymbol("AAPL", CalendarDateUnit.DAY);

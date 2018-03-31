@@ -54,7 +54,4 @@ public abstract class FinanceDataTests extends FunctionalityTest {
         super();
     }
 
-    protected FinanceDataTests(final String name) {
-        super(name);
-    }
 }

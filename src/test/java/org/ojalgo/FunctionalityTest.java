@@ -12,19 +12,13 @@ package org.ojalgo;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import junit.framework.TestCase;
-
 /**
  * @author apete
  */
-public abstract class FunctionalityTest extends TestCase {
+public abstract class FunctionalityTest extends Object {
 
     protected FunctionalityTest() {
         super();
-    }
-
-    protected FunctionalityTest(final String name) {
-        super(name);
     }
 
 }
