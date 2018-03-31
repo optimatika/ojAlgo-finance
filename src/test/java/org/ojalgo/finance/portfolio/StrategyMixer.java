@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.constant.PrimitiveMath;
@@ -62,6 +63,7 @@ public class StrategyMixer extends FinancePortfolioTests {
     }
 
     @Test
+    @Tag("unstable")
     public void testStratCombPortfolioMixerRandom() {
 
         final FinancePortfolio tmpTarget = new SimplePortfolio(QUARTER, QUARTER, QUARTER, QUARTER).normalise();
