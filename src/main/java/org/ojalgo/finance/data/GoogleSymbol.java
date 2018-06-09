@@ -34,6 +34,13 @@ import org.ojalgo.netio.ResourceLocator;
 import org.ojalgo.type.CalendarDateUnit;
 import org.ojalgo.type.context.GenericContext;
 
+/**
+ * GoogleSymbol
+ *
+ * @author apete
+ * @deprecated Doesn't work any longer
+ */
+@Deprecated
 public class GoogleSymbol extends DataSource<GoogleSymbol.Data> {
 
     public static final class Data extends DatePrice {

@@ -25,10 +25,10 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
+import org.ojalgo.array.Array1D;
 import org.ojalgo.function.BigFunction;
 import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.RationalMatrix;
-import org.ojalgo.matrix.store.BigDenseStore;
 import org.ojalgo.type.TypeUtils;
 import org.ojalgo.type.context.NumberContext;
 
@@ -334,7 +334,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
 
         for (int i = 0; i < tmpViewPortfolios.countRows(); i++) {
             final int row = i;
-            tmpBLM.addViewWithBalancedConfidence(BigDenseStore.FACTORY.copy(tmpViewPortfolios.selectRows(new int[] { i })).asList(),
+            tmpBLM.addViewWithBalancedConfidence(Array1D.BIG.copy(tmpViewPortfolios.selectRows(new int[] { i })),
                     TypeUtils.toBigDecimal(tmpViewPortfolioReturns.get(row, 0)));
         }
 
@@ -360,7 +360,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
             final int row = i;
             final int row1 = i;
             final int col = i;
-            tmpBLM.addViewWithStandardDeviation(BigDenseStore.FACTORY.copy(tmpViewPortfolios.selectRows(new int[] { i })).asList(),
+            tmpBLM.addViewWithStandardDeviation(Array1D.BIG.copy(tmpViewPortfolios.selectRows(new int[] { i })),
                     TypeUtils.toBigDecimal(tmpViewPortfolioReturns.get(row, 0)),
                     BigFunction.SQRT.invoke(TypeUtils.toBigDecimal(tmpConfidenceMatrix.get(row1, col))));
         }

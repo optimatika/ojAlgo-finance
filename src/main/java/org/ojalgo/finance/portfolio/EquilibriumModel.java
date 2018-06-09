@@ -25,9 +25,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ojalgo.array.Array1D;
 import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.store.BigDenseStore;
 import org.ojalgo.scalar.Scalar;
 import org.ojalgo.type.TypeUtils;
 
@@ -135,7 +135,7 @@ abstract class EquilibriumModel extends FinancePortfolio implements FinancePortf
 
         if (tmpAssetWeights != null) {
 
-            return BigDenseStore.FACTORY.copy(tmpAssetWeights).asList();
+            return Array1D.BIG.copy(tmpAssetWeights);
 
         } else {
 
