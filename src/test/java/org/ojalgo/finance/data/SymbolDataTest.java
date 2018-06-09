@@ -40,8 +40,9 @@ import org.ojalgo.type.context.NumberContext;
 /**
  * SymbolDataTest
  *
- * @author apete
+ * @author apete @Disabled("Both Google and Yahoo Finance stopped working")
  */
+@Disabled("Google and Yahoo Finance stopped working")
 public class SymbolDataTest extends FinanceDataTests {
 
     public SymbolDataTest() {

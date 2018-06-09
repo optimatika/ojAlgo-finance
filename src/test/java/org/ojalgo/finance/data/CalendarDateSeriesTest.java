@@ -24,6 +24,7 @@ package org.ojalgo.finance.data;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.constant.PrimitiveMath;
@@ -66,6 +67,7 @@ public class CalendarDateSeriesTest extends FinanceDataTests {
     }
 
     @Test
+    @Disabled("Google and Yahoo Finance stopped working")
     public void testResample() {
 
         final YahooSymbol tmpYahooSymbol = new YahooSymbol("AAPL", CalendarDateUnit.DAY);

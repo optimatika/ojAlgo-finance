@@ -45,7 +45,9 @@ import org.ojalgo.type.CalendarDateUnit;
  * YahooSymbol
  *
  * @author apete
+ * @deprecated Doesn't work any longer
  */
+@Deprecated
 public class YahooSymbol extends DataSource<YahooSymbol.Data> {
 
     public static final class Data extends DatePrice {
