@@ -38,11 +38,12 @@ public abstract class DataSource<DP extends DatePrice> implements BasicParser<DP
     private final CalendarDateUnit myResolution;
     private final ResourceLocator myResourceLocator;
     private final String mySymbol;
+    private final String myApiKey;
 
     @SuppressWarnings("unused")
     private DataSource() {
 
-        this(null, null, null);
+        this(null, null, null, null);
 
         ProgrammingError.throwForIllegalInvocation();
     }
@@ -55,6 +56,18 @@ public abstract class DataSource<DP extends DatePrice> implements BasicParser<DP
 
         mySymbol = symbol;
         myResolution = resolution;
+        myApiKey = "";
+    }
+
+    protected DataSource(final String host, final String symbol, final CalendarDateUnit resolution, final String apiKey) {
+
+        super();
+
+        myResourceLocator = new ResourceLocator(host);
+
+        mySymbol = symbol;
+        myResolution = resolution;
+        myApiKey = apiKey;
     }
 
     @Override
@@ -80,6 +93,13 @@ public abstract class DataSource<DP extends DatePrice> implements BasicParser<DP
                 return false;
             }
         } else if (!mySymbol.equals(other.mySymbol)) {
+            return false;
+        }
+        if (myApiKey == null) {
+            if (other.myApiKey != null) {
+                return false;
+            }
+        } else if (!myApiKey.equals(other.myApiKey)) {
             return false;
         }
         return true;
