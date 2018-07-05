@@ -29,20 +29,16 @@ import org.ojalgo.finance.portfolio.SimplePortfolio;
  */
 interface EquilibriumPortfolio extends ModernPortfolio {
 
-    abstract class Logic {
+    static FixedWeightsPortfolio makeEquilibriumModel(final EquilibriumPortfolio definitionPortfolio) {
 
-        static FixedWeightsPortfolio makeEquilibriumModel(final EquilibriumPortfolio definitionPortfolio) {
+        final SimplePortfolio tmpDefinitionPortfolio = definitionPortfolio.toDefinitionPortfolio();
 
-            final SimplePortfolio tmpDefinitionPortfolio = definitionPortfolio.toDefinitionPortfolio();
+        FixedWeightsPortfolio retVal = null;
 
-            FixedWeightsPortfolio retVal = null;
+        retVal = new FixedWeightsPortfolio(tmpDefinitionPortfolio, tmpDefinitionPortfolio);
+        retVal.calibrate(tmpDefinitionPortfolio);
 
-            retVal = new FixedWeightsPortfolio(tmpDefinitionPortfolio, tmpDefinitionPortfolio);
-            retVal.calibrate(tmpDefinitionPortfolio);
-
-            return retVal;
-        }
-
+        return retVal;
     }
 
     /**

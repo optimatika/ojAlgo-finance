@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.ojalgo.access.Access1D;
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.finance.FinanceUtils;
@@ -51,8 +52,6 @@ import org.ojalgo.series.primitive.PrimitiveSeries;
 import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
 import org.ojalgo.type.ColourData;
-
-import biz.ojalgo.BusinessObject;
 
 public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
@@ -111,297 +110,292 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
     }
 
-    abstract class Logic {
+    static int index(final Asset item, final List<? extends Asset> list) {
 
-        public static int index(final FinancialMarket.Asset item, final List<? extends FinancialMarket.Asset> list) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(item)) {
+                return i;
+            }
+        }
 
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).equals(item)) {
-                    return i;
+        return -1;
+    }
+
+    /**
+     * @return Annualised, and normalised, geometric brownian motion
+     */
+    static GeometricBrownianMotion makeAnnualisedProcess(final Asset asset) {
+
+        final CalendarDateSeries<Double> tmpAssetSeries = asset.getAssetSeries();
+
+        final PrimitiveSeries tmpSamples = tmpAssetSeries.asPrimitive();
+        final double tmpSamplePeriod = CalendarDateUnit.YEAR.convert(tmpAssetSeries.getResolution());
+
+        final GeometricBrownianMotion retVal = GeometricBrownianMotion.estimate(tmpSamples, tmpSamplePeriod);
+        retVal.setValue(PrimitiveMath.ONE);
+        return retVal;
+    }
+
+    static CalendarDateSeries<Double> makeAssetSeries(final Asset asset, final FinancialMarket market) {
+
+        final String tmpSeriesKey = asset.getRawHistoricalValues().getName();
+
+        final CalendarDate tmpHistoricalHorizon = market.getHistoricalHorizon();
+
+        CoordinationSet<Double> tmpMarketData = market.getCoordinatedMarketData();
+        CalendarDateSeries<Double> tmpCalendarDateSeries = tmpMarketData.get(tmpSeriesKey);
+
+        if (tmpCalendarDateSeries == null) {
+            final CalendarDateSeries<Double> tmpRawHistoricalValues = asset.getRawHistoricalValues();
+            tmpRawHistoricalValues.complete();
+            tmpMarketData.put(tmpRawHistoricalValues);
+            tmpMarketData = tmpMarketData.prune();
+            tmpCalendarDateSeries = tmpMarketData.get(tmpSeriesKey);
+        }
+
+        CalendarDateSeries<Double> retVal = tmpCalendarDateSeries.tailMap(tmpHistoricalHorizon);
+
+        if (market.isHistoricalRiskFreeReturn()) {
+
+            final CalendarDateSeries<Double> tmpRawHistoricalRiskFreeReturns = market.getRawHistoricalRiskFreeReturns();
+            final String tmpName = tmpRawHistoricalRiskFreeReturns.getName();
+            final CalendarDateSeries<Double> tmpRiskFreeInterestRateSeries = tmpMarketData.get(tmpName).tailMap(tmpHistoricalHorizon);
+
+            retVal = FinanceUtils.makeNormalisedExcessPrice(retVal, tmpRiskFreeInterestRateSeries);
+        }
+
+        // TODO Fix this
+        // retVal.modifyAll(PrimitiveFunction.MULTIPLY.second(PrimitiveMath.HUNDRED / retVal.firstValue().doubleValue()));
+
+        final String tmpAssetKey = asset.getAssetKey();
+        retVal.name(tmpAssetKey);
+        final Color tmpAssetColour = asset.getAssetColour();
+        retVal.colour(new ColourData(tmpAssetColour.getRGB()));
+
+        return retVal;
+    }
+
+    static CoordinationSet<Double> makeCoordinatedMarketData(final FinancialMarket market, final Collection<? extends Asset> assets,
+            final CalendarDateUnit resolution) {
+
+        final CoordinationSet<Double> retVal = new CoordinationSet<>(resolution);
+
+        for (final Asset tmpAsset : assets) {
+            retVal.put(tmpAsset.getRawHistoricalValues());
+        }
+
+        if (market.isHistoricalRiskFreeReturn()) {
+            retVal.put(market.getRawHistoricalRiskFreeReturns());
+        }
+
+        return retVal.prune();
+    }
+
+    static SimpleAsset makeDefinitionAsset(final Asset asset, final FinancialMarket market) {
+
+        final GeometricBrownianMotion tmpProc = FinancialMarket.makeAnnualisedProcess(asset);
+
+        double tmpReturn = tmpProc.getExpected() - 1.0;
+        final double tmpRisk = asset.getVolatility();
+        final BigDecimal tmpWeight = asset.getWeight();
+
+        final BigDecimal tmpAdjustment = market.getRiskFreeReturnAdjustment();
+        if (tmpAdjustment.signum() != 0) {
+            tmpReturn -= tmpAdjustment.doubleValue();
+        }
+
+        return new SimpleAsset(tmpReturn, tmpRisk, tmpWeight);
+    }
+
+    static FinancePortfolio.Context makeDefinitionContext(final FinancialMarket market) {
+        return new FixedReturnsPortfolio(market.toDefinitionPortfolio());
+    }
+
+    static SimplePortfolio makeDefinitionPortfolio(final FinancialMarket market, final List<? extends Asset> assets) {
+
+        final int tmpSize = assets.size();
+
+        final ArrayList<SimpleAsset> tmpAssets = new ArrayList<>(tmpSize);
+        for (int i = 0; i < tmpSize; i++) {
+            tmpAssets.add(assets.get(i).toDefinitionPortfolio());
+        }
+
+        BasicMatrix tmpCorrelations = null;
+
+        if (market.isCorrelationsCorrected()) {
+
+            final Builder<PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+
+            SampleSet tmpRowSet;
+            SampleSet tmpColSet;
+
+            for (int j = 0; j < tmpSize; j++) {
+
+                tmpColSet = assets.get(j).getSampleSet();
+
+                for (int i = j; i < tmpSize; i++) {
+
+                    tmpRowSet = assets.get(i).getSampleSet();
+
+                    final double tmpVal = tmpColSet.getCovariance(tmpRowSet);
+
+                    tmpBuilder.set(i, j, tmpVal);
+                    tmpBuilder.set(j, i, tmpVal);
                 }
             }
 
-            return -1;
-        }
+            final BasicMatrix tmpCovariances = tmpBuilder.build();
+            //BasicLogger.logDebug("Org COVA", tmpCovariances);
 
-        /**
-         * @return Annualised, and normalised, geometric brownian motion
-         */
-        public static GeometricBrownianMotion makeAnnualisedProcess(final FinancialMarket.Asset asset) {
+            MarketEquilibrium tmpME = new MarketEquilibrium(tmpCovariances);
+            //BasicLogger.logDebug("Org CORR", tmpME.toCorrelations());
 
-            final CalendarDateSeries<Double> tmpAssetSeries = asset.getAssetSeries();
+            tmpME = tmpME.clean();
+            //BasicLogger.logDebug("Cleaned COVA", tmpME.getCovariances());
 
-            final PrimitiveSeries tmpSamples = tmpAssetSeries.asPrimitive();
-            final double tmpSamplePeriod = CalendarDateUnit.YEAR.convert(tmpAssetSeries.getResolution());
+            tmpCorrelations = tmpME.toCorrelations();
+            //BasicLogger.logDebug("Cleaned CORR", tmpCorrelations);
 
-            final GeometricBrownianMotion retVal = GeometricBrownianMotion.estimate(tmpSamples, tmpSamplePeriod);
-            retVal.setValue(PrimitiveMath.ONE);
-            return retVal;
-        }
+        } else {
 
-        public static CalendarDateSeries<Double> makeAssetSeries(final FinancialMarket.Asset asset, final FinancialMarket market) {
+            final Builder<PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
 
-            final String tmpSeriesKey = asset.getRawHistoricalValues().getName();
+            SampleSet tmpRowSet;
+            SampleSet tmpColSet;
 
-            final CalendarDate tmpHistoricalHorizon = market.getHistoricalHorizon();
+            for (int j = 0; j < tmpSize; j++) {
 
-            CoordinationSet<Double> tmpMarketData = market.getCoordinatedMarketData();
-            CalendarDateSeries<Double> tmpCalendarDateSeries = tmpMarketData.get(tmpSeriesKey);
+                tmpColSet = assets.get(j).getSampleSet();
 
-            if (tmpCalendarDateSeries == null) {
-                final CalendarDateSeries<Double> tmpRawHistoricalValues = asset.getRawHistoricalValues();
-                tmpRawHistoricalValues.complete();
-                tmpMarketData.put(tmpRawHistoricalValues);
-                tmpMarketData = tmpMarketData.prune();
-                tmpCalendarDateSeries = tmpMarketData.get(tmpSeriesKey);
-            }
+                tmpBuilder.set(j, j, PrimitiveMath.ONE);
 
-            CalendarDateSeries<Double> retVal = tmpCalendarDateSeries.tailMap(tmpHistoricalHorizon);
+                for (int i = j + 1; i < tmpSize; i++) {
 
-            if (market.isHistoricalRiskFreeReturn()) {
+                    tmpRowSet = assets.get(i).getSampleSet();
 
-                final CalendarDateSeries<Double> tmpRawHistoricalRiskFreeReturns = market.getRawHistoricalRiskFreeReturns();
-                final String tmpName = tmpRawHistoricalRiskFreeReturns.getName();
-                final CalendarDateSeries<Double> tmpRiskFreeInterestRateSeries = tmpMarketData.get(tmpName).tailMap(tmpHistoricalHorizon);
+                    final double tmpVal = tmpColSet.getCorrelation(tmpRowSet);
 
-                retVal = FinanceUtils.makeNormalisedExcessPrice(retVal, tmpRiskFreeInterestRateSeries);
-            }
-
-            // TODO Fix this
-            // retVal.modifyAll(PrimitiveFunction.MULTIPLY.second(PrimitiveMath.HUNDRED / retVal.firstValue().doubleValue()));
-
-            final String tmpAssetKey = asset.getAssetKey();
-            retVal.name(tmpAssetKey);
-            final Color tmpAssetColour = asset.getAssetColour();
-            retVal.colour(new ColourData(tmpAssetColour.getRGB()));
-
-            return retVal;
-        }
-
-        public static CoordinationSet<Double> makeCoordinatedMarketData(final FinancialMarket market, final Collection<? extends FinancialMarket.Asset> assets,
-                final CalendarDateUnit resolution) {
-
-            final CoordinationSet<Double> retVal = new CoordinationSet<>(resolution);
-
-            for (final FinancialMarket.Asset tmpAsset : assets) {
-                retVal.put(tmpAsset.getRawHistoricalValues());
-            }
-
-            if (market.isHistoricalRiskFreeReturn()) {
-                retVal.put(market.getRawHistoricalRiskFreeReturns());
-            }
-
-            return retVal.prune();
-        }
-
-        public static SimpleAsset makeDefinitionAsset(final FinancialMarket.Asset asset, final FinancialMarket market) {
-
-            final GeometricBrownianMotion tmpProc = Logic.makeAnnualisedProcess(asset);
-
-            double tmpReturn = tmpProc.getExpected() - 1.0;
-            final double tmpRisk = asset.getVolatility();
-            final BigDecimal tmpWeight = asset.getWeight();
-
-            final BigDecimal tmpAdjustment = market.getRiskFreeReturnAdjustment();
-            if (tmpAdjustment.signum() != 0) {
-                tmpReturn -= tmpAdjustment.doubleValue();
-            }
-
-            return new SimpleAsset(tmpReturn, tmpRisk, tmpWeight);
-        }
-
-        public static FinancePortfolio.Context makeDefinitionContext(final FinancialMarket market) {
-            return new FixedReturnsPortfolio(market.toDefinitionPortfolio());
-        }
-
-        public static SimplePortfolio makeDefinitionPortfolio(final FinancialMarket market, final List<? extends FinancialMarket.Asset> assets) {
-
-            final int tmpSize = assets.size();
-
-            final ArrayList<SimpleAsset> tmpAssets = new ArrayList<>(tmpSize);
-            for (int i = 0; i < tmpSize; i++) {
-                tmpAssets.add(assets.get(i).toDefinitionPortfolio());
-            }
-
-            BasicMatrix tmpCorrelations = null;
-
-            if (market.isCorrelationsCorrected()) {
-
-                final Builder<PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
-
-                SampleSet tmpRowSet;
-                SampleSet tmpColSet;
-
-                for (int j = 0; j < tmpSize; j++) {
-
-                    tmpColSet = assets.get(j).getSampleSet();
-
-                    for (int i = j; i < tmpSize; i++) {
-
-                        tmpRowSet = assets.get(i).getSampleSet();
-
-                        final double tmpVal = tmpColSet.getCovariance(tmpRowSet);
-
-                        tmpBuilder.set(i, j, tmpVal);
-                        tmpBuilder.set(j, i, tmpVal);
-                    }
-                }
-
-                final BasicMatrix tmpCovariances = tmpBuilder.build();
-                //BasicLogger.logDebug("Org COVA", tmpCovariances);
-
-                MarketEquilibrium tmpME = new MarketEquilibrium(tmpCovariances);
-                //BasicLogger.logDebug("Org CORR", tmpME.toCorrelations());
-
-                tmpME = tmpME.clean();
-                //BasicLogger.logDebug("Cleaned COVA", tmpME.getCovariances());
-
-                tmpCorrelations = tmpME.toCorrelations();
-                //BasicLogger.logDebug("Cleaned CORR", tmpCorrelations);
-
-            } else {
-
-                final Builder<PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
-
-                SampleSet tmpRowSet;
-                SampleSet tmpColSet;
-
-                for (int j = 0; j < tmpSize; j++) {
-
-                    tmpColSet = assets.get(j).getSampleSet();
-
-                    tmpBuilder.set(j, j, PrimitiveMath.ONE);
-
-                    for (int i = j + 1; i < tmpSize; i++) {
-
-                        tmpRowSet = assets.get(i).getSampleSet();
-
-                        final double tmpVal = tmpColSet.getCorrelation(tmpRowSet);
-
-                        tmpBuilder.set(i, j, tmpVal);
-                        tmpBuilder.set(j, i, tmpVal);
-                    }
-                }
-
-                tmpCorrelations = tmpBuilder.build();
-            }
-
-            return new SimplePortfolio(tmpCorrelations, tmpAssets);
-        }
-
-        public static FinancePortfolio.Context makeEquilibriumContext(final FinancialMarket market) {
-            return market.toEquilibriumModel();
-            //return EquilibriumPortfolio.Logic.makeEquilibriumModel(market);
-        }
-
-        public static FixedWeightsPortfolio makeEquilibriumModel(final FinancialMarket market) {
-            return EquilibriumPortfolio.Logic.makeEquilibriumModel(market);
-        }
-
-        public static FinancePortfolio.Context makeEvaluationContext(final FinancialMarket market, final FinancialMarket.EvaluationContext evaluationContext) {
-
-            switch (evaluationContext) {
-
-            case DEFINITION:
-
-                return market.getDefinitionContext();
-
-            case EQUILIBRIUM:
-
-                return market.getEquilibriumContext();
-
-            default:
-
-                return market.getOpinionatedContext();
-            }
-        }
-
-        public static FinancePortfolio.Context makeForecastContext(final FinancialMarket market, final Forecaster forecaster,
-                final List<? extends FinancialMarket.Asset> assets) {
-
-            final Map<String, ? extends Access1D<?>> tmpForecast = forecaster.forecast(market, assets);
-
-            final Builder<PrimitiveMatrix> tmpReturnsMatrix = PrimitiveMatrix.FACTORY.getBuilder(assets.size());
-
-            for (final Asset tmpAsset : assets) {
-                final String tmpKey = tmpAsset.getAssetKey();
-                final int tmpIndex = tmpAsset.index();
-                tmpReturnsMatrix.set(tmpIndex, tmpForecast.get(tmpKey).doubleValue(0));
-            }
-
-            return new FixedReturnsPortfolio(market.toEquilibriumModel().getMarketEquilibrium(), tmpReturnsMatrix.build());
-        }
-
-        public static BlackLittermanModel makeOpinionatedContext(final FinancialMarket market, final List<? extends MarketView>... views) {
-
-            final FixedWeightsPortfolio tmpEquilibriumContext = market.toEquilibriumModel();
-
-            final BlackLittermanModel retVal = new BlackLittermanModel(tmpEquilibriumContext, market.toDefinitionPortfolio());
-
-            retVal.setRiskAversion(tmpEquilibriumContext.getRiskAversion().get());
-
-            for (final List<? extends MarketView> tmppViewSet : views) {
-                for (final MarketView tmpInstrument : tmppViewSet) {
-                    retVal.addView(tmpInstrument.getEvaluatedViewPortfolio());
+                    tmpBuilder.set(i, j, tmpVal);
+                    tmpBuilder.set(j, i, tmpVal);
                 }
             }
 
-            return retVal;
+            tmpCorrelations = tmpBuilder.build();
         }
 
-        public static FinancePortfolio.Context makePortfolioContext(final FinancialMarket market, final FinancialMarket.EvaluationContext context) {
+        return new SimplePortfolio(tmpCorrelations, tmpAssets);
+    }
 
-            switch (context) {
+    static FinancePortfolio.Context makeEquilibriumContext(final FinancialMarket market) {
+        return market.toEquilibriumModel();
+        //return EquilibriumPortfolio.Logic.makeEquilibriumModel(market);
+    }
 
-            case DEFINITION:
+    static FixedWeightsPortfolio makeEquilibriumModel(final FinancialMarket market) {
+        return EquilibriumPortfolio.makeEquilibriumModel(market);
+    }
 
-                return market.getDefinitionContext();
+    static FinancePortfolio.Context makeEvaluationContext(final FinancialMarket market, final EvaluationContext evaluationContext) {
 
-            case EQUILIBRIUM:
+        switch (evaluationContext) {
 
-                return market.getEquilibriumContext();
+        case DEFINITION:
 
-            default:
+            return market.getDefinitionContext();
 
-                return market.getOpinionatedContext();
+        case EQUILIBRIUM:
+
+            return market.getEquilibriumContext();
+
+        default:
+
+            return market.getOpinionatedContext();
+        }
+    }
+
+    static FinancePortfolio.Context makeForecastContext(final FinancialMarket market, final Forecaster forecaster, final List<? extends Asset> assets) {
+
+        final Map<String, ? extends Access1D<?>> tmpForecast = forecaster.forecast(market, assets);
+
+        final Builder<PrimitiveMatrix> tmpReturnsMatrix = PrimitiveMatrix.FACTORY.getBuilder(assets.size());
+
+        for (final Asset tmpAsset : assets) {
+            final String tmpKey = tmpAsset.getAssetKey();
+            final int tmpIndex = tmpAsset.index();
+            tmpReturnsMatrix.set(tmpIndex, tmpForecast.get(tmpKey).doubleValue(0));
+        }
+
+        return new FixedReturnsPortfolio(market.toEquilibriumModel().getMarketEquilibrium(), tmpReturnsMatrix.build());
+    }
+
+    static BlackLittermanModel makeOpinionatedContext(final FinancialMarket market, final List<? extends MarketView>... views) {
+
+        final FixedWeightsPortfolio tmpEquilibriumContext = market.toEquilibriumModel();
+
+        final BlackLittermanModel retVal = new BlackLittermanModel(tmpEquilibriumContext, market.toDefinitionPortfolio());
+
+        retVal.setRiskAversion(tmpEquilibriumContext.getRiskAversion().get());
+
+        for (final List<? extends MarketView> tmppViewSet : views) {
+            for (final MarketView tmpInstrument : tmppViewSet) {
+                retVal.addView(tmpInstrument.getEvaluatedViewPortfolio());
             }
         }
 
-        public static BigDecimal makeRiskFreeReturn(final FinancialMarket market) {
+        return retVal;
+    }
 
-            BigDecimal retVal = BigMath.ZERO;
+    static FinancePortfolio.Context makePortfolioContext(final FinancialMarket market, final EvaluationContext context) {
 
-            if (market.isHistoricalRiskFreeReturn()) {
-                final CalendarDateSeries<Double> tmpRiskFreeSeries = market.getRiskFreeSeries();
-                final Double tmpLastValue = tmpRiskFreeSeries.lastValue();
-                retVal = BigFunction.DIVIDE.invoke(new BigDecimal(tmpLastValue), BigMath.HUNDRED);
-            }
+        switch (context) {
 
-            final BigDecimal tmpAdjustment = market.getRiskFreeReturnAdjustment();
-            if (tmpAdjustment.signum() != 0) {
-                retVal = retVal.add(tmpAdjustment);
-            }
+        case DEFINITION:
 
-            return retVal;
+            return market.getDefinitionContext();
+
+        case EQUILIBRIUM:
+
+            return market.getEquilibriumContext();
+
+        default:
+
+            return market.getOpinionatedContext();
+        }
+    }
+
+    static BigDecimal makeRiskFreeReturn(final FinancialMarket market) {
+
+        BigDecimal retVal = BigMath.ZERO;
+
+        if (market.isHistoricalRiskFreeReturn()) {
+            final CalendarDateSeries<Double> tmpRiskFreeSeries = market.getRiskFreeSeries();
+            final Double tmpLastValue = tmpRiskFreeSeries.lastValue();
+            retVal = BigFunction.DIVIDE.invoke(new BigDecimal(tmpLastValue), BigMath.HUNDRED);
         }
 
-        public static SampleSet makeSampleSet(final FinancialMarket.Asset asset) {
-
-            final CalendarDateSeries<Double> tmpAssetSeries = asset.getAssetSeries();
-
-            final PrimitiveSeries tmpValues = tmpAssetSeries.asPrimitive();
-
-            final PrimitiveSeries tmpQuotients = tmpValues.quotients();
-
-            final PrimitiveSeries tmpLog = tmpQuotients.log();
-
-            return SampleSet.wrap(tmpLog);
+        final BigDecimal tmpAdjustment = market.getRiskFreeReturnAdjustment();
+        if (tmpAdjustment.signum() != 0) {
+            retVal = retVal.add(tmpAdjustment);
         }
 
-        public static Color mixColours(final Collection<? extends FinancialMarket.Asset> assets) {
-            return ModernAsset.Logic.mixColours(assets);
-        }
+        return retVal;
+    }
 
+    static SampleSet makeSampleSet(final Asset asset) {
+
+        final CalendarDateSeries<Double> tmpAssetSeries = asset.getAssetSeries();
+
+        final PrimitiveSeries tmpValues = tmpAssetSeries.asPrimitive();
+
+        final PrimitiveSeries tmpQuotients = tmpValues.quotients();
+
+        final PrimitiveSeries tmpLog = tmpQuotients.log();
+
+        return SampleSet.wrap(tmpLog);
+    }
+
+    static Color mixColours(final Collection<? extends Asset> assets) {
+        return ModernAsset.mixColours(assets);
     }
 
     CoordinationSet<Double> getCoordinatedMarketData();

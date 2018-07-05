@@ -34,47 +34,43 @@ import org.ojalgo.finance.portfolio.SimpleAsset;
  */
 interface ModernAsset extends ModernPortfolio {
 
-    abstract class Logic {
+    static Color mixColours(final Collection<? extends ModernAsset> assets) {
 
-        static Color mixColours(final Collection<? extends ModernAsset> assets) {
+        int tmpR = 0;
+        int tmpG = 0;
+        int tmpB = 0;
 
-            int tmpR = 0;
-            int tmpG = 0;
-            int tmpB = 0;
+        for (final ModernAsset tmpModernAsset : assets) {
 
-            for (final ModernAsset tmpModernAsset : assets) {
+            final float tmpWeight = tmpModernAsset.getWeight().floatValue();
+            final Color tmpColour = tmpModernAsset.getAssetColour();
 
-                final float tmpWeight = tmpModernAsset.getWeight().floatValue();
-                final Color tmpColour = tmpModernAsset.getAssetColour();
-
-                tmpR += tmpWeight * tmpColour.getRed();
-                tmpG += tmpWeight * tmpColour.getGreen();
-                tmpB += tmpWeight * tmpColour.getBlue();
-            }
-
-            while (tmpR < 0) {
-                tmpR += 255;
-            }
-            while (tmpG < 0) {
-                tmpG += 255;
-            }
-            while (tmpB < 0) {
-                tmpB += 255;
-            }
-
-            while (tmpR > 255) {
-                tmpR -= 255;
-            }
-            while (tmpG > 255) {
-                tmpG -= 255;
-            }
-            while (tmpB > 255) {
-                tmpB -= 255;
-            }
-
-            return new Color(tmpR, tmpG, tmpB);
+            tmpR += tmpWeight * tmpColour.getRed();
+            tmpG += tmpWeight * tmpColour.getGreen();
+            tmpB += tmpWeight * tmpColour.getBlue();
         }
 
+        while (tmpR < 0) {
+            tmpR += 255;
+        }
+        while (tmpG < 0) {
+            tmpG += 255;
+        }
+        while (tmpB < 0) {
+            tmpB += 255;
+        }
+
+        while (tmpR > 255) {
+            tmpR -= 255;
+        }
+        while (tmpG > 255) {
+            tmpG -= 255;
+        }
+        while (tmpB > 255) {
+            tmpB -= 255;
+        }
+
+        return new Color(tmpR, tmpG, tmpB);
     }
 
     Color getAssetColour();

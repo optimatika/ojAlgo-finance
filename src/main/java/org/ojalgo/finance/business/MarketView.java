@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.ojalgo.array.Array1D;
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.finance.portfolio.BlackLittermanModel;
@@ -39,8 +40,6 @@ import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.scalar.PrimitiveScalar;
 import org.ojalgo.scalar.Scalar;
-
-import biz.ojalgo.BusinessObject;
 
 /**
  * A market view is a an investor/analyst opinion or a computer/system/model forecast in the form of portfolio
@@ -56,7 +55,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
     public enum Confidence {
 
-        NO(9), LOW(4), WHATEVER(3), SOME(2), HIGH(1), TOP(0);
+        HIGH(1), LOW(4), NO(9), SOME(2), TOP(0), WHATEVER(3);
 
         private static final double BASE = PrimitiveFunction.SQRT.invoke(PrimitiveMath.TEN);
 
@@ -142,171 +141,166 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
     }
 
-    abstract class Logic {
+    static FinancePortfolio evaluateViewPortfolio(final MarketView view, final FinancialMarket market, final Evaluator evaluator, final Evaluation evaluation) {
 
-        public static FinancePortfolio evaluateViewPortfolio(final MarketView view, final FinancialMarket market, final MarketView.Evaluator evaluator,
-                final MarketView.Evaluation evaluation) {
+        final FinancePortfolio tmpView = view.toMarketViewPortfolio();
+        final FixedWeightsPortfolio tmpMarket = market.toEquilibriumModel();
 
-            final FinancePortfolio tmpView = view.toMarketViewPortfolio();
-            final FixedWeightsPortfolio tmpMarket = market.toEquilibriumModel();
+        double tmpImpliedInsecurity = PrimitiveMath.NaN;
+        if (evaluator.isViewScaleBaseImpliedConfidence() || evaluator.isViewScaleImpliedConfidence()) {
 
-            double tmpImpliedInsecurity = PrimitiveMath.NaN;
-            if (evaluator.isViewScaleBaseImpliedConfidence() || evaluator.isViewScaleImpliedConfidence()) {
+            double tmpLargestEffectiveWeight = PrimitiveMath.ZERO;
 
-                double tmpLargestEffectiveWeight = PrimitiveMath.ZERO;
+            final List<BigDecimal> tmpViewWeights = tmpView.getWeights();
+            final List<BigDecimal> tmpMarketWeights = tmpMarket.getWeights();
 
-                final List<BigDecimal> tmpViewWeights = tmpView.getWeights();
-                final List<BigDecimal> tmpMarketWeights = tmpMarket.getWeights();
-
-                final int tmpMarketSize = tmpMarket.size();
-                for (int i = 0; i < tmpMarketSize; i++) {
-                    final double tmpViewWeight = tmpViewWeights.get(i).doubleValue();
-                    final double tmpMarketWeight = tmpMarketWeights.get(i).doubleValue();
-                    tmpLargestEffectiveWeight = Math.max(tmpLargestEffectiveWeight, Math.abs(tmpViewWeight * tmpMarketWeight));
-                }
-
-                tmpImpliedInsecurity = (PrimitiveMath.ONE / tmpLargestEffectiveWeight) / tmpMarketSize;
+            final int tmpMarketSize = tmpMarket.size();
+            for (int i = 0; i < tmpMarketSize; i++) {
+                final double tmpViewWeight = tmpViewWeights.get(i).doubleValue();
+                final double tmpMarketWeight = tmpMarketWeights.get(i).doubleValue();
+                tmpLargestEffectiveWeight = Math.max(tmpLargestEffectiveWeight, Math.abs(tmpViewWeight * tmpMarketWeight));
             }
 
-            double tmpBaseFactor = evaluator.getViewScaleBaseFactor();
-            double tmpFactor = evaluator.getViewScaleFactor();
-            if (evaluator.isViewScaleBaseImpliedConfidence()) {
-                tmpBaseFactor *= tmpImpliedInsecurity;
-            }
-            if (evaluator.isViewScaleImpliedConfidence()) {
-                tmpFactor *= tmpImpliedInsecurity;
-            }
-
-            final double tmpScale = evaluation.getMarketViewConfidence().getScale(tmpBaseFactor, tmpFactor);
-
-            final boolean tmpScaleVariance = evaluator.isViewScaleVariance();
-
-            return new FinancePortfolio() {
-
-                @Override
-                public double getMeanReturn() {
-                    return tmpView.getMeanReturn();
-                }
-
-                @Override
-                public double getReturnVariance() {
-                    return tmpScaleVariance ? tmpScale * tmpView.getReturnVariance() : super.getReturnVariance();
-                }
-
-                @Override
-                public double getVolatility() {
-                    return tmpScaleVariance ? super.getVolatility() : tmpScale * tmpView.getVolatility();
-                }
-
-                @Override
-                public List<BigDecimal> getWeights() {
-                    return tmpView.getWeights();
-                }
-
-                @Override
-                protected void reset() {
-                    ;
-                }
-
-            };
+            tmpImpliedInsecurity = (PrimitiveMath.ONE / tmpLargestEffectiveWeight) / tmpMarketSize;
         }
 
-        public static SimpleAsset makeDefinitionAsset(final MarketView.Asset asset, final FinancialMarket market) {
-
-            final SimpleAsset tmpMarketAsset = market.toEquilibriumModel().toSimpleAssets().get(asset.index());
-            final BigDecimal tmpViewWeight = asset.getWeight();
-
-            return new SimpleAsset(tmpMarketAsset, tmpViewWeight);
+        double tmpBaseFactor = evaluator.getViewScaleBaseFactor();
+        double tmpFactor = evaluator.getViewScaleFactor();
+        if (evaluator.isViewScaleBaseImpliedConfidence()) {
+            tmpBaseFactor *= tmpImpliedInsecurity;
+        }
+        if (evaluator.isViewScaleImpliedConfidence()) {
+            tmpFactor *= tmpImpliedInsecurity;
         }
 
-        public static FinancePortfolio makeDefinitionPortfolio(final List<? extends MarketView.Asset> assets, final FinancialMarket market) {
+        final double tmpScale = evaluation.getMarketViewConfidence().getScale(tmpBaseFactor, tmpFactor);
 
-            final BasicMatrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
+        final boolean tmpScaleVariance = evaluator.isViewScaleVariance();
 
-            final List<SimpleAsset> tmpAssets = new ArrayList<>();
-            for (final MarketView.Asset tmpAsset : assets) {
-                tmpAssets.add(tmpAsset.toDefinitionPortfolio());
+        return new FinancePortfolio() {
+
+            @Override
+            public double getMeanReturn() {
+                return tmpView.getMeanReturn();
             }
 
-            return new SimplePortfolio(tmpCorrelations, tmpAssets);
+            @Override
+            public double getReturnVariance() {
+                return tmpScaleVariance ? tmpScale * tmpView.getReturnVariance() : super.getReturnVariance();
+            }
+
+            @Override
+            public double getVolatility() {
+                return tmpScaleVariance ? super.getVolatility() : tmpScale * tmpView.getVolatility();
+            }
+
+            @Override
+            public List<BigDecimal> getWeights() {
+                return tmpView.getWeights();
+            }
+
+            @Override
+            protected void reset() {
+                ;
+            }
+
+        };
+    }
+
+    static SimpleAsset makeDefinitionAsset(final Asset asset, final FinancialMarket market) {
+
+        final SimpleAsset tmpMarketAsset = market.toEquilibriumModel().toSimpleAssets().get(asset.index());
+        final BigDecimal tmpViewWeight = asset.getWeight();
+
+        return new SimpleAsset(tmpMarketAsset, tmpViewWeight);
+    }
+
+    static FinancePortfolio makeDefinitionPortfolio(final List<? extends Asset> assets, final FinancialMarket market) {
+
+        final BasicMatrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
+
+        final List<SimpleAsset> tmpAssets = new ArrayList<>();
+        for (final Asset tmpAsset : assets) {
+            tmpAssets.add(tmpAsset.toDefinitionPortfolio());
         }
 
-        public static FinancePortfolio makeMarketViewPortfolio(final MarketView marketView) {
+        return new SimplePortfolio(tmpCorrelations, tmpAssets);
+    }
 
-            final FinancePortfolio tmpDefinitionPortfolio = marketView.toDefinitionPortfolio();
-            final double tmpMarketViewReturn = marketView.getMarketViewReturn();
+    static FinancePortfolio makeMarketViewPortfolio(final MarketView marketView) {
 
-            return new FinancePortfolio() {
+        final FinancePortfolio tmpDefinitionPortfolio = marketView.toDefinitionPortfolio();
+        final double tmpMarketViewReturn = marketView.getMarketViewReturn();
 
-                @Override
-                public double getMeanReturn() {
-                    return tmpMarketViewReturn;
-                }
+        return new FinancePortfolio() {
 
-                @Override
-                public double getReturnVariance() {
-                    return tmpDefinitionPortfolio.getReturnVariance();
-                }
+            @Override
+            public double getMeanReturn() {
+                return tmpMarketViewReturn;
+            }
 
-                @Override
-                public double getVolatility() {
-                    return tmpDefinitionPortfolio.getVolatility();
-                }
+            @Override
+            public double getReturnVariance() {
+                return tmpDefinitionPortfolio.getReturnVariance();
+            }
 
-                @Override
-                public List<BigDecimal> getWeights() {
-                    return tmpDefinitionPortfolio.getWeights();
-                }
+            @Override
+            public double getVolatility() {
+                return tmpDefinitionPortfolio.getVolatility();
+            }
 
-                @Override
-                protected void reset() {
-                    ;
-                }
+            @Override
+            public List<BigDecimal> getWeights() {
+                return tmpDefinitionPortfolio.getWeights();
+            }
 
-            };
-        }
+            @Override
+            protected void reset() {
+                ;
+            }
 
-        public static FinancePortfolio makeMarketViewPortfolio(final MarketView marketView, final FinancialMarket market, final FinancialMarket.Asset asset) {
+        };
+    }
 
-            final FinancePortfolio tmpDefinitionPortfolio = marketView.toDefinitionPortfolio();
-            final double tmpMarketViewReturn = marketView.getMarketViewReturn();
-            final List<BigDecimal> tmpWeights = Array1D.BIG.makeZero(market.toDefinitionPortfolio().size());
-            tmpWeights.set(asset.index(), BigMath.ONE);
+    static FinancePortfolio makeMarketViewPortfolio(final MarketView marketView, final FinancialMarket market, final FinancialMarket.Asset asset) {
 
-            return new FinancePortfolio() {
+        final FinancePortfolio tmpDefinitionPortfolio = marketView.toDefinitionPortfolio();
+        final double tmpMarketViewReturn = marketView.getMarketViewReturn();
+        final List<BigDecimal> tmpWeights = Array1D.BIG.makeZero(market.toDefinitionPortfolio().size());
+        tmpWeights.set(asset.index(), BigMath.ONE);
 
-                @Override
-                public double getMeanReturn() {
-                    return tmpMarketViewReturn;
-                }
+        return new FinancePortfolio() {
 
-                @Override
-                public double getReturnVariance() {
-                    return tmpDefinitionPortfolio.getReturnVariance();
-                }
+            @Override
+            public double getMeanReturn() {
+                return tmpMarketViewReturn;
+            }
 
-                @Override
-                public double getVolatility() {
-                    return tmpDefinitionPortfolio.getVolatility();
-                }
+            @Override
+            public double getReturnVariance() {
+                return tmpDefinitionPortfolio.getReturnVariance();
+            }
 
-                @Override
-                public List<BigDecimal> getWeights() {
-                    return tmpWeights;
-                }
+            @Override
+            public double getVolatility() {
+                return tmpDefinitionPortfolio.getVolatility();
+            }
 
-                @Override
-                protected void reset() {
-                    ;
-                }
+            @Override
+            public List<BigDecimal> getWeights() {
+                return tmpWeights;
+            }
 
-            };
-        }
+            @Override
+            protected void reset() {
+                ;
+            }
 
-        public static Color mixColours(final Collection<? extends MarketView.Asset> assets) {
-            return ModernAsset.Logic.mixColours(assets);
-        }
+        };
+    }
 
+    static Color mixColours(final Collection<? extends Asset> assets) {
+        return ModernAsset.mixColours(assets);
     }
 
     /**

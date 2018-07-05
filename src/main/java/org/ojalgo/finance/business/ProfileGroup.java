@@ -24,27 +24,22 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
 
-import biz.ojalgo.BusinessObject;
-
 public interface ProfileGroup extends BusinessObject {
 
-    abstract class Logic {
-
-        public static BigDecimal getCurrentValue(final ProfileGroup aProfileGroup) {
-            BigDecimal retVal = BigMath.ZERO;
-            for (final PortfolioProfile tmpProfile : aProfileGroup.getProfiles()) {
-                retVal = BigFunction.ADD.invoke(retVal, tmpProfile.getAggregatedAmount());
-            }
-            return retVal;
+    static BigDecimal getCurrentValue(final ProfileGroup aProfileGroup) {
+        BigDecimal retVal = BigMath.ZERO;
+        for (final PortfolioProfile tmpProfile : aProfileGroup.getProfiles()) {
+            retVal = BigFunction.ADD.invoke(retVal, tmpProfile.getAggregatedAmount());
         }
+        return retVal;
+    }
 
-        public static String toDisplayString(final ProfileGroup aProfileGroup) {
-            return aProfileGroup.getName();
-        }
-
+    static String toDisplayString(final ProfileGroup aProfileGroup) {
+        return aProfileGroup.getName();
     }
 
     BigDecimal getAggregatedAmount();

@@ -21,12 +21,8 @@
  */
 package org.ojalgo.finance.business;
 
-import biz.ojalgo.BusinessObject;
+import org.ojalgo.business.BusinessObject;
 
 public interface Weight extends BusinessObject {
-
-    abstract class Logic {
-
-    }
 
 }

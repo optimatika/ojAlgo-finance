@@ -30,38 +30,34 @@ import org.ojalgo.type.StandardType;
 
 public interface QuantityPriceAmountStructure {
 
-    abstract class Logic {
-
-        public static BigDecimal getImpliedAmount(final QuantityPriceAmountStructure aQuantityPriceAmount) {
-            final BigDecimal tmpQuantity = aQuantityPriceAmount.getQuantity();
-            final BigDecimal tmpPrice = aQuantityPriceAmount.getPrice();
-            if ((tmpQuantity != null) && (tmpPrice != null)) {
-                return BigFunction.MULTIPLY.invoke(tmpQuantity, tmpPrice);
-            } else {
-                return BigMath.ZERO;
-            }
+    static BigDecimal getImpliedAmount(final QuantityPriceAmountStructure aQuantityPriceAmount) {
+        final BigDecimal tmpQuantity = aQuantityPriceAmount.getQuantity();
+        final BigDecimal tmpPrice = aQuantityPriceAmount.getPrice();
+        if ((tmpQuantity != null) && (tmpPrice != null)) {
+            return BigFunction.MULTIPLY.invoke(tmpQuantity, tmpPrice);
+        } else {
+            return BigMath.ZERO;
         }
+    }
 
-        public static BigDecimal getImpliedPrice(final QuantityPriceAmountStructure aQuantityPriceAmount) {
-            final BigDecimal tmpQuantity = aQuantityPriceAmount.getQuantity();
-            final BigDecimal tmpAmount = aQuantityPriceAmount.getAmount();
-            if ((tmpAmount != null) && (tmpQuantity != null) && (tmpQuantity.signum() != 0)) {
-                return BigFunction.DIVIDE.invoke(tmpAmount, tmpQuantity);
-            } else {
-                return BigMath.ONE;
-            }
+    static BigDecimal getImpliedPrice(final QuantityPriceAmountStructure aQuantityPriceAmount) {
+        final BigDecimal tmpQuantity = aQuantityPriceAmount.getQuantity();
+        final BigDecimal tmpAmount = aQuantityPriceAmount.getAmount();
+        if ((tmpAmount != null) && (tmpQuantity != null) && (tmpQuantity.signum() != 0)) {
+            return BigFunction.DIVIDE.invoke(tmpAmount, tmpQuantity);
+        } else {
+            return BigMath.ONE;
         }
+    }
 
-        public static BigDecimal getImpliedQuantity(final QuantityPriceAmountStructure aQuantityPriceAmount) {
-            final BigDecimal tmpPrice = aQuantityPriceAmount.getPrice();
-            final BigDecimal tmpAmount = aQuantityPriceAmount.getAmount();
-            if ((tmpAmount != null) && (tmpPrice != null) && (tmpPrice.signum() != 0)) {
-                return BigFunction.DIVIDE.invoke(tmpAmount, tmpPrice);
-            } else {
-                return BigMath.ZERO;
-            }
+    static BigDecimal getImpliedQuantity(final QuantityPriceAmountStructure aQuantityPriceAmount) {
+        final BigDecimal tmpPrice = aQuantityPriceAmount.getPrice();
+        final BigDecimal tmpAmount = aQuantityPriceAmount.getAmount();
+        if ((tmpAmount != null) && (tmpPrice != null) && (tmpPrice.signum() != 0)) {
+            return BigFunction.DIVIDE.invoke(tmpAmount, tmpPrice);
+        } else {
+            return BigMath.ZERO;
         }
-
     }
 
     /**

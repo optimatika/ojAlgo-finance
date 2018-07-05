@@ -23,7 +23,7 @@ package org.ojalgo.finance.business;
 
 import java.math.BigDecimal;
 
-import biz.ojalgo.BusinessObject;
+import org.ojalgo.business.BusinessObject;
 
 public interface FinanceSettings extends BusinessObject {
 

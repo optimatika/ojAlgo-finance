@@ -27,62 +27,57 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
-
-import biz.ojalgo.BusinessObject;
 
 /**
  * @author apete
  */
 public interface Holding<C extends ValueStructure.Container, I extends ValueStructure.Item> extends BusinessObject, ValueStructure<C, I> {
 
-    abstract class Logic {
-
-        public static BigDecimal aggregateAmount(final List<? extends Holding<?, ?>> aListOfHoldings) {
-            BigDecimal retVal = BigMath.ZERO;
-            for (final Holding<?, ?> tmpHolding : aListOfHoldings) {
-                retVal = BigFunction.ADD.invoke(retVal, tmpHolding.getAmount());
-            }
-            return retVal;
+    static BigDecimal aggregateAmount(final List<? extends Holding<?, ?>> aListOfHoldings) {
+        BigDecimal retVal = BigMath.ZERO;
+        for (final Holding<?, ?> tmpHolding : aListOfHoldings) {
+            retVal = BigFunction.ADD.invoke(retVal, tmpHolding.getAmount());
         }
+        return retVal;
+    }
 
-        public static BigDecimal aggregateQuantity(final List<? extends Holding<?, ?>> aListOfHoldings) {
-            BigDecimal retVal = BigMath.ZERO;
-            for (final Holding<?, ?> tmpHolding : aListOfHoldings) {
-                retVal = BigFunction.ADD.invoke(retVal, tmpHolding.getQuantity());
-            }
-            return retVal;
+    static BigDecimal aggregateQuantity(final List<? extends Holding<?, ?>> aListOfHoldings) {
+        BigDecimal retVal = BigMath.ZERO;
+        for (final Holding<?, ?> tmpHolding : aListOfHoldings) {
+            retVal = BigFunction.ADD.invoke(retVal, tmpHolding.getQuantity());
         }
+        return retVal;
+    }
 
-        public static Currency getDefaultCurreny() {
-            return Currency.getInstance(Locale.getDefault());
-        }
+    static Currency getDefaultCurreny() {
+        return Currency.getInstance(Locale.getDefault());
+    }
 
-        public static Date getDefaultHoldingDate() {
-            return new Date();
-        }
+    static Date getDefaultHoldingDate() {
+        return new Date();
+    }
 
-        public static BigDecimal getImpliedAmount(final Holding<?, ?> aHolding) {
-            return QuantityPriceAmountStructure.Logic.getImpliedAmount(aHolding);
-        }
+    static BigDecimal getImpliedAmount(final Holding<?, ?> aHolding) {
+        return QuantityPriceAmountStructure.getImpliedAmount(aHolding);
+    }
 
-        public static BigDecimal getImpliedPrice(final Holding<?, ?> aHolding) {
-            return QuantityPriceAmountStructure.Logic.getImpliedPrice(aHolding);
-        }
+    static BigDecimal getImpliedPrice(final Holding<?, ?> aHolding) {
+        return QuantityPriceAmountStructure.getImpliedPrice(aHolding);
+    }
 
-        public static BigDecimal getImpliedQuantity(final Holding<?, ?> aHolding) {
-            return QuantityPriceAmountStructure.Logic.getImpliedQuantity(aHolding);
-        }
+    static BigDecimal getImpliedQuantity(final Holding<?, ?> aHolding) {
+        return QuantityPriceAmountStructure.getImpliedQuantity(aHolding);
+    }
 
-        public static BigDecimal getWeight(final Holding<?, ?> aHolding) {
-            return BigFunction.DIVIDE.invoke(aHolding.getAmount(), aHolding.getContentContainer().getAggregatedAmount());
-        }
+    static BigDecimal getWeight(final Holding<?, ?> aHolding) {
+        return BigFunction.DIVIDE.invoke(aHolding.getAmount(), aHolding.getContentContainer().getAggregatedAmount());
+    }
 
-        public static String toDisplayString(final Holding<?, ?> aHolding) {
-            return aHolding.getContentItem().getName() + " @ " + aHolding.getContentContainer().getName();
-        }
-
+    static String toDisplayString(final Holding<?, ?> aHolding) {
+        return aHolding.getContentItem().getName() + " @ " + aHolding.getContentContainer().getName();
     }
 
     Date getHoldingDate();

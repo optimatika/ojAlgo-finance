@@ -24,37 +24,32 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
-
-import biz.ojalgo.BusinessObject;
 
 public interface InstrumentCategory extends BusinessObject, ValueStructure.Item {
 
-    abstract class Logic {
+    static BigDecimal getCurrentValue(final InstrumentCategory aCategory) {
 
-        public static BigDecimal getCurrentValue(final InstrumentCategory aCategory) {
+        BigDecimal retVal = BigMath.ZERO;
 
-            BigDecimal retVal = BigMath.ZERO;
-
-            for (final Instrument tmpInstrument : aCategory.getInstruments()) {
-                retVal = retVal.add(tmpInstrument.getAmount());
-            }
-
-            return retVal;
+        for (final Instrument tmpInstrument : aCategory.getInstruments()) {
+            retVal = retVal.add(tmpInstrument.getAmount());
         }
 
-        public static boolean isLeaf(final InstrumentCategory aCategory) {
-            return aCategory.getChildren().size() == 0;
-        }
+        return retVal;
+    }
 
-        public static boolean isRoot(final InstrumentCategory aCategory) {
-            return aCategory.getParent() == null;
-        }
+    static boolean isLeaf(final InstrumentCategory aCategory) {
+        return aCategory.getChildren().size() == 0;
+    }
 
-        public static String toDisplayString(final InstrumentCategory aCategory) {
-            return aCategory.getName();
-        }
+    static boolean isRoot(final InstrumentCategory aCategory) {
+        return aCategory.getParent() == null;
+    }
 
+    static String toDisplayString(final InstrumentCategory aCategory) {
+        return aCategory.getName();
     }
 
     List<? extends Holding<? extends Portfolio, ? extends InstrumentCategory>> getCategoryHoldings();

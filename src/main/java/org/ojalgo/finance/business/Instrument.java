@@ -24,7 +24,7 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
-import biz.ojalgo.BusinessObject;
+import org.ojalgo.business.BusinessObject;
 
 /**
  * An {@linkplain Instrument} is anything that can be put in some kind of {@linkplain Portfolio}.
@@ -33,24 +33,20 @@ import biz.ojalgo.BusinessObject;
  */
 public interface Instrument extends BusinessObject, ValueStructure.Item, QuantityPriceAmountStructure {
 
-    abstract class Logic {
+    static BigDecimal getImpliedAmount(final QuantityPriceAmountStructure aQuantityPriceAmountStructure) {
+        return org.ojalgo.finance.business.QuantityPriceAmountStructure.getImpliedAmount(aQuantityPriceAmountStructure);
+    }
 
-        public static BigDecimal getImpliedAmount(final QuantityPriceAmountStructure aQuantityPriceAmountStructure) {
-            return org.ojalgo.finance.business.QuantityPriceAmountStructure.Logic.getImpliedAmount(aQuantityPriceAmountStructure);
-        }
+    static BigDecimal getImpliedPrice(final QuantityPriceAmountStructure aQuantityPriceAmountStructure) {
+        return org.ojalgo.finance.business.QuantityPriceAmountStructure.getImpliedPrice(aQuantityPriceAmountStructure);
+    }
 
-        public static BigDecimal getImpliedPrice(final QuantityPriceAmountStructure aQuantityPriceAmountStructure) {
-            return org.ojalgo.finance.business.QuantityPriceAmountStructure.Logic.getImpliedPrice(aQuantityPriceAmountStructure);
-        }
+    static BigDecimal getImpliedQuantity(final QuantityPriceAmountStructure aQuantityPriceAmountStructure) {
+        return org.ojalgo.finance.business.QuantityPriceAmountStructure.getImpliedQuantity(aQuantityPriceAmountStructure);
+    }
 
-        public static BigDecimal getImpliedQuantity(final QuantityPriceAmountStructure aQuantityPriceAmountStructure) {
-            return org.ojalgo.finance.business.QuantityPriceAmountStructure.Logic.getImpliedQuantity(aQuantityPriceAmountStructure);
-        }
-
-        public static String toDisplayString(final Instrument anInstrument) {
-            return anInstrument.getName() + " (" + anInstrument.getInstrumentCategory().getName() + ")";
-        }
-
+    static String toDisplayString(final Instrument anInstrument) {
+        return anInstrument.getName() + " (" + anInstrument.getInstrumentCategory().getName() + ")";
     }
 
     List<? extends Holding<? extends Portfolio, ? extends Instrument>> getHoldings();

@@ -24,68 +24,62 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
 
-import biz.ojalgo.BusinessObject;
-
 public interface WorkSetPortfolio extends BusinessObject {
 
-    abstract class Logic {
+    static BigDecimal getAdjustedFutureAmount(final WorkSetPortfolio aWorkSetPortfolio) {
+        BigDecimal retVal = WorkSetPortfolio.getCurrentAmount(aWorkSetPortfolio);
+        final BigDecimal tmpExcl = aWorkSetPortfolio.getExclusion();
+        if (tmpExcl != null) {
+            retVal = BigFunction.SUBTRACT.invoke(retVal, tmpExcl);
+        }
+        return retVal;
+    }
 
-        public static BigDecimal getAdjustedFutureAmount(final WorkSetPortfolio aWorkSetPortfolio) {
-            BigDecimal retVal = Logic.getCurrentAmount(aWorkSetPortfolio);
-            final BigDecimal tmpExcl = aWorkSetPortfolio.getExclusion();
-            if (tmpExcl != null) {
-                retVal = BigFunction.SUBTRACT.invoke(retVal, tmpExcl);
-            }
-            return retVal;
+    static BigDecimal getCurrentAmount(final WorkSetPortfolio aWorkSetPortfolio) {
+        BigDecimal retVal = BigMath.ZERO;
+        for (final Change tmpChange : aWorkSetPortfolio.getChanges()) {
+            retVal = BigFunction.ADD.invoke(retVal, tmpChange.getCurrentAmount());
+        }
+        return retVal;
+    }
+
+    static BigDecimal getFutureAmount(final WorkSetPortfolio aWorkSetPortfolio) {
+        BigDecimal retVal = BigMath.ZERO;
+        for (final Change tmpChange : aWorkSetPortfolio.getChanges()) {
+            retVal = BigFunction.ADD.invoke(retVal, tmpChange.getFutureAmount());
+        }
+        return retVal;
+    }
+
+    static BigDecimal getTotalChangeBalance(final WorkSetPortfolio aWorkSetPortfolio) {
+
+        BigDecimal retVal = BigMath.ZERO;
+
+        for (final Change tmpChange : aWorkSetPortfolio.getChanges()) {
+            retVal = BigFunction.ADD.invoke(retVal, tmpChange.getTransactionAmount());
         }
 
-        public static BigDecimal getCurrentAmount(final WorkSetPortfolio aWorkSetPortfolio) {
-            BigDecimal retVal = BigMath.ZERO;
-            for (final Change tmpChange : aWorkSetPortfolio.getChanges()) {
-                retVal = BigFunction.ADD.invoke(retVal, tmpChange.getCurrentAmount());
-            }
-            return retVal;
-        }
+        return retVal;
+    }
 
-        public static BigDecimal getFutureAmount(final WorkSetPortfolio aWorkSetPortfolio) {
-            BigDecimal retVal = BigMath.ZERO;
-            for (final Change tmpChange : aWorkSetPortfolio.getChanges()) {
-                retVal = BigFunction.ADD.invoke(retVal, tmpChange.getFutureAmount());
-            }
-            return retVal;
-        }
+    static String getTransactionType(final WorkSetPortfolio aWorkSetPortfolio, final FinanceSettings aSystemSettings) {
 
-        public static BigDecimal getTotalChangeBalance(final WorkSetPortfolio aWorkSetPortfolio) {
+        final BigDecimal tmpSmallestTransaction = aSystemSettings.getSmallestTransaction();
+        final BigDecimal tmpTotalChangeBalance = aWorkSetPortfolio.getTotalChangeBalance();
 
-            BigDecimal retVal = BigMath.ZERO;
+        return tmpTotalChangeBalance.abs().compareTo(tmpSmallestTransaction) < 0 ? "O" : "E";
+    }
 
-            for (final Change tmpChange : aWorkSetPortfolio.getChanges()) {
-                retVal = BigFunction.ADD.invoke(retVal, tmpChange.getTransactionAmount());
-            }
+    static boolean hasAnyKindOfWarning(final WorkSetPortfolio aWorkSetPortfolio) {
+        return aWorkSetPortfolio.isOptimisationFailed() || aWorkSetPortfolio.isActiveInMoreThanOneWorkSet() || aWorkSetPortfolio.getPortfolio().hasWarning();
+    }
 
-            return retVal;
-        }
-
-        public static String getTransactionType(final WorkSetPortfolio aWorkSetPortfolio, final FinanceSettings aSystemSettings) {
-
-            final BigDecimal tmpSmallestTransaction = aSystemSettings.getSmallestTransaction();
-            final BigDecimal tmpTotalChangeBalance = aWorkSetPortfolio.getTotalChangeBalance();
-
-            return tmpTotalChangeBalance.abs().compareTo(tmpSmallestTransaction) < 0 ? "O" : "E";
-        }
-
-        public static boolean hasAnyKindOfWarning(final WorkSetPortfolio aWorkSetPortfolio) {
-            return aWorkSetPortfolio.isOptimisationFailed() || aWorkSetPortfolio.isActiveInMoreThanOneWorkSet()
-                    || aWorkSetPortfolio.getPortfolio().hasWarning();
-        }
-
-        public static String toDisplayString(final WorkSetPortfolio aWorkSetPortfolio) {
-            return aWorkSetPortfolio.getPortfolio().getName() + "@" + aWorkSetPortfolio.getWorkSet().getName();
-        }
-
+    static String toDisplayString(final WorkSetPortfolio aWorkSetPortfolio) {
+        return aWorkSetPortfolio.getPortfolio().getName() + "@" + aWorkSetPortfolio.getWorkSet().getName();
     }
 
     BigDecimal getAdjustedFutureAmount();

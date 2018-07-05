@@ -24,29 +24,24 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
-
-import biz.ojalgo.BusinessObject;
 
 public interface PortfolioProfile extends BusinessObject, ValueStructure.Container {
 
-    abstract class Logic {
+    static BigDecimal getCurrentValue(final PortfolioProfile aProfile) {
 
-        public static BigDecimal getCurrentValue(final PortfolioProfile aProfile) {
+        BigDecimal retVal = BigMath.ZERO;
 
-            BigDecimal retVal = BigMath.ZERO;
-
-            for (final Portfolio tmpPortfolio : aProfile.getPortfolios()) {
-                retVal = retVal.add(tmpPortfolio.getAggregatedAmount());
-            }
-
-            return retVal;
+        for (final Portfolio tmpPortfolio : aProfile.getPortfolios()) {
+            retVal = retVal.add(tmpPortfolio.getAggregatedAmount());
         }
 
-        public static String toDisplayString(final PortfolioProfile aProfile) {
-            return aProfile.getProfileGroup().getName() + " - " + aProfile.getProfilePrincipal().getName();
-        }
+        return retVal;
+    }
 
+    static String toDisplayString(final PortfolioProfile aProfile) {
+        return aProfile.getProfileGroup().getName() + " - " + aProfile.getProfilePrincipal().getName();
     }
 
     List<? extends Holding<? extends PortfolioProfile, ? extends InstrumentCategory>> getHoldingStructures();

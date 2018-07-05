@@ -21,16 +21,12 @@
  */
 package org.ojalgo.finance.business;
 
-import biz.ojalgo.BusinessObject;
+import org.ojalgo.business.BusinessObject;
 
 public interface Tag extends BusinessObject {
 
-    abstract class Logic {
-
-        public static String toDisplayString(final Tag aTag) {
-            return aTag.getName();
-        }
-
+    static String toDisplayString(final Tag aTag) {
+        return aTag.getName();
     }
 
     String getName();

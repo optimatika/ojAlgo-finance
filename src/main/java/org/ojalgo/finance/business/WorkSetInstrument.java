@@ -23,100 +23,95 @@ package org.ojalgo.finance.business;
 
 import java.math.BigDecimal;
 
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
-
-import biz.ojalgo.BusinessObject;
 
 public interface WorkSetInstrument extends BusinessObject {
 
-    abstract class Logic {
+    static InstrumentCategory getEffectiveCategory(final WorkSetInstrument aWorkSetInstrument) {
 
-        public static InstrumentCategory getEffectiveCategory(final WorkSetInstrument aWorkSetInstrument) {
+        InstrumentCategory retVal = null;
 
-            InstrumentCategory retVal = null;
+        if (aWorkSetInstrument.getInstrument() != null) {
+            retVal = aWorkSetInstrument.getInstrument().getInstrumentCategory();
+        } else if (aWorkSetInstrument.getInstrumentCategory() != null) {
+            retVal = aWorkSetInstrument.getInstrumentCategory();
+        } else {
 
-            if (aWorkSetInstrument.getInstrument() != null) {
-                retVal = aWorkSetInstrument.getInstrument().getInstrumentCategory();
-            } else if (aWorkSetInstrument.getInstrumentCategory() != null) {
-                retVal = aWorkSetInstrument.getInstrumentCategory();
-            } else {
+            final WorkSet tmpWorkSet = aWorkSetInstrument.getWorkSet();
 
-                final WorkSet tmpWorkSet = aWorkSetInstrument.getWorkSet();
-
-                if (tmpWorkSet.getBuyInstrument() != null) {
-                    retVal = tmpWorkSet.getBuyInstrument().getInstrumentCategory();
-                } else if (tmpWorkSet.getBuyInstrumentCategory() != null) {
-                    retVal = tmpWorkSet.getBuyInstrumentCategory();
-                } else if (tmpWorkSet.getSellInstrument() != null) {
-                    retVal = tmpWorkSet.getSellInstrument().getInstrumentCategory();
-                }
+            if (tmpWorkSet.getBuyInstrument() != null) {
+                retVal = tmpWorkSet.getBuyInstrument().getInstrumentCategory();
+            } else if (tmpWorkSet.getBuyInstrumentCategory() != null) {
+                retVal = tmpWorkSet.getBuyInstrumentCategory();
+            } else if (tmpWorkSet.getSellInstrument() != null) {
+                retVal = tmpWorkSet.getSellInstrument().getInstrumentCategory();
             }
-
-            return retVal;
         }
 
-        public static BigDecimal getPrice(final WorkSetInstrument aWorkSetInstrument) {
+        return retVal;
+    }
+
+    static BigDecimal getPrice(final WorkSetInstrument aWorkSetInstrument) {
+        final Instrument tmpInstrument = aWorkSetInstrument.getInstrument();
+        if (tmpInstrument != null) {
+            return tmpInstrument.getPrice();
+        } else {
+            return BigMath.ONE;
+        }
+    }
+
+    static int getPriority(final WorkSetInstrument aWorkSetInstrument) {
+        final Instrument tmpInstrument = aWorkSetInstrument.getInstrument();
+        if ((tmpInstrument != null) && (tmpInstrument.getPriority() != null)) {
+            return tmpInstrument.getPriority();
+        } else {
+            return 0;
+        }
+    }
+
+    static BigDecimal getTransactionPrice(final WorkSetInstrument aWorkSetInstrument) {
+
+        final WorkSetInstrument tmpWorkSetInstrument = aWorkSetInstrument;
+
+        BigDecimal retVal = tmpWorkSetInstrument.getPrice();
+
+        if (retVal == null) {
             final Instrument tmpInstrument = aWorkSetInstrument.getInstrument();
             if (tmpInstrument != null) {
-                return tmpInstrument.getPrice();
+                retVal = tmpInstrument.getPrice();
             } else {
-                return BigMath.ONE;
+                retVal = BigMath.ONE;
             }
         }
 
-        public static int getPriority(final WorkSetInstrument aWorkSetInstrument) {
-            final Instrument tmpInstrument = aWorkSetInstrument.getInstrument();
-            if ((tmpInstrument != null) && (tmpInstrument.getPriority() != null)) {
-                return tmpInstrument.getPriority();
-            } else {
-                return 0;
-            }
+        return retVal;
+    }
+
+    static boolean isAllowedToDelete(final WorkSetInstrument aWorkSetInstrument) {
+        return (aWorkSetInstrument.getInstrumentCategory() != null) && (aWorkSetInstrument.getCurrentAmount().signum() == 0);
+    }
+
+    static boolean isDefault(final WorkSetInstrument aWorkSetInstrument) {
+        final Instrument tmpInstrument = aWorkSetInstrument.getInstrument();
+        return (tmpInstrument != null) && (tmpInstrument.isDefault());
+    }
+
+    static boolean isNotCatgeoryChange(final WorkSetInstrument aWorkSetInstrument) {
+        return aWorkSetInstrument.getInstrumentCategory() == null;
+    }
+
+    static String toDisplayString(final WorkSetInstrument aWorkSetInstrument) {
+
+        String retVal = null;
+
+        if (aWorkSetInstrument.getInstrument() != null) {
+            retVal = aWorkSetInstrument.getInstrument().getName();
+        } else if (aWorkSetInstrument.getInstrumentCategory() != null) {
+            retVal = aWorkSetInstrument.getInstrumentCategory().getName();
         }
 
-        public static BigDecimal getTransactionPrice(final WorkSetInstrument aWorkSetInstrument) {
-
-            final WorkSetInstrument tmpWorkSetInstrument = aWorkSetInstrument;
-
-            BigDecimal retVal = tmpWorkSetInstrument.getPrice();
-
-            if (retVal == null) {
-                final Instrument tmpInstrument = aWorkSetInstrument.getInstrument();
-                if (tmpInstrument != null) {
-                    retVal = tmpInstrument.getPrice();
-                } else {
-                    retVal = BigMath.ONE;
-                }
-            }
-
-            return retVal;
-        }
-
-        public static boolean isAllowedToDelete(final WorkSetInstrument aWorkSetInstrument) {
-            return (aWorkSetInstrument.getInstrumentCategory() != null) && (aWorkSetInstrument.getCurrentAmount().signum() == 0);
-        }
-
-        public static boolean isDefault(final WorkSetInstrument aWorkSetInstrument) {
-            final Instrument tmpInstrument = aWorkSetInstrument.getInstrument();
-            return (tmpInstrument != null) && (tmpInstrument.isDefault());
-        }
-
-        public static boolean isNotCatgeoryChange(final WorkSetInstrument aWorkSetInstrument) {
-            return aWorkSetInstrument.getInstrumentCategory() == null;
-        }
-
-        public static String toDisplayString(final WorkSetInstrument aWorkSetInstrument) {
-
-            String retVal = null;
-
-            if (aWorkSetInstrument.getInstrument() != null) {
-                retVal = aWorkSetInstrument.getInstrument().getName();
-            } else if (aWorkSetInstrument.getInstrumentCategory() != null) {
-                retVal = aWorkSetInstrument.getInstrumentCategory().getName();
-            }
-
-            return retVal;
-        }
-
+        return retVal;
     }
 
     BigDecimal getCurrentAmount();

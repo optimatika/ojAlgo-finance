@@ -27,9 +27,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.function.BigFunction;
-
-import biz.ojalgo.BusinessObject;
 
 /**
  * A (financial) {@linkplain Portfolio} is anything that can contain any kind of (financial)
@@ -39,67 +38,63 @@ import biz.ojalgo.BusinessObject;
  */
 public interface Portfolio extends BusinessObject, ValueStructure.Container {
 
-    abstract class Logic {
+    static BigDecimal calculateOffset(final Portfolio aPortfolio, final boolean reduced) {
 
-        public static BigDecimal calculateOffset(final Portfolio aPortfolio, final boolean reduced) {
+        final List<? extends CategoryHolding<?, ?>> tmpHoldings = (List<? extends CategoryHolding<?, ?>>) aPortfolio.getAggregationContents();
 
-            final List<? extends CategoryHolding<?, ?>> tmpHoldings = (List<? extends CategoryHolding<?, ?>>) aPortfolio.getAggregationContents();
+        final BigDecimal tmpOffsetOver = CategoryHolding.aggregateOffsetOver(tmpHoldings, reduced);
+        final BigDecimal tmpOffsetUnder = CategoryHolding.aggregateOffsetUnder(tmpHoldings);
 
-            final BigDecimal tmpOffsetOver = CategoryHolding.Logic.aggregateOffsetOver(tmpHoldings, reduced);
-            final BigDecimal tmpOffsetUnder = CategoryHolding.Logic.aggregateOffsetUnder(tmpHoldings);
+        if (reduced) {
+            return BigFunction.MIN.invoke(tmpOffsetUnder, tmpOffsetOver);
+        } else {
+            return BigFunction.MAX.invoke(tmpOffsetUnder, tmpOffsetOver);
+        }
+    }
 
-            if (reduced) {
-                return BigFunction.MIN.invoke(tmpOffsetUnder, tmpOffsetOver);
-            } else {
-                return BigFunction.MAX.invoke(tmpOffsetUnder, tmpOffsetOver);
-            }
+    static int countActiveWorkSets(final Portfolio aPortfolio) {
+
+        final Set<WorkSet> tmpUniqueWorkSets = new TreeSet<>();
+
+        for (final Change tmpChange : aPortfolio.getActiveChanges()) {
+            tmpUniqueWorkSets.add(tmpChange.getWorkSetPortfolio().getWorkSet());
         }
 
-        public static int countActiveWorkSets(final Portfolio aPortfolio) {
+        return tmpUniqueWorkSets.size();
+    }
 
-            final Set<WorkSet> tmpUniqueWorkSets = new TreeSet<>();
+    static List<Instrument> getInstruments(final Portfolio aPortfolio) {
 
-            for (final Change tmpChange : aPortfolio.getActiveChanges()) {
-                tmpUniqueWorkSets.add(tmpChange.getWorkSetPortfolio().getWorkSet());
-            }
+        final List<Instrument> retVal = new ArrayList<>();
 
-            return tmpUniqueWorkSets.size();
+        for (final Holding<?, ? extends Instrument> tmpHolding : aPortfolio.getHoldings()) {
+            retVal.add(tmpHolding.getContentItem());
         }
 
-        public static List<Instrument> getInstruments(final Portfolio aPortfolio) {
+        return retVal;
+    }
 
-            final List<Instrument> retVal = new ArrayList<>();
+    static List<BigDecimal> getShares(final Portfolio aPortfolio) {
 
-            for (final Holding<?, ? extends Instrument> tmpHolding : aPortfolio.getHoldings()) {
-                retVal.add(tmpHolding.getContentItem());
-            }
+        final List<BigDecimal> retVal = new ArrayList<>();
 
-            return retVal;
+        for (final Holding<?, ?> tmpHolding : aPortfolio.getHoldings()) {
+            retVal.add(BigFunction.DIVIDE.invoke(tmpHolding.getAmount(), aPortfolio.getAggregatedAmount()));
         }
 
-        public static List<BigDecimal> getShares(final Portfolio aPortfolio) {
+        return retVal;
+    }
 
-            final List<BigDecimal> retVal = new ArrayList<>();
+    static boolean isActiveInMoreThanOneWorkSet(final Portfolio aPortfolio) {
+        return Portfolio.countActiveWorkSets(aPortfolio) >= 2;
+    }
 
-            for (final Holding<?, ?> tmpHolding : aPortfolio.getHoldings()) {
-                retVal.add(BigFunction.DIVIDE.invoke(tmpHolding.getAmount(), aPortfolio.getAggregatedAmount()));
-            }
-
-            return retVal;
+    static String toDisplayString(final Portfolio aPortfolio) {
+        String retVal = aPortfolio.getName();
+        if (aPortfolio.getProfile() != null) {
+            retVal = retVal + "(" + aPortfolio.getProfile().getProfileGroup().getName() + ")";
         }
-
-        public static boolean isActiveInMoreThanOneWorkSet(final Portfolio aPortfolio) {
-            return Logic.countActiveWorkSets(aPortfolio) >= 2;
-        }
-
-        public static String toDisplayString(final Portfolio aPortfolio) {
-            String retVal = aPortfolio.getName();
-            if (aPortfolio.getProfile() != null) {
-                retVal = retVal + "(" + aPortfolio.getProfile().getProfileGroup().getName() + ")";
-            }
-            return retVal;
-        }
-
+        return retVal;
     }
 
     /**

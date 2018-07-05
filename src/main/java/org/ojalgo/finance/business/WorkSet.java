@@ -25,47 +25,43 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import biz.ojalgo.BusinessObject;
+import org.ojalgo.business.BusinessObject;
 
 public interface WorkSet extends BusinessObject {
 
-    abstract class Logic {
+    static String getBuyName(final WorkSet aWorkSet) {
+        if (aWorkSet.getBuyInstrument() != null) {
+            return aWorkSet.getBuyInstrument().getName();
+        } else if (aWorkSet.getBuyInstrumentCategory() != null) {
+            return aWorkSet.getBuyInstrumentCategory().getName();
+        } else {
+            return "?";
+        }
+    }
 
-        public static String getBuyName(final WorkSet aWorkSet) {
-            if (aWorkSet.getBuyInstrument() != null) {
-                return aWorkSet.getBuyInstrument().getName();
-            } else if (aWorkSet.getBuyInstrumentCategory() != null) {
-                return aWorkSet.getBuyInstrumentCategory().getName();
-            } else {
-                return "?";
+    static List<? extends Change> getChanges(final WorkSet aWorkSet, final Portfolio aPortfolio) {
+
+        final List<Change> retVal = new ArrayList<>();
+
+        for (final Change tmpChange : aWorkSet.getChanges()) {
+            if (tmpChange.getWorkSetPortfolio().getPortfolio().equals(aPortfolio)) {
+                retVal.add(tmpChange);
             }
         }
 
-        public static List<? extends Change> getChanges(final WorkSet aWorkSet, final Portfolio aPortfolio) {
+        return retVal;
+    }
 
-            final List<Change> retVal = new ArrayList<>();
-
-            for (final Change tmpChange : aWorkSet.getChanges()) {
-                if (tmpChange.getWorkSetPortfolio().getPortfolio().equals(aPortfolio)) {
-                    retVal.add(tmpChange);
-                }
-            }
-
-            return retVal;
+    static String getSellName(final WorkSet aWorkSet) {
+        if (aWorkSet.getSellInstrument() != null) {
+            return aWorkSet.getSellInstrument().getName();
+        } else {
+            return "?";
         }
+    }
 
-        public static String getSellName(final WorkSet aWorkSet) {
-            if (aWorkSet.getSellInstrument() != null) {
-                return aWorkSet.getSellInstrument().getName();
-            } else {
-                return "?";
-            }
-        }
-
-        public static String toDisplayString(final WorkSet aWorkSet) {
-            return aWorkSet.getName();
-        }
-
+    static String toDisplayString(final WorkSet aWorkSet) {
+        return aWorkSet.getName();
     }
 
     Instrument getBuyInstrument();

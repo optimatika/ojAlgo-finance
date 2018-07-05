@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.finance.portfolio.FinancePortfolio;
 import org.ojalgo.finance.portfolio.FinancePortfolio.Context;
 import org.ojalgo.finance.portfolio.FixedWeightsPortfolio;
@@ -34,93 +35,12 @@ import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
 import org.ojalgo.matrix.BasicMatrix;
 
-import biz.ojalgo.BusinessObject;
-
 /**
  * @author apete
  */
 public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
 
     interface Asset extends ModernAsset, LowerAndUpperLimit {
-
-    }
-
-    abstract class Logic {
-
-        public static FinancePortfolio makeComparableDefinitionPortfolio(final TargetPortfolio targetPortfolio, final FinancialMarket market) {
-
-            final SimplePortfolio tmpWeightsModel = targetPortfolio.toDefinitionPortfolio();
-
-            final Context tmpEvaluationContext = market.getEvaluationContext();
-            return new SimplePortfolio(tmpEvaluationContext, tmpWeightsModel).normalise();
-        }
-
-        public static FinancePortfolio makeComparableEqulibriumPortfolio(final TargetPortfolio targetPortfolio, final FinancialMarket market) {
-
-            final Context tmpWeightsContext = market.getEquilibriumContext();
-            final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
-
-            final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
-            tmpWeightsModel.setRiskAversion(tmpRiskAversion);
-
-            final Context tmpEvaluationContext = market.getEvaluationContext();
-            return new SimplePortfolio(tmpEvaluationContext, tmpWeightsModel).normalise();
-        }
-
-        public static FinancePortfolio makeComparableOpinionatedPortfolio(final TargetPortfolio targetPortfolio, final FinancialMarket market) {
-
-            final Context tmpWeightsContext = market.getOpinionatedContext();
-            final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
-
-            final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
-            tmpWeightsModel.setRiskAversion(tmpRiskAversion);
-
-            final Context tmpEvaluationContext = market.getEvaluationContext();
-            return new SimplePortfolio(tmpEvaluationContext, tmpWeightsModel).normalise();
-        }
-
-        public static FinancePortfolio makeComparableRestrictedPortfolio(final TargetPortfolio targetPortfolio,
-                final List<? extends TargetPortfolio.Asset> assets, final FinancialMarket market) {
-
-            final Context tmpWeightsContext = market.getOpinionatedContext();
-            final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
-
-            final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
-            tmpWeightsModel.setRiskAversion(tmpRiskAversion);
-
-            for (int i = 0; i < assets.size(); i++) {
-                final Asset tmpAsset = assets.get(i);
-                tmpWeightsModel.setLowerLimit(tmpAsset.index(), tmpAsset.getLower());
-                tmpWeightsModel.setUpperLimit(tmpAsset.index(), tmpAsset.getUpper());
-            }
-
-            final Context tmpEvaluationContext = market.getEvaluationContext();
-            return new SimplePortfolio(tmpEvaluationContext, tmpWeightsModel).normalise();
-        }
-
-        public static SimpleAsset makeDefinitionAsset(final TargetPortfolio.Asset asset, final FinancialMarket market) {
-            return new SimpleAsset(market.toEquilibriumModel().toSimpleAssets().get(asset.index()), asset.getWeight());
-        }
-
-        public static SimplePortfolio makeDefinitionPortfolio(final List<? extends TargetPortfolio.Asset> assets, final FinancialMarket market) {
-
-            final BasicMatrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
-
-            final List<SimpleAsset> tmpAssets = new ArrayList<>();
-            for (final TargetPortfolio.Asset tmpAsset : assets) {
-                tmpAssets.add(tmpAsset.toDefinitionPortfolio());
-            }
-
-            return new SimplePortfolio(tmpCorrelations, tmpAssets);
-        }
-
-        public static FixedWeightsPortfolio makeEquilibriumModel(final TargetPortfolio targetPortfolio) {
-            return EquilibriumPortfolio.Logic.makeEquilibriumModel(targetPortfolio);
-        }
-
-        public static Color mixColours(final Collection<? extends TargetPortfolio.Asset> assets) {
-            return ModernAsset.Logic.mixColours(assets);
-        }
 
     }
 
@@ -168,6 +88,81 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
             return myRestricted;
         }
 
+    }
+
+    static FinancePortfolio makeComparableDefinitionPortfolio(final TargetPortfolio targetPortfolio, final FinancialMarket market) {
+
+        final SimplePortfolio tmpWeightsModel = targetPortfolio.toDefinitionPortfolio();
+
+        final Context tmpEvaluationContext = market.getEvaluationContext();
+        return new SimplePortfolio(tmpEvaluationContext, tmpWeightsModel).normalise();
+    }
+
+    static FinancePortfolio makeComparableEqulibriumPortfolio(final TargetPortfolio targetPortfolio, final FinancialMarket market) {
+
+        final Context tmpWeightsContext = market.getEquilibriumContext();
+        final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
+
+        final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
+        tmpWeightsModel.setRiskAversion(tmpRiskAversion);
+
+        final Context tmpEvaluationContext = market.getEvaluationContext();
+        return new SimplePortfolio(tmpEvaluationContext, tmpWeightsModel).normalise();
+    }
+
+    static FinancePortfolio makeComparableOpinionatedPortfolio(final TargetPortfolio targetPortfolio, final FinancialMarket market) {
+
+        final Context tmpWeightsContext = market.getOpinionatedContext();
+        final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
+
+        final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
+        tmpWeightsModel.setRiskAversion(tmpRiskAversion);
+
+        final Context tmpEvaluationContext = market.getEvaluationContext();
+        return new SimplePortfolio(tmpEvaluationContext, tmpWeightsModel).normalise();
+    }
+
+    static FinancePortfolio makeComparableRestrictedPortfolio(final TargetPortfolio targetPortfolio, final List<? extends Asset> assets,
+            final FinancialMarket market) {
+
+        final Context tmpWeightsContext = market.getOpinionatedContext();
+        final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
+
+        final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
+        tmpWeightsModel.setRiskAversion(tmpRiskAversion);
+
+        for (int i = 0; i < assets.size(); i++) {
+            final Asset tmpAsset = assets.get(i);
+            tmpWeightsModel.setLowerLimit(tmpAsset.index(), tmpAsset.getLower());
+            tmpWeightsModel.setUpperLimit(tmpAsset.index(), tmpAsset.getUpper());
+        }
+
+        final Context tmpEvaluationContext = market.getEvaluationContext();
+        return new SimplePortfolio(tmpEvaluationContext, tmpWeightsModel).normalise();
+    }
+
+    static SimpleAsset makeDefinitionAsset(final Asset asset, final FinancialMarket market) {
+        return new SimpleAsset(market.toEquilibriumModel().toSimpleAssets().get(asset.index()), asset.getWeight());
+    }
+
+    static SimplePortfolio makeDefinitionPortfolio(final List<? extends Asset> assets, final FinancialMarket market) {
+
+        final BasicMatrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
+
+        final List<SimpleAsset> tmpAssets = new ArrayList<>();
+        for (final Asset tmpAsset : assets) {
+            tmpAssets.add(tmpAsset.toDefinitionPortfolio());
+        }
+
+        return new SimplePortfolio(tmpCorrelations, tmpAssets);
+    }
+
+    static FixedWeightsPortfolio makeEquilibriumModel(final TargetPortfolio targetPortfolio) {
+        return EquilibriumPortfolio.makeEquilibriumModel(targetPortfolio);
+    }
+
+    static Color mixColours(final Collection<? extends Asset> assets) {
+        return ModernAsset.mixColours(assets);
     }
 
 }

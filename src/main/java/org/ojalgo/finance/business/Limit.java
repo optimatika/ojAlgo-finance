@@ -23,7 +23,7 @@ package org.ojalgo.finance.business;
 
 import java.math.BigDecimal;
 
-import biz.ojalgo.BusinessObject;
+import org.ojalgo.business.BusinessObject;
 
 /**
  * Lower &lt;= Target &lt;= Upper and Target ± Precision
@@ -32,28 +32,24 @@ import biz.ojalgo.BusinessObject;
  */
 public interface Limit extends BusinessObject, LowerAndUpperLimit {
 
-    abstract class Logic {
+    static BigDecimal getMaxAllowed(final Limit aLimit) {
+        return aLimit.getTarget().add(aLimit.getPrecision());
+    }
 
-        public static BigDecimal getMaxAllowed(final Limit aLimit) {
-            return aLimit.getTarget().add(aLimit.getPrecision());
-        }
+    static BigDecimal getMinAllowed(final Limit aLimit) {
+        return aLimit.getTarget().subtract(aLimit.getPrecision());
+    }
 
-        public static BigDecimal getMinAllowed(final Limit aLimit) {
-            return aLimit.getTarget().subtract(aLimit.getPrecision());
-        }
+    static BigDecimal getTargetValue(final Limit aLimit) {
+        return aLimit.getProfile().getAggregatedAmount().multiply(aLimit.getTarget());
+    }
 
-        public static BigDecimal getTargetValue(final Limit aLimit) {
-            return aLimit.getProfile().getAggregatedAmount().multiply(aLimit.getTarget());
-        }
+    static boolean isWithinTargetPrecision(final Limit aLimit, final BigDecimal aValue) {
+        return (aValue.compareTo(Limit.getMinAllowed(aLimit)) != -1) && (aValue.compareTo(Limit.getMaxAllowed(aLimit)) != 1);
+    }
 
-        public static boolean isWithinTargetPrecision(final Limit aLimit, final BigDecimal aValue) {
-            return (aValue.compareTo(Logic.getMinAllowed(aLimit)) != -1) && (aValue.compareTo(Logic.getMaxAllowed(aLimit)) != 1);
-        }
-
-        public static String toDisplayString(final Limit aLimit) {
-            return aLimit.getInstrumentCategory().getName() + "@" + aLimit.getProfile().getProfileGroup().getName();
-        }
-
+    static String toDisplayString(final Limit aLimit) {
+        return aLimit.getInstrumentCategory().getName() + "@" + aLimit.getProfile().getProfileGroup().getName();
     }
 
     InstrumentCategory getInstrumentCategory();

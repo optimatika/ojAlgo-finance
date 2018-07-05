@@ -24,29 +24,24 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
-
-import biz.ojalgo.BusinessObject;
 
 public interface PortfolioOwner extends BusinessObject {
 
-    abstract class Logic {
+    static BigDecimal getCurrentValue(final PortfolioOwner anOwner) {
 
-        public static BigDecimal getCurrentValue(final PortfolioOwner anOwner) {
+        BigDecimal retVal = BigMath.ZERO;
 
-            BigDecimal retVal = BigMath.ZERO;
-
-            for (final Portfolio tmpPortfolio : anOwner.getPortfolios()) {
-                retVal = retVal.add(tmpPortfolio.getAggregatedAmount());
-            }
-
-            return retVal;
+        for (final Portfolio tmpPortfolio : anOwner.getPortfolios()) {
+            retVal = retVal.add(tmpPortfolio.getAggregatedAmount());
         }
 
-        public static String toDisplayString(final PortfolioOwner anOwner) {
-            return anOwner.getName();
-        }
+        return retVal;
+    }
 
+    static String toDisplayString(final PortfolioOwner anOwner) {
+        return anOwner.getName();
     }
 
     BigDecimal getAggregatedAmount();

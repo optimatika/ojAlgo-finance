@@ -21,24 +21,19 @@
  */
 package org.ojalgo.finance.business;
 
+import org.ojalgo.business.BusinessObject;
 import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.keyvalue.ComparableToDouble;
 import org.ojalgo.type.keyvalue.KeyValue;
 
-import biz.ojalgo.BusinessObject;
-
 public interface Quote extends BusinessObject {
 
-    abstract class Logic {
+    static KeyValue<CalendarDate, Double> getDateQuotePair(final Quote aQuote) {
+        return new ComparableToDouble<>(aQuote.getQuoteDate(), aQuote.getQuoteValue());
+    }
 
-        public static final KeyValue<CalendarDate, Double> getDateQuotePair(final Quote aQuote) {
-            return new ComparableToDouble<>(aQuote.getQuoteDate(), aQuote.getQuoteValue());
-        }
-
-        public static String toDisplayString(final Quote aQuote) {
-            return aQuote.getQuoteDate() + "=" + aQuote.getQuoteValue();
-        }
-
+    static String toDisplayString(final Quote aQuote) {
+        return aQuote.getQuoteDate() + "=" + aQuote.getQuoteValue();
     }
 
     CalendarDate getQuoteDate();

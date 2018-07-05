@@ -21,16 +21,8 @@
  */
 package org.ojalgo.finance.business;
 
-import biz.ojalgo.BusinessObject;
+import org.ojalgo.business.BusinessObject;
 
 public interface Composition extends BusinessObject {
-
-    abstract class Logic {
-
-        public static String toDisplayString() {
-            return "";
-        }
-
-    }
 
 }
