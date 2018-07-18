@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.ojalgo.business.BusinessObject;
 import org.ojalgo.finance.portfolio.FinancePortfolio;
 import org.ojalgo.finance.portfolio.FinancePortfolio.Context;
 import org.ojalgo.finance.portfolio.FixedWeightsPortfolio;
@@ -34,6 +33,7 @@ import org.ojalgo.finance.portfolio.MarkowitzModel;
 import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
 import org.ojalgo.matrix.BasicMatrix;
+import org.ojalgo.type.BusinessObject;
 
 /**
  * @author apete

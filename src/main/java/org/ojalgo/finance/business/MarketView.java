@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.ojalgo.array.Array1D;
-import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.finance.portfolio.BlackLittermanModel;
@@ -40,6 +39,7 @@ import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.scalar.PrimitiveScalar;
 import org.ojalgo.scalar.Scalar;
+import org.ojalgo.type.BusinessObject;
 
 /**
  * A market view is a an investor/analyst opinion or a computer/system/model forecast in the form of portfolio

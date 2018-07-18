@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.ojalgo.business.BusinessObject;
 import org.ojalgo.function.BigFunction;
+import org.ojalgo.type.BusinessObject;
 
 /**
  * A (financial) {@linkplain Portfolio} is anything that can contain any kind of (financial)

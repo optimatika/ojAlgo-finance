@@ -22,22 +22,13 @@
 package org.ojalgo.finance.business;
 
 import org.ojalgo.type.BusinessObject;
-import org.ojalgo.type.CalendarDate;
-import org.ojalgo.type.keyvalue.ComparableToDouble;
-import org.ojalgo.type.keyvalue.KeyValue;
 
-public interface Quote extends BusinessObject {
+public interface Client extends BusinessObject {
 
-    static KeyValue<CalendarDate, Double> getDateQuotePair(final Quote aQuote) {
-        return new ComparableToDouble<>(aQuote.getQuoteDate(), aQuote.getQuoteValue());
+    static String toDisplayString(final Client client) {
+        return client.getName();
     }
 
-    static String toDisplayString(final Quote aQuote) {
-        return aQuote.getQuoteDate() + "=" + aQuote.getQuoteValue();
-    }
-
-    CalendarDate getQuoteDate();
-
-    double getQuoteValue();
+    String getName();
 
 }

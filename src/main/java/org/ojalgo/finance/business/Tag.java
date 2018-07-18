@@ -21,7 +21,7 @@
  */
 package org.ojalgo.finance.business;
 
-import org.ojalgo.business.BusinessObject;
+import org.ojalgo.type.BusinessObject;
 
 public interface Tag extends BusinessObject {
 

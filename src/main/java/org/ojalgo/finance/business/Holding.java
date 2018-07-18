@@ -27,9 +27,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
+import org.ojalgo.type.BusinessObject;
 
 /**
  * @author apete

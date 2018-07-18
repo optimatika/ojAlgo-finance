@@ -24,9 +24,9 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
+import org.ojalgo.type.BusinessObject;
 
 public interface Change extends BusinessObject, QuantityPriceAmountStructure {
 

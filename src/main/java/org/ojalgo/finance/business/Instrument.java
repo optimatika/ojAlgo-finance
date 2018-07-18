@@ -24,7 +24,7 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.ojalgo.business.BusinessObject;
+import org.ojalgo.type.BusinessObject;
 
 /**
  * An {@linkplain Instrument} is anything that can be put in some kind of {@linkplain Portfolio}.

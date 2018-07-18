@@ -21,23 +21,38 @@
  */
 package org.ojalgo.finance.business;
 
-import org.ojalgo.type.BusinessObject;
-import org.ojalgo.type.CalendarDate;
-import org.ojalgo.type.keyvalue.ComparableToDouble;
-import org.ojalgo.type.keyvalue.KeyValue;
+import org.ojalgo.constant.PrimitiveMath;
 
-public interface Quote extends BusinessObject {
+public enum AccessLevel {
 
-    static KeyValue<CalendarDate, Double> getDateQuotePair(final Quote aQuote) {
-        return new ComparableToDouble<>(aQuote.getQuoteDate(), aQuote.getQuoteValue());
+    ADMIN(9), MINIMAL(1), NONE(0), NORMAL(3), RESTRICTED(2), SUPER(6);
+
+    public static AccessLevel valueOf(final Number value) {
+
+        final int tmpIntValue = (int) Math.log10(value.doubleValue());
+
+        if (tmpIntValue >= 9) {
+            return ADMIN;
+        } else if (tmpIntValue >= 6) {
+            return SUPER;
+        } else if (tmpIntValue >= 3) {
+            return NORMAL;
+        } else if (tmpIntValue >= 2) {
+            return RESTRICTED;
+        } else if (tmpIntValue >= 1) {
+            return MINIMAL;
+        } else {
+            return NONE;
+        }
     }
 
-    static String toDisplayString(final Quote aQuote) {
-        return aQuote.getQuoteDate() + "=" + aQuote.getQuoteValue();
+    private final int myIntValue;
+
+    private AccessLevel(final int levelExp) {
+        myIntValue = (int) Math.pow(PrimitiveMath.TEN, levelExp);
     }
 
-    CalendarDate getQuoteDate();
-
-    double getQuoteValue();
-
+    public int intValue() {
+        return myIntValue;
+    }
 }

@@ -25,12 +25,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.ojalgo.business.BusinessObject;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.series.CoordinationSet;
+import org.ojalgo.type.BusinessObject;
 import org.ojalgo.type.CalendarDateUnit;
 import org.ojalgo.type.ColourData;
 

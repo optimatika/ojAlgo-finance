@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ojalgo.business.BusinessObject;
+import org.ojalgo.type.BusinessObject;
 
 public interface WorkSet extends BusinessObject {
 
