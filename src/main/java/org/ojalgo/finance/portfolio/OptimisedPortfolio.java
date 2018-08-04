@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.Builder;
+import org.ojalgo.matrix.BasicMatrix.PhysicalBuilder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.optimisation.Expression;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
@@ -157,7 +157,7 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
         final boolean tmpFeasible = optimisationResult.getState().isFeasible();
         final boolean tmpShortingAllowed = this.isShortingAllowed();
 
-        final Builder<PrimitiveMatrix> tmpMtrxBuilder = MATRIX_FACTORY.getBuilder(tmpLength);
+        final PhysicalBuilder<Double, PrimitiveMatrix> tmpMtrxBuilder = MATRIX_FACTORY.getBuilder(tmpLength);
 
         BigDecimal tmpValue;
         for (int i = 0; i < tmpLength; i++) {

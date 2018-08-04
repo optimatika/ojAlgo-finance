@@ -39,7 +39,7 @@ import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.function.aggregator.AggregatorFunction;
 import org.ojalgo.function.aggregator.PrimitiveAggregator;
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.Builder;
+import org.ojalgo.matrix.BasicMatrix.PhysicalBuilder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.decomposition.Eigenvalue;
 import org.ojalgo.matrix.store.MatrixStore;
@@ -146,7 +146,7 @@ public abstract class FinanceUtils {
 
         final int tmpSize = timeSeriesCollection.size();
 
-        final Builder<PrimitiveMatrix> retValStore = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+        final PhysicalBuilder<Double, PrimitiveMatrix> retValStore = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
 
         final double tmpToYearFactor = (double) CalendarDateUnit.YEAR.size() / (double) tmpCoordinator.getResolution().size();
 
@@ -186,7 +186,7 @@ public abstract class FinanceUtils {
 
         final CoordinationSet<N> tmpCoordinated = tmpUncoordinated.prune(tmpDataResolution);
 
-        final Builder<PrimitiveMatrix> tmpMatrixBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+        final PhysicalBuilder<Double, PrimitiveMatrix> tmpMatrixBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
 
         final double tmpToYearFactor = (double) CalendarDateUnit.YEAR.size() / (double) tmpDataResolution.size();
 
@@ -389,7 +389,7 @@ public abstract class FinanceUtils {
             tmpCovariances = tmpLeft.multiply(tmpMiddle).multiply(tmpRight);
         }
 
-        final Builder<PrimitiveMatrix> retVal = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+        final PhysicalBuilder<Double, PrimitiveMatrix> retVal = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
 
         final double[] tmpVolatilities = new double[tmpSize];
         for (int ij = 0; ij < tmpSize; ij++) {
@@ -418,7 +418,7 @@ public abstract class FinanceUtils {
 
         final int tmpSize = (int) volatilities.count();
 
-        final Builder<PrimitiveMatrix> retVal = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+        final PhysicalBuilder<Double, PrimitiveMatrix> retVal = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
 
         for (int j = 0; j < tmpSize; j++) {
             final double tmpColumnVolatility = volatilities.doubleValue(j);
@@ -471,7 +471,7 @@ public abstract class FinanceUtils {
 
         final int tmpSize = (int) Math.min(covariances.countRows(), covariances.countColumns());
 
-        final Builder<PrimitiveMatrix> retVal = PrimitiveMatrix.FACTORY.getBuilder(tmpSize);
+        final PhysicalBuilder<Double, PrimitiveMatrix> retVal = PrimitiveMatrix.FACTORY.getBuilder(tmpSize);
 
         if (clean) {
 

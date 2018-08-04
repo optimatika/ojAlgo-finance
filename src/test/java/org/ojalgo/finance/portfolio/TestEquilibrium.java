@@ -31,7 +31,7 @@ import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.function.UnaryFunction;
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.Builder;
+import org.ojalgo.matrix.BasicMatrix.PhysicalBuilder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.store.PhysicalStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
@@ -73,7 +73,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
 
         final MarketEquilibrium marketEquilibrium = new MarketEquilibrium(covariances, riskAversion);
 
-        final Builder<PrimitiveMatrix> expectedExcessReturns1 = PrimitiveMatrix.FACTORY.getBuilder(assetNum, 1);
+        final PhysicalBuilder<Double, PrimitiveMatrix> expectedExcessReturns1 = PrimitiveMatrix.FACTORY.getBuilder(assetNum, 1);
         expectedExcessReturns1.set(0, 0, 0.03360872);
         expectedExcessReturns1.set(1, 0, 0.027322319);
         expectedExcessReturns1.set(2, 0, 0.027668137);
@@ -125,7 +125,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
         final int row = returns.length;
         final int col = returns[0].length;
 
-        final Builder<PrimitiveMatrix> covariances = PrimitiveMatrix.FACTORY.getBuilder(row, col);
+        final PhysicalBuilder<Double, PrimitiveMatrix> covariances = PrimitiveMatrix.FACTORY.getBuilder(row, col);
 
         for (int i = 1; i <= row; i++) {
             for (int j = i; j <= col; j++) {

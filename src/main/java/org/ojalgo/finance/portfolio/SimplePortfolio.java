@@ -30,7 +30,7 @@ import org.ojalgo.finance.portfolio.FinancePortfolio.Context;
 import org.ojalgo.finance.portfolio.simulator.PortfolioSimulator;
 import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.Builder;
+import org.ojalgo.matrix.BasicMatrix.PhysicalBuilder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.process.GeometricBrownianMotion;
 
@@ -136,7 +136,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
             final int tmpSize = myComponents.size();
 
-            final Builder<PrimitiveMatrix> tmpReturns = MATRIX_FACTORY.getBuilder(tmpSize, 1);
+            final PhysicalBuilder<Double, PrimitiveMatrix> tmpReturns = MATRIX_FACTORY.getBuilder(tmpSize, 1);
 
             for (int i = 0; i < tmpSize; i++) {
                 tmpReturns.set(i, 0, this.getMeanReturn(i));
@@ -154,7 +154,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
             final int tmpSize = myComponents.size();
 
-            final Builder<PrimitiveMatrix> tmpVolatilities = MATRIX_FACTORY.getBuilder(tmpSize, 1);
+            final PhysicalBuilder<Double, PrimitiveMatrix> tmpVolatilities = MATRIX_FACTORY.getBuilder(tmpSize, 1);
 
             for (int i = 0; i < tmpSize; i++) {
                 tmpVolatilities.set(i, 0, this.getVolatility(i));
@@ -199,7 +199,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
             final int tmpSize = myComponents.size();
 
-            final Builder<PrimitiveMatrix> tmpCovaris = MATRIX_FACTORY.getBuilder(tmpSize, tmpSize);
+            final PhysicalBuilder<Double, PrimitiveMatrix> tmpCovaris = MATRIX_FACTORY.getBuilder(tmpSize, tmpSize);
 
             for (int j = 0; j < tmpSize; j++) {
                 for (int i = 0; i < tmpSize; i++) {
@@ -308,7 +308,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
             final int tmpSize = myComponents.size();
 
-            final Builder<PrimitiveMatrix> tmpWeights = MATRIX_FACTORY.getBuilder(tmpSize, 1);
+            final PhysicalBuilder<Double, PrimitiveMatrix> tmpWeights = MATRIX_FACTORY.getBuilder(tmpSize, 1);
 
             for (int i = 0; i < tmpSize; i++) {
                 tmpWeights.set(i, 0, this.getWeight(i));

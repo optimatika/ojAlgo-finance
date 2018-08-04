@@ -30,7 +30,7 @@ import org.ojalgo.constant.BigMath;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.Builder;
+import org.ojalgo.matrix.BasicMatrix.PhysicalBuilder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.scalar.BigScalar;
 import org.ojalgo.scalar.Scalar;
@@ -259,7 +259,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
         final int tmpRowDim = myViews.size();
         final int tmpColDim = (int) myOriginalWeights.count();
 
-        final Builder<PrimitiveMatrix> retVal = MATRIX_FACTORY.getBuilder(tmpRowDim, tmpColDim);
+        final PhysicalBuilder<Double, PrimitiveMatrix> retVal = MATRIX_FACTORY.getBuilder(tmpRowDim, tmpColDim);
 
         FinancePortfolio tmpView;
         List<BigDecimal> tmpWeights;
@@ -285,7 +285,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
         final int tmpRowDim = myViews.size();
         final int tmpColDim = 1;
 
-        final Builder<PrimitiveMatrix> retVal = MATRIX_FACTORY.getBuilder(tmpRowDim, tmpColDim);
+        final PhysicalBuilder<Double, PrimitiveMatrix> retVal = MATRIX_FACTORY.getBuilder(tmpRowDim, tmpColDim);
 
         double tmpRet;
         final double tmpRAF = this.getRiskAversion().doubleValue();
@@ -311,7 +311,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
 
         final int tmpDim = myViews.size();
 
-        final Builder<PrimitiveMatrix> retVal = MATRIX_FACTORY.getBuilder(tmpDim, tmpDim);
+        final PhysicalBuilder<Double, PrimitiveMatrix> retVal = MATRIX_FACTORY.getBuilder(tmpDim, tmpDim);
 
         if (myConfidence.compareTo(BigMath.ONE) == 0) {
 
