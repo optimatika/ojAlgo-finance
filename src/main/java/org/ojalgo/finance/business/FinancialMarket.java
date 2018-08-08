@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.ojalgo.access.Access1D;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.finance.FinanceUtils;
@@ -48,6 +47,7 @@ import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.series.CoordinationSet;
 import org.ojalgo.series.primitive.PrimitiveSeries;
+import org.ojalgo.structure.Access1D;
 import org.ojalgo.type.BusinessObject;
 import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;

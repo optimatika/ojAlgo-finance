@@ -26,7 +26,6 @@ import static org.ojalgo.constant.BigMath.*;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-import org.ojalgo.access.Access1D;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.matrix.BasicMatrix;
@@ -34,6 +33,7 @@ import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
 import org.ojalgo.optimisation.Optimisation;
 import org.ojalgo.scalar.Scalar;
+import org.ojalgo.structure.Access1D;
 import org.ojalgo.type.context.NumberContext;
 
 /**

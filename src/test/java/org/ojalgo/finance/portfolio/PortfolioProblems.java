@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
-import org.ojalgo.access.Access1D;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
 import org.ojalgo.matrix.BasicMatrix;
@@ -42,6 +41,7 @@ import org.ojalgo.optimisation.Optimisation;
 import org.ojalgo.optimisation.Optimisation.State;
 import org.ojalgo.optimisation.convex.ConvexSolver;
 import org.ojalgo.scalar.RationalNumber;
+import org.ojalgo.structure.Access1D;
 import org.ojalgo.type.StandardType;
 import org.ojalgo.type.context.NumberContext;
 

@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ojalgo.access.Access2D;
 import org.ojalgo.finance.portfolio.FinancePortfolio.Context;
 import org.ojalgo.finance.portfolio.simulator.PortfolioSimulator;
 import org.ojalgo.function.PrimitiveFunction;
@@ -33,6 +32,7 @@ import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.BasicMatrix.PhysicalBuilder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.process.GeometricBrownianMotion;
+import org.ojalgo.structure.Access2D;
 
 public final class SimplePortfolio extends FinancePortfolio implements Context {
 

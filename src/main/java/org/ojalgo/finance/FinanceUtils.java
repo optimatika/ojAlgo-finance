@@ -31,8 +31,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.ojalgo.access.Access1D;
-import org.ojalgo.access.Access2D;
 import org.ojalgo.array.Array1D;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
@@ -52,6 +50,8 @@ import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.series.CoordinationSet;
 import org.ojalgo.series.primitive.PrimitiveSeries;
+import org.ojalgo.structure.Access1D;
+import org.ojalgo.structure.Access2D;
 import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
 
