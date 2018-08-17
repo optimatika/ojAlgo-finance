@@ -1,17 +1,17 @@
 package org.ojalgo.finance.data;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
 import org.ojalgo.RecoverableCondition;
 import org.ojalgo.netio.ASCII;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.netio.ResourceLocator;
 import org.ojalgo.type.CalendarDateUnit;
 import org.ojalgo.type.context.GenericContext;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
 
 /**
  * SymbolDataTest

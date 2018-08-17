@@ -21,6 +21,8 @@
  */
 package org.ojalgo.finance.data;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.constant.PrimitiveMath;
@@ -31,8 +33,6 @@ import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.series.primitive.PrimitiveSeries;
 import org.ojalgo.type.CalendarDateUnit;
-
-import java.util.List;
 
 /**
  * SymbolDataTest
