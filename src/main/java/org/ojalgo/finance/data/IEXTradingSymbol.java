@@ -57,23 +57,22 @@ public class IEXTradingSymbol extends DataSource<IEXTradingSymbol.Data> {
     private static final String FORMAT = "csv";
     private static final String FORMAT_PARM = "format";
 
-
-
     //parser
     private static final GenericContext<Date> DATE_FORMAT = new GenericContext<>(new SimpleDateFormat("dd-MM-yy", Locale.US));
     private static final String HEADER = "date";
     private boolean headerCheck = true;
 
-    public IEXTradingSymbol (final String symbol){this(symbol, CalendarDateUnit.DAY); }
+    public IEXTradingSymbol(final String symbol) {
+        this(symbol, CalendarDateUnit.DAY);
+    }
 
     /**
-     *
      * Maximum of 5 years data
      *
      * @param symbol Symbol of stock
      * @param resolution This will always be by day
      */
-    public IEXTradingSymbol (final String symbol, final CalendarDateUnit resolution) {
+    public IEXTradingSymbol(final String symbol, final CalendarDateUnit resolution) {
         super(IEX_TRADING_COM, symbol, resolution);
 
         final ResourceLocator tmpResourceLocator = this.getResourceLocator();
@@ -88,7 +87,7 @@ public class IEXTradingSymbol extends DataSource<IEXTradingSymbol.Data> {
     @Override
     public IEXTradingSymbol.Data parse(String line) throws RecoverableCondition {
 
-        if(headerCheck && line.startsWith(HEADER)){
+        if (headerCheck && line.startsWith(HEADER)) {
             headerCheck = false;
             return null;
         }

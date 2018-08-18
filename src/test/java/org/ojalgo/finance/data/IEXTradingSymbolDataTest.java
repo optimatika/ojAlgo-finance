@@ -55,7 +55,6 @@ public class IEXTradingSymbolDataTest extends FinanceDataTests {
         }
     }
 
-
     @Test
     public void testIEXTradingDailyAAPL() {
 
@@ -91,7 +90,7 @@ public class IEXTradingSymbolDataTest extends FinanceDataTests {
 
         TestUtils.assertEquals("Monthly Expected", tmpExpDistr.getExpected(), tmpActDistr.getExpected(), 1E-14 / PrimitiveMath.THREE);
         //TODO: Some rounding error
-//        TestUtils.assertEquals("Monthly Var", tmpExpDistr.getVariance(), tmpActDistr.getVariance(), 1E-14 / PrimitiveMath.THREE);
+        //        TestUtils.assertEquals("Monthly Var", tmpExpDistr.getVariance(), tmpActDistr.getVariance(), 1E-14 / PrimitiveMath.THREE);
         TestUtils.assertEquals("Monthly StdDev", tmpExpDistr.getStandardDeviation(), tmpActDistr.getStandardDeviation(), 1E-14 / PrimitiveMath.THREE);
     }
 

@@ -20,7 +20,6 @@ import org.ojalgo.type.context.GenericContext;
  */
 public class AlphaVantageSymbol extends DataSource<AlphaVantageSymbol.Data> {
 
-
     public static final class Data extends DatePrice {
 
         public double adjustedClose;
@@ -70,13 +69,11 @@ public class AlphaVantageSymbol extends DataSource<AlphaVantageSymbol.Data> {
 
     private boolean headerCheck = true;
 
-
     public AlphaVantageSymbol(final String symbol, final String apikey) {
         this(symbol, CalendarDateUnit.DAY, apikey);
     }
 
     public AlphaVantageSymbol(final String symbol, final CalendarDateUnit resolution, final String apiKey) {
-
 
         super(ALPHAVANTAGE_CO, symbol, resolution, apiKey);
 
@@ -86,15 +83,15 @@ public class AlphaVantageSymbol extends DataSource<AlphaVantageSymbol.Data> {
         tmpResourceLocator.path(QUERY_PATH);
 
         switch (resolution) {
-            case MONTH:
-                tmpResourceLocator.parameter(FUNCTION, TIME_SERIES_MONTHLY_ADJUSTED);
-                break;
-            case WEEK:
-                tmpResourceLocator.parameter(FUNCTION, TIME_SERIES_WEEKLY_ADJUSTED);
-                break;
-            default:
-                tmpResourceLocator.parameter(FUNCTION, TIME_SERIES_DAILY_ADJUSTED);
-                break;
+        case MONTH:
+            tmpResourceLocator.parameter(FUNCTION, TIME_SERIES_MONTHLY_ADJUSTED);
+            break;
+        case WEEK:
+            tmpResourceLocator.parameter(FUNCTION, TIME_SERIES_WEEKLY_ADJUSTED);
+            break;
+        default:
+            tmpResourceLocator.parameter(FUNCTION, TIME_SERIES_DAILY_ADJUSTED);
+            break;
         }
         tmpResourceLocator.parameter(SYMBOL, symbol);
         tmpResourceLocator.parameter(OUTPUT_SIZE, OUTPUT_SIZE_FULL);
@@ -105,7 +102,7 @@ public class AlphaVantageSymbol extends DataSource<AlphaVantageSymbol.Data> {
     @Override
     public AlphaVantageSymbol.Data parse(String line) throws RecoverableCondition {
 
-        if(headerCheck && line.startsWith(HEADER)){
+        if (headerCheck && line.startsWith(HEADER)) {
             headerCheck = false;
             return null;
         }
