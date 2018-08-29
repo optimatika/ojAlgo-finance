@@ -23,8 +23,6 @@ package org.ojalgo.finance.scalar;
 
 import org.ojalgo.scalar.ExactDecimal;
 import org.ojalgo.scalar.Scalar;
-import org.ojalgo.scalar.ExactDecimal.Descriptor;
-import org.ojalgo.scalar.Scalar.Factory;
 
 /**
  * (currency) amount as in "amount = price * quatity"
