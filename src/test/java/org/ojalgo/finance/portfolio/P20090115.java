@@ -47,12 +47,12 @@ class P20090115 {
         return sum / (n - 1);
     }
 
-    public BasicMatrix getCovariances(final double[][] returns) {
+    public PrimitiveMatrix getCovariances(final double[][] returns) {
 
         final int row = returns.length;
         final int col = returns[0].length;
 
-        final PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(row, col);
+        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(row, col);
 
         for (int i = 0; i < row; i++) {
             for (int j = i; j < col; j++) {
@@ -64,12 +64,12 @@ class P20090115 {
         return tmpBuilder.build();
     }
 
-    public BasicMatrix getExpectedExcessReturns(final double[][] returns) {
+    public PrimitiveMatrix getExpectedExcessReturns(final double[][] returns) {
 
         final int row = returns.length;
         final int col = returns[0].length;
 
-        final PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(row);
+        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(row);
 
         double riskFreeReturn = 0;
         for (int j = 0; j < col; j++) {

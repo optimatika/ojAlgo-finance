@@ -27,8 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.array.Array1D;
 import org.ojalgo.function.BigFunction;
-import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.RationalMatrix;
+import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.type.TypeUtils;
 import org.ojalgo.type.context.NumberContext;
 
@@ -59,7 +58,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
                 "Int Emerg Equity" };
     }
 
-    public static BasicMatrix getCAPMReturns() {
+    public static PrimitiveMatrix getCAPMReturns() {
 
         //double[][] tmpArr = new double[][] { { 0.0002 }, { 0.0018 }, { 0.0557 }, { 0.0339 }, { 0.0659 }, { 0.0316 }, { 0.0392 }, { 0.0560 } };
         final double[][] tmpArr = new double[][] { { 0.000202 }, { 0.001804 }, { 0.055754 }, { 0.033945 }, { 0.065950 }, { 0.031631 }, { 0.039204 },
@@ -68,7 +67,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.make(tmpArr);
     }
 
-    public static BasicMatrix getCAPMWeights() {
+    public static PrimitiveMatrix getCAPMWeights() {
 
         //double[][] tmpArr = new double[][] { { 0.2133 }, { 0.0519 }, { 0.1080 }, { 0.1082 }, { 0.0373 }, { -0.0049 }, { 0.1710 }, { 0.0214 } };
         final double[][] tmpArr = new double[][] { { 0.213842 }, { 0.051058 }, { 0.107461 }, { 0.107260 }, { 0.037030 }, { -0.004974 }, { 0.172613 },
@@ -77,7 +76,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.make(tmpArr);
     };
 
-    public static BasicMatrix getCovariances() {
+    public static PrimitiveMatrix getCovariances() {
 
         final double[][] tmpArr = new double[][] { { 0.001005, 0.001328, -0.000579, -0.000675, 0.000121, 0.000128, -0.000445, -0.000437 },
                 { 0.001328, 0.007277, -0.001307, -0.000610, -0.002237, -0.000989, 0.001442, -0.001535 },
@@ -91,7 +90,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.make(tmpArr);
     }
 
-    public static BasicMatrix getHistoricalReturns() {
+    public static PrimitiveMatrix getHistoricalReturns() {
 
         //double[][] tmpArr = new double[][] { { 0.0315 }, { 0.0175 }, { -0.0639 }, { -0.0286 }, { -0.0675 }, { -0.0054 }, { -0.0675 }, { -0.0526 } };
         final double[][] tmpArr = new double[][] { { 0.031500 }, { 0.017528 }, { -0.063973 }, { -0.028605 }, { -0.067555 }, { -0.005411 }, { -0.067549 },
@@ -100,7 +99,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.make(tmpArr);
     }
 
-    public static BasicMatrix getHistoricalWeights() {
+    public static PrimitiveMatrix getHistoricalWeights() {
 
         //double[][] tmpArr = new double[][] { { 11.4432 }, { -1.0459 }, { 0.5499 }, { -0.0529 }, { -0.6052 }, { 0.8147 }, { -1.0436 }, { 0.1459 } };
         final double[][] tmpArr = new double[][] { { 11.446735 }, { -1.048314 }, { 0.551087 }, { -0.054698 }, { -0.606396 }, { 0.815627 }, { -1.041846 },
@@ -109,14 +108,14 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.make(tmpArr);
     }
 
-    public static BasicMatrix getInvestorConfidencesMatrix() {
+    public static PrimitiveMatrix getInvestorConfidencesMatrix() {
 
         // The paper describes how the confidence matrix is calculated. We do
         // the same calculations instead of just copying the numbers.
 
-        final BasicMatrix tmpViews = BlackLittermanTest.getInvestorPortfoliosMatrix();
-        final BasicMatrix tmpCovar = BlackLittermanTest.getCovariances();
-        final BasicMatrix tmpMtrx = tmpViews.multiply(tmpCovar).multiply(tmpViews.transpose());
+        final PrimitiveMatrix tmpViews = BlackLittermanTest.getInvestorPortfoliosMatrix();
+        final PrimitiveMatrix tmpCovar = BlackLittermanTest.getCovariances();
+        final PrimitiveMatrix tmpMtrx = tmpViews.multiply(tmpCovar).multiply(tmpViews.transpose());
         final BigDecimal tmpWeightOnViews = BlackLittermanTest.getWeightOnViews();
 
         final double[][] tmpArr = new double[3][3];
@@ -128,7 +127,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.make(tmpArr);
     }
 
-    public static BasicMatrix getInvestorPortfoliosMatrix() {
+    public static PrimitiveMatrix getInvestorPortfoliosMatrix() {
 
         final double[][] tmpArr = new double[][] { { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }, { -1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
                 { 0.0, 0.0, 0.9, -0.9, 0.1, -0.1, 0.0, 0.0 } };
@@ -136,14 +135,14 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.make(tmpArr);
     }
 
-    public static BasicMatrix getInvestorReturnsMatrix() {
+    public static PrimitiveMatrix getInvestorReturnsMatrix() {
 
         final double[][] tmpArr = new double[][] { { 0.0525 }, { 0.0025 }, { 0.0200 } };
 
         return BlackLittermanTest.make(tmpArr);
     }
 
-    public static BasicMatrix getMarketReturns() {
+    public static PrimitiveMatrix getMarketReturns() {
 
         //double[][] tmpArr = new double[][] { { 0.0008 }, { 0.0067 }, { 0.0641 }, { 0.0408 }, { 0.0743 }, { 0.0370 }, { 0.0480 }, { 0.0660 } };
         final double[][] tmpArr = new double[][] { { 0.000815 }, { 0.006694 }, { 0.064171 }, { 0.040839 }, { 0.074352 }, { 0.037044 }, { 0.048039 },
@@ -152,7 +151,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.make(tmpArr);
     }
 
-    public static BasicMatrix getMarketWeights() {
+    public static PrimitiveMatrix getMarketWeights() {
 
         //double[][] tmpArr = new double[][] { { 0.1934 }, { 0.2613 }, { 0.1209 }, { 0.1209 }, { 0.0134 }, { 0.0134 }, { 0.2418 }, { 0.0349 } };
         final double[][] tmpArr = new double[][] { { 0.185692 }, { 0.263222 }, { 0.119554 }, { 0.121806 }, { 0.014606 }, { 0.012035 }, { 0.240974 },
@@ -161,7 +160,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.make(tmpArr);
     }
 
-    public static BasicMatrix getModifiedReturns() {
+    public static PrimitiveMatrix getModifiedReturns() {
 
         //double[][] tmpArr = new double[][] { { 0.0007 }, { 0.0050 }, { 0.0650 }, { 0.0432 }, { 0.0759 }, { 0.0394 }, { 0.0493 }, { 0.0684 } };
         final double[][] tmpArr = new double[][] { { 0.000684 }, { 0.004997 }, { 0.065031 }, { 0.043242 }, { 0.075933 }, { 0.039419 }, { 0.049355 },
@@ -170,7 +169,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.make(tmpArr);
     }
 
-    public static BasicMatrix getModifiedWeights() {
+    public static PrimitiveMatrix getModifiedWeights() {
 
         //double[][] tmpArr = new double[][] { { 0.2988 }, { 0.1559 }, { 0.0935 }, { 0.1482 }, { 0.0104 }, { 0.0165 }, { 0.2781 }, { 0.0349 } };
         final double[][] tmpArr = new double[][] { { 0.304440 }, { 0.155307 }, { 0.094349 }, { 0.147546 }, { 0.009930 }, { 0.017213 }, { 0.277067 },
@@ -183,7 +182,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.DEF_CNTXT.enforce(BigDecimal.valueOf(3.07));
     }
 
-    public static BasicMatrix getVarianceOfInvestorViewPortfolios() {
+    public static PrimitiveMatrix getVarianceOfInvestorViewPortfolios() {
 
         final double[][] tmpArr = new double[][] { { 0.02836 }, { 0.00563 }, { 0.03462 } };
 
@@ -194,8 +193,8 @@ public class BlackLittermanTest extends FinancePortfolioTests {
         return BlackLittermanTest.DEF_CNTXT.enforce(BigDecimal.valueOf(0.025));
     }
 
-    private static BasicMatrix make(final double[][] anArray) {
-        return RationalMatrix.FACTORY.rows(anArray).enforce(BlackLittermanTest.DEF_CNTXT);
+    private static PrimitiveMatrix make(final double[][] anArray) {
+        return PrimitiveMatrix.FACTORY.rows(anArray).enforce(BlackLittermanTest.DEF_CNTXT);
     }
 
     public BlackLittermanTest() {
@@ -207,14 +206,14 @@ public class BlackLittermanTest extends FinancePortfolioTests {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
 
-        final BasicMatrix tmpReturn = BlackLittermanTest.getCAPMReturns();
-        final BasicMatrix tmpWeight = BlackLittermanTest.getCAPMWeights();
+        final PrimitiveMatrix tmpReturn = BlackLittermanTest.getCAPMReturns();
+        final PrimitiveMatrix tmpWeight = BlackLittermanTest.getCAPMWeights();
 
         //System.out.println(tmpReturn.add(tmpME.calculateReturns(tmpWeight)).divide(BigMath.TWO).enforce(DEF_CNTXT).toString());
         //System.out.println(tmpWeight.add(tmpME.calculateWeights(tmpReturn)).divide(BigMath.TWO).enforce(DEF_CNTXT).toString());
 
-        BasicMatrix tmpExp = tmpReturn;
-        BasicMatrix tmpAct = tmpME.calculateAssetReturns(tmpWeight);
+        PrimitiveMatrix tmpExp = tmpReturn;
+        PrimitiveMatrix tmpAct = tmpME.calculateAssetReturns(tmpWeight);
 
         TestUtils.assertEquals(tmpExp, tmpAct, EVAL_CNTXT);
 
@@ -227,10 +226,10 @@ public class BlackLittermanTest extends FinancePortfolioTests {
     @Test
     public void testCovarianceData() {
 
-        final BasicMatrix tmpCovar = BlackLittermanTest.getCovariances();
+        final PrimitiveMatrix tmpCovar = BlackLittermanTest.getCovariances();
 
-        final BasicMatrix tmpExp = tmpCovar;
-        final BasicMatrix tmpAct = tmpCovar.transpose();
+        final PrimitiveMatrix tmpExp = tmpCovar;
+        final PrimitiveMatrix tmpAct = tmpCovar.transpose();
 
         TestUtils.assertEquals(tmpExp, tmpAct, DEF_CNTXT);
     }
@@ -240,14 +239,14 @@ public class BlackLittermanTest extends FinancePortfolioTests {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
 
-        final BasicMatrix tmpReturn = BlackLittermanTest.getHistoricalReturns();
-        final BasicMatrix tmpWeight = BlackLittermanTest.getHistoricalWeights();
+        final PrimitiveMatrix tmpReturn = BlackLittermanTest.getHistoricalReturns();
+        final PrimitiveMatrix tmpWeight = BlackLittermanTest.getHistoricalWeights();
 
         //System.out.println(tmpReturn.add(tmpME.calculateReturns(tmpWeight)).divide(BigMath.TWO).enforce(DEF_CNTXT).toString());
         //System.out.println(tmpWeight.add(tmpME.calculateWeights(tmpReturn)).divide(BigMath.TWO).enforce(DEF_CNTXT).toString());
 
-        BasicMatrix tmpExp = tmpReturn;
-        BasicMatrix tmpAct = tmpME.calculateAssetReturns(tmpWeight);
+        PrimitiveMatrix tmpExp = tmpReturn;
+        PrimitiveMatrix tmpAct = tmpME.calculateAssetReturns(tmpWeight);
 
         TestUtils.assertEquals(tmpExp, tmpAct, EVAL_CNTXT);
 
@@ -262,14 +261,14 @@ public class BlackLittermanTest extends FinancePortfolioTests {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
 
-        final BasicMatrix tmpReturn = BlackLittermanTest.getMarketReturns();
-        final BasicMatrix tmpWeight = BlackLittermanTest.getMarketWeights();
+        final PrimitiveMatrix tmpReturn = BlackLittermanTest.getMarketReturns();
+        final PrimitiveMatrix tmpWeight = BlackLittermanTest.getMarketWeights();
 
         //System.out.println(tmpReturn.add(tmpME.calculateReturns(tmpWeight)).divide(BigMath.TWO).enforce(DEF_CNTXT).toString());
         //System.out.println(tmpWeight.add(tmpME.calculateWeights(tmpReturn)).divide(BigMath.TWO).enforce(DEF_CNTXT).toString());
 
-        BasicMatrix tmpExp = tmpReturn;
-        BasicMatrix tmpAct = tmpME.calculateAssetReturns(tmpWeight);
+        PrimitiveMatrix tmpExp = tmpReturn;
+        PrimitiveMatrix tmpAct = tmpME.calculateAssetReturns(tmpWeight);
 
         TestUtils.assertEquals(tmpExp, tmpAct, EVAL_CNTXT);
 
@@ -284,14 +283,14 @@ public class BlackLittermanTest extends FinancePortfolioTests {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
 
-        final BasicMatrix tmpReturn = BlackLittermanTest.getModifiedReturns();
-        final BasicMatrix tmpWeight = BlackLittermanTest.getModifiedWeights();
+        final PrimitiveMatrix tmpReturn = BlackLittermanTest.getModifiedReturns();
+        final PrimitiveMatrix tmpWeight = BlackLittermanTest.getModifiedWeights();
 
         //System.out.println(tmpReturn.add(tmpME.calculateReturns(tmpWeight)).divide(BigMath.TWO).enforce(DEF_CNTXT).toString());
         //System.out.println(tmpWeight.add(tmpME.calculateWeights(tmpReturn)).divide(BigMath.TWO).enforce(DEF_CNTXT).toString());
 
-        BasicMatrix tmpExp = tmpReturn;
-        BasicMatrix tmpAct = tmpME.calculateAssetReturns(tmpWeight);
+        PrimitiveMatrix tmpExp = tmpReturn;
+        PrimitiveMatrix tmpAct = tmpME.calculateAssetReturns(tmpWeight);
 
         TestUtils.assertEquals(tmpExp, tmpAct, EVAL_CNTXT);
 
@@ -304,11 +303,11 @@ public class BlackLittermanTest extends FinancePortfolioTests {
     @Test
     public void testVarianceOfInvestorViewPortfolios() {
 
-        final BasicMatrix tmpViews = BlackLittermanTest.getInvestorPortfoliosMatrix();
-        final BasicMatrix tmpCovar = BlackLittermanTest.getCovariances();
+        final PrimitiveMatrix tmpViews = BlackLittermanTest.getInvestorPortfoliosMatrix();
+        final PrimitiveMatrix tmpCovar = BlackLittermanTest.getCovariances();
 
-        final BasicMatrix tmpExp = BlackLittermanTest.getVarianceOfInvestorViewPortfolios();
-        final BasicMatrix tmpAct = tmpViews.multiply(tmpCovar).multiply(tmpViews.transpose());
+        final PrimitiveMatrix tmpExp = BlackLittermanTest.getVarianceOfInvestorViewPortfolios();
+        final PrimitiveMatrix tmpAct = tmpViews.multiply(tmpCovar).multiply(tmpViews.transpose());
 
         for (int i = 0; i < tmpExp.countRows(); i++) {
             final int row = i;
@@ -322,15 +321,15 @@ public class BlackLittermanTest extends FinancePortfolioTests {
     public void testViewsWithDeferredConfidence() {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
-        final BasicMatrix tmpMarketWeights = BlackLittermanTest.getMarketWeights();
+        final PrimitiveMatrix tmpMarketWeights = BlackLittermanTest.getMarketWeights();
 
         final BlackLittermanModel tmpBLM = new BlackLittermanModel(tmpME, tmpMarketWeights);
 
         tmpBLM.setRiskAversion(BlackLittermanTest.getRiskAversionFactor());
         tmpBLM.setConfidence(BlackLittermanTest.getWeightOnViews());
 
-        final BasicMatrix tmpViewPortfolios = BlackLittermanTest.getInvestorPortfoliosMatrix();
-        final BasicMatrix tmpViewPortfolioReturns = BlackLittermanTest.getInvestorReturnsMatrix();
+        final PrimitiveMatrix tmpViewPortfolios = BlackLittermanTest.getInvestorPortfoliosMatrix();
+        final PrimitiveMatrix tmpViewPortfolioReturns = BlackLittermanTest.getInvestorReturnsMatrix();
 
         for (int i = 0; i < tmpViewPortfolios.countRows(); i++) {
             final int row = i;
@@ -345,16 +344,16 @@ public class BlackLittermanTest extends FinancePortfolioTests {
     public void testViewsWithStandardDeviation() {
 
         final MarketEquilibrium tmpME = this.makeMarketEquilibrium();
-        final BasicMatrix tmpMarketWeights = BlackLittermanTest.getMarketWeights();
+        final PrimitiveMatrix tmpMarketWeights = BlackLittermanTest.getMarketWeights();
 
         final BlackLittermanModel tmpBLM = new BlackLittermanModel(tmpME, tmpMarketWeights);
 
         tmpBLM.setRiskAversion(BlackLittermanTest.getRiskAversionFactor());
         tmpBLM.setConfidence(BlackLittermanTest.getWeightOnViews());
 
-        final BasicMatrix tmpViewPortfolios = BlackLittermanTest.getInvestorPortfoliosMatrix();
-        final BasicMatrix tmpViewPortfolioReturns = BlackLittermanTest.getInvestorReturnsMatrix();
-        final BasicMatrix tmpConfidenceMatrix = BlackLittermanTest.getInvestorConfidencesMatrix();
+        final PrimitiveMatrix tmpViewPortfolios = BlackLittermanTest.getInvestorPortfoliosMatrix();
+        final PrimitiveMatrix tmpViewPortfolioReturns = BlackLittermanTest.getInvestorReturnsMatrix();
+        final PrimitiveMatrix tmpConfidenceMatrix = BlackLittermanTest.getInvestorConfidencesMatrix();
 
         for (int i = 0; i < tmpConfidenceMatrix.countRows(); i++) {
             final int row = i;
@@ -370,8 +369,8 @@ public class BlackLittermanTest extends FinancePortfolioTests {
 
     private void testBLM(final BlackLittermanModel aBLM) {
 
-        BasicMatrix tmpExp;
-        BasicMatrix tmpAct;
+        PrimitiveMatrix tmpExp;
+        PrimitiveMatrix tmpAct;
 
         tmpExp = BlackLittermanTest.getInvestorPortfoliosMatrix();
         tmpAct = aBLM.getViewPortfolios();
@@ -419,7 +418,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
     protected MarketEquilibrium makeMarketEquilibrium() {
 
         final String[] tmpNames = BlackLittermanTest.getAssetNames();
-        final BasicMatrix tmpCovars = BlackLittermanTest.getCovariances();
+        final PrimitiveMatrix tmpCovars = BlackLittermanTest.getCovariances();
 
         final MarketEquilibrium retVal = new MarketEquilibrium(tmpNames, tmpCovars, BlackLittermanTest.getRiskAversionFactor());
 

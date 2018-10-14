@@ -40,7 +40,6 @@ import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
 import org.ojalgo.function.BigFunction;
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.PhysicalBuilder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.random.process.GeometricBrownianMotion;
@@ -220,11 +219,11 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
             tmpAssets.add(assets.get(i).toDefinitionPortfolio());
         }
 
-        BasicMatrix tmpCorrelations = null;
+        PrimitiveMatrix tmpCorrelations = null;
 
         if (market.isCorrelationsCorrected()) {
 
-            final PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
 
             SampleSet tmpRowSet;
             SampleSet tmpColSet;
@@ -244,7 +243,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
                 }
             }
 
-            final BasicMatrix tmpCovariances = tmpBuilder.build();
+            final PrimitiveMatrix tmpCovariances = tmpBuilder.build();
             //BasicLogger.logDebug("Org COVA", tmpCovariances);
 
             MarketEquilibrium tmpME = new MarketEquilibrium(tmpCovariances);
@@ -258,7 +257,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         } else {
 
-            final PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
 
             SampleSet tmpRowSet;
             SampleSet tmpColSet;
@@ -317,7 +316,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         final Map<String, ? extends Access1D<?>> tmpForecast = forecaster.forecast(market, assets);
 
-        final PhysicalBuilder<Double, PrimitiveMatrix> tmpReturnsMatrix = PrimitiveMatrix.FACTORY.getBuilder(assets.size());
+        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpReturnsMatrix = PrimitiveMatrix.FACTORY.getBuilder(assets.size());
 
         for (final Asset tmpAsset : assets) {
             final String tmpKey = tmpAsset.getAssetKey();

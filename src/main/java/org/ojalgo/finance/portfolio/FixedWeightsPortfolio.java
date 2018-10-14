@@ -24,11 +24,11 @@ package org.ojalgo.finance.portfolio;
 import java.util.List;
 
 import org.ojalgo.ProgrammingError;
-import org.ojalgo.matrix.BasicMatrix;
+import org.ojalgo.matrix.PrimitiveMatrix;
 
 public final class FixedWeightsPortfolio extends EquilibriumModel {
 
-    private final BasicMatrix myWeights;
+    private final PrimitiveMatrix myWeights;
 
     public FixedWeightsPortfolio(final Context aContext, final FinancePortfolio weightsPortfolio) {
 
@@ -37,7 +37,7 @@ public final class FixedWeightsPortfolio extends EquilibriumModel {
         myWeights = FinancePortfolio.MATRIX_FACTORY.columns(weightsPortfolio.getWeights());
     }
 
-    public FixedWeightsPortfolio(final MarketEquilibrium aMarketEquilibrium, final BasicMatrix assetWeightsInColumn) {
+    public FixedWeightsPortfolio(final MarketEquilibrium aMarketEquilibrium, final PrimitiveMatrix assetWeightsInColumn) {
 
         super(aMarketEquilibrium);
 
@@ -63,12 +63,12 @@ public final class FixedWeightsPortfolio extends EquilibriumModel {
     }
 
     @Override
-    protected BasicMatrix calculateAssetReturns() {
+    protected PrimitiveMatrix calculateAssetReturns() {
         return this.calculateAssetReturns(myWeights);
     }
 
     @Override
-    protected BasicMatrix calculateAssetWeights() {
+    protected PrimitiveMatrix calculateAssetWeights() {
         return myWeights;
     }
 

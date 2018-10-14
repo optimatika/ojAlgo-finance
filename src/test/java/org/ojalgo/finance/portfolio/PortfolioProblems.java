@@ -30,17 +30,14 @@ import org.ojalgo.TestUtils;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.PhysicalBuilder;
 import org.ojalgo.matrix.MatrixFactory;
 import org.ojalgo.matrix.PrimitiveMatrix;
-import org.ojalgo.matrix.RationalMatrix;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.optimisation.Optimisation;
 import org.ojalgo.optimisation.Optimisation.State;
 import org.ojalgo.optimisation.convex.ConvexSolver;
-import org.ojalgo.scalar.RationalNumber;
 import org.ojalgo.structure.Access1D;
 import org.ojalgo.type.StandardType;
 import org.ojalgo.type.context.NumberContext;
@@ -72,8 +69,8 @@ public class PortfolioProblems extends FinancePortfolioTests {
                         0.0 } };
 
         final P20090115 tm = new P20090115();
-        final BasicMatrix covariances = tm.getCovariances(assets_return);
-        final BasicMatrix expectedExcessReturns = tm.getExpectedExcessReturns(assets_return); // Why not negate?
+        final PrimitiveMatrix covariances = tm.getCovariances(assets_return);
+        final PrimitiveMatrix expectedExcessReturns = tm.getExpectedExcessReturns(assets_return); // Why not negate?
         final BigDecimal riskAversion = new BigDecimal(1.0);
 
         final MarketEquilibrium marketEquilibrium = new MarketEquilibrium(covariances, riskAversion);
@@ -101,7 +98,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
     @Test
     public void testP20110614() {
 
-        final PhysicalBuilder<Double, PrimitiveMatrix> tmpCovarsBuilder = PrimitiveMatrix.FACTORY.getBuilder(3, 3);
+        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpCovarsBuilder = PrimitiveMatrix.FACTORY.getBuilder(3, 3);
         tmpCovarsBuilder.set(0, 0, 0.04);
         tmpCovarsBuilder.set(0, 1, 0.01);
         tmpCovarsBuilder.set(0, 2, 0.02);
@@ -111,12 +108,12 @@ public class PortfolioProblems extends FinancePortfolioTests {
         tmpCovarsBuilder.set(2, 0, 0.02);
         tmpCovarsBuilder.set(2, 1, 0.01);
         tmpCovarsBuilder.set(2, 2, 0.16);
-        final BasicMatrix tmpCovars = tmpCovarsBuilder.build();
-        final PhysicalBuilder<Double, PrimitiveMatrix> tmpReturnsBuilder = PrimitiveMatrix.FACTORY.getBuilder(3, 1);
+        final PrimitiveMatrix tmpCovars = tmpCovarsBuilder.build();
+        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpReturnsBuilder = PrimitiveMatrix.FACTORY.getBuilder(3, 1);
         tmpReturnsBuilder.set(0, 0, 0.10);
         tmpReturnsBuilder.set(1, 0, 0.15);
         tmpReturnsBuilder.set(2, 0, 0.18);
-        final BasicMatrix tmpReturs = tmpReturnsBuilder.build();
+        final PrimitiveMatrix tmpReturs = tmpReturnsBuilder.build();
 
         final MarketEquilibrium tmpME = new MarketEquilibrium(tmpCovars);
 
@@ -153,7 +150,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
         ConvexSolver tmpSolver = tmpBuilder.build();
         // tmpSolver.options.debug(ConvexSolver.class);
         Optimisation.Result tmpResult = tmpSolver.solve();
-        // BasicMatrix tmpSolution = tmpResult.getSolution();
+        // PrimitiveMatrix tmpSolution = tmpResult.getSolution();
 
         TestUtils.assertEquals(tmpX, tmpResult, new NumberContext(7, 6));
 
@@ -197,7 +194,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
     @Test
     public void testP20130329() {
 
-        final BasicMatrix tmpCovariances = RationalMatrix.FACTORY.rows(new double[][] { { 0.00360000, 0.001800000000 }, { 0.001800000000, 0.00090000 } });
+        final PrimitiveMatrix tmpCovariances = PrimitiveMatrix.FACTORY.rows(new double[][] { { 0.00360000, 0.001800000000 }, { 0.001800000000, 0.00090000 } });
 
         //        final Eigenvalue<Double> tmpEvD = Eigenvalue.makePrimitive(true);
         //        tmpEvD.compute(tmpCovariances, true);
@@ -205,10 +202,10 @@ public class PortfolioProblems extends FinancePortfolioTests {
 
         final MarketEquilibrium tmpMarketEquilibrium = new MarketEquilibrium(tmpCovariances, BigMath.THOUSAND);
 
-        final PhysicalBuilder<RationalNumber, RationalMatrix> tmpExcessReturnsBuilder = RationalMatrix.FACTORY.getBuilder(2, 1);
+        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpExcessReturnsBuilder = PrimitiveMatrix.FACTORY.getBuilder(2, 1);
         tmpExcessReturnsBuilder.set(0, 0, 0.1400);
         tmpExcessReturnsBuilder.set(1, 0, 0.0800);
-        final BasicMatrix tmpExcessReturns = tmpExcessReturnsBuilder.build();
+        final PrimitiveMatrix tmpExcessReturns = tmpExcessReturnsBuilder.build();
 
         final MarkowitzModel tmpMarkowitzModel = new MarkowitzModel(tmpMarketEquilibrium, tmpExcessReturns);
         tmpMarkowitzModel.setLowerLimit(0, BigMath.ZERO);
@@ -274,8 +271,8 @@ public class PortfolioProblems extends FinancePortfolioTests {
                         0.0 } };
 
         final P20090115 tm = new P20090115();
-        final BasicMatrix tmpCovariances = tm.getCovariances(assets_return);
-        final BasicMatrix tmpExpectedExcessReturns = tm.getExpectedExcessReturns(assets_return).negate();
+        final PrimitiveMatrix tmpCovariances = tm.getCovariances(assets_return);
+        final PrimitiveMatrix tmpExpectedExcessReturns = tm.getExpectedExcessReturns(assets_return).negate();
 
         final MarketEquilibrium tmpME = new MarketEquilibrium(tmpCovariances).clean();
         final MarkowitzModel tmpMarkowitz = new MarkowitzModel(tmpME, tmpExpectedExcessReturns);
@@ -368,17 +365,17 @@ public class PortfolioProblems extends FinancePortfolioTests {
     @Test
     public void testP20170508() {
 
-        PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(2, 2);
+        BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(2, 2);
         tmpBuilder.add(0, 0, 0.040000);
         tmpBuilder.add(0, 1, 0.1000);
         tmpBuilder.add(1, 0, 0.1000);
         tmpBuilder.add(1, 1, 0.250000);
-        final BasicMatrix covariances = tmpBuilder.build();
+        final PrimitiveMatrix covariances = tmpBuilder.build();
 
         tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(2);
         tmpBuilder.add(0, 0.20000);
         tmpBuilder.add(1, 0.40000);
-        final BasicMatrix returns = tmpBuilder.build();
+        final PrimitiveMatrix returns = tmpBuilder.build();
 
         final MarketEquilibrium marketEq = new MarketEquilibrium(covariances);
         final MarkowitzModel markowitzModel = new MarkowitzModel(marketEq, returns);

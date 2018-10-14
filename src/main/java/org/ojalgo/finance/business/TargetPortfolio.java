@@ -32,7 +32,7 @@ import org.ojalgo.finance.portfolio.FixedWeightsPortfolio;
 import org.ojalgo.finance.portfolio.MarkowitzModel;
 import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
-import org.ojalgo.matrix.BasicMatrix;
+import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.type.BusinessObject;
 
 /**
@@ -147,7 +147,7 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
 
     static SimplePortfolio makeDefinitionPortfolio(final List<? extends Asset> assets, final FinancialMarket market) {
 
-        final BasicMatrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
+        final PrimitiveMatrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
 
         final List<SimpleAsset> tmpAssets = new ArrayList<>();
         for (final Asset tmpAsset : assets) {

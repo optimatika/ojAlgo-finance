@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.ojalgo.function.PrimitiveFunction;
-import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.MatrixFactory;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.RandomUtils;
@@ -49,13 +48,13 @@ public abstract class FinancePortfolio implements Comparable<FinancePortfolio> {
 
         double calculatePortfolioVariance(final FinancePortfolio weightsPortfolio);
 
-        BasicMatrix getAssetReturns();
+        PrimitiveMatrix getAssetReturns();
 
-        BasicMatrix getAssetVolatilities();
+        PrimitiveMatrix getAssetVolatilities();
 
-        BasicMatrix getCorrelations();
+        PrimitiveMatrix getCorrelations();
 
-        BasicMatrix getCovariances();
+        PrimitiveMatrix getCovariances();
 
         int size();
 
@@ -83,8 +82,8 @@ public abstract class FinancePortfolio implements Comparable<FinancePortfolio> {
 
     public final double getConformance(final FinancePortfolio reference) {
 
-        final BasicMatrix tmpMyWeights = MATRIX_FACTORY.columns(this.getWeights());
-        final BasicMatrix tmpRefWeights = MATRIX_FACTORY.columns(reference.getWeights());
+        final PrimitiveMatrix tmpMyWeights = MATRIX_FACTORY.columns(this.getWeights());
+        final PrimitiveMatrix tmpRefWeights = MATRIX_FACTORY.columns(reference.getWeights());
 
         final double tmpNumerator = tmpMyWeights.dot(tmpRefWeights);
         final double tmpDenom1 = PrimitiveFunction.SQRT.invoke(tmpMyWeights.dot(tmpMyWeights));
