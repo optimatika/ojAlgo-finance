@@ -135,7 +135,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
             final int tmpSize = myComponents.size();
 
-            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpReturns = MATRIX_FACTORY.getBuilder(tmpSize, 1);
+            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpReturns = MATRIX_FACTORY.makeDense(tmpSize, 1);
 
             for (int i = 0; i < tmpSize; i++) {
                 tmpReturns.set(i, 0, this.getMeanReturn(i));
@@ -153,7 +153,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
             final int tmpSize = myComponents.size();
 
-            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpVolatilities = MATRIX_FACTORY.getBuilder(tmpSize, 1);
+            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpVolatilities = MATRIX_FACTORY.makeDense(tmpSize, 1);
 
             for (int i = 0; i < tmpSize; i++) {
                 tmpVolatilities.set(i, 0, this.getVolatility(i));
@@ -198,7 +198,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
             final int tmpSize = myComponents.size();
 
-            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpCovaris = MATRIX_FACTORY.getBuilder(tmpSize, tmpSize);
+            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpCovaris = MATRIX_FACTORY.makeDense(tmpSize, tmpSize);
 
             for (int j = 0; j < tmpSize; j++) {
                 for (int i = 0; i < tmpSize; i++) {
@@ -307,7 +307,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
             final int tmpSize = myComponents.size();
 
-            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpWeights = MATRIX_FACTORY.getBuilder(tmpSize, 1);
+            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpWeights = MATRIX_FACTORY.makeDense(tmpSize, 1);
 
             for (int i = 0; i < tmpSize; i++) {
                 tmpWeights.set(i, 0, this.getWeight(i));

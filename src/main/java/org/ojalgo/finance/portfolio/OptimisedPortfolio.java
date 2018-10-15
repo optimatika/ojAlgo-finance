@@ -157,7 +157,7 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
         final boolean tmpFeasible = optimisationResult.getState().isFeasible();
         final boolean tmpShortingAllowed = this.isShortingAllowed();
 
-        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpMtrxBuilder = MATRIX_FACTORY.getBuilder(tmpLength);
+        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpMtrxBuilder = MATRIX_FACTORY.makeDense(tmpLength);
 
         BigDecimal tmpValue;
         for (int i = 0; i < tmpLength; i++) {

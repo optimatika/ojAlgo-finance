@@ -223,7 +223,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         if (market.isCorrelationsCorrected()) {
 
-            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
 
             SampleSet tmpRowSet;
             SampleSet tmpColSet;
@@ -257,7 +257,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         } else {
 
-            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+            final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
 
             SampleSet tmpRowSet;
             SampleSet tmpColSet;
@@ -316,7 +316,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         final Map<String, ? extends Access1D<?>> tmpForecast = forecaster.forecast(market, assets);
 
-        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpReturnsMatrix = PrimitiveMatrix.FACTORY.getBuilder(assets.size());
+        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpReturnsMatrix = PrimitiveMatrix.FACTORY.makeDense(assets.size());
 
         for (final Asset tmpAsset : assets) {
             final String tmpKey = tmpAsset.getAssetKey();
