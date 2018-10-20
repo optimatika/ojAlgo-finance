@@ -27,8 +27,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.PhysicalReceiver;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.optimisation.Expression;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
@@ -157,7 +155,7 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
         final boolean tmpFeasible = optimisationResult.getState().isFeasible();
         final boolean tmpShortingAllowed = this.isShortingAllowed();
 
-        final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> tmpMtrxBuilder = MATRIX_FACTORY.makeDense(tmpLength);
+        final PrimitiveMatrix.DenseReceiver tmpMtrxBuilder = MATRIX_FACTORY.makeDense(tmpLength);
 
         BigDecimal tmpValue;
         for (int i = 0; i < tmpLength; i++) {

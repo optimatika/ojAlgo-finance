@@ -39,7 +39,6 @@ import org.ojalgo.finance.portfolio.MarketEquilibrium;
 import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
 import org.ojalgo.function.BigFunction;
-import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.random.process.GeometricBrownianMotion;
@@ -223,7 +222,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         if (market.isCorrelationsCorrected()) {
 
-            final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
+            final PrimitiveMatrix.DenseReceiver tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
 
             SampleSet tmpRowSet;
             SampleSet tmpColSet;
@@ -257,7 +256,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         } else {
 
-            final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
+            final PrimitiveMatrix.DenseReceiver tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
 
             SampleSet tmpRowSet;
             SampleSet tmpColSet;
@@ -316,7 +315,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         final Map<String, ? extends Access1D<?>> tmpForecast = forecaster.forecast(market, assets);
 
-        final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> tmpReturnsMatrix = PrimitiveMatrix.FACTORY.makeDense(assets.size());
+        final PrimitiveMatrix.DenseReceiver tmpReturnsMatrix = PrimitiveMatrix.FACTORY.makeDense(assets.size());
 
         for (final Asset tmpAsset : assets) {
             final String tmpKey = tmpAsset.getAssetKey();

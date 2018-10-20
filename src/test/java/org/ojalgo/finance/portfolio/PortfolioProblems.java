@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
-import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
@@ -97,7 +96,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
     @Test
     public void testP20110614() {
 
-        final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> tmpCovarsBuilder = PrimitiveMatrix.FACTORY.makeDense(3, 3);
+        final PrimitiveMatrix.DenseReceiver tmpCovarsBuilder = PrimitiveMatrix.FACTORY.makeDense(3, 3);
         tmpCovarsBuilder.set(0, 0, 0.04);
         tmpCovarsBuilder.set(0, 1, 0.01);
         tmpCovarsBuilder.set(0, 2, 0.02);
@@ -108,7 +107,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
         tmpCovarsBuilder.set(2, 1, 0.01);
         tmpCovarsBuilder.set(2, 2, 0.16);
         final PrimitiveMatrix tmpCovars = tmpCovarsBuilder.build();
-        final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> tmpReturnsBuilder = PrimitiveMatrix.FACTORY.makeDense(3, 1);
+        final PrimitiveMatrix.DenseReceiver tmpReturnsBuilder = PrimitiveMatrix.FACTORY.makeDense(3, 1);
         tmpReturnsBuilder.set(0, 0, 0.10);
         tmpReturnsBuilder.set(1, 0, 0.15);
         tmpReturnsBuilder.set(2, 0, 0.18);
@@ -201,7 +200,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
 
         final MarketEquilibrium tmpMarketEquilibrium = new MarketEquilibrium(tmpCovariances, BigMath.THOUSAND);
 
-        final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> tmpExcessReturnsBuilder = PrimitiveMatrix.FACTORY.makeDense(2, 1);
+        final PrimitiveMatrix.DenseReceiver tmpExcessReturnsBuilder = PrimitiveMatrix.FACTORY.makeDense(2, 1);
         tmpExcessReturnsBuilder.set(0, 0, 0.1400);
         tmpExcessReturnsBuilder.set(1, 0, 0.0800);
         final PrimitiveMatrix tmpExcessReturns = tmpExcessReturnsBuilder.build();
@@ -364,7 +363,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
     @Test
     public void testP20170508() {
 
-        BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(2, 2);
+        PrimitiveMatrix.DenseReceiver tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(2, 2);
         tmpBuilder.add(0, 0, 0.040000);
         tmpBuilder.add(0, 1, 0.1000);
         tmpBuilder.add(1, 0, 0.1000);

@@ -29,7 +29,6 @@ import org.ojalgo.ProgrammingError;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
-import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.scalar.BigScalar;
 import org.ojalgo.scalar.Scalar;
@@ -258,7 +257,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
         final int tmpRowDim = myViews.size();
         final int tmpColDim = (int) myOriginalWeights.count();
 
-        final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> retVal = MATRIX_FACTORY.makeDense(tmpRowDim, tmpColDim);
+        final PrimitiveMatrix.DenseReceiver retVal = MATRIX_FACTORY.makeDense(tmpRowDim, tmpColDim);
 
         FinancePortfolio tmpView;
         List<BigDecimal> tmpWeights;
@@ -284,7 +283,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
         final int tmpRowDim = myViews.size();
         final int tmpColDim = 1;
 
-        final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> retVal = MATRIX_FACTORY.makeDense(tmpRowDim, tmpColDim);
+        final PrimitiveMatrix.DenseReceiver retVal = MATRIX_FACTORY.makeDense(tmpRowDim, tmpColDim);
 
         double tmpRet;
         final double tmpRAF = this.getRiskAversion().doubleValue();
@@ -310,7 +309,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
 
         final int tmpDim = myViews.size();
 
-        final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> retVal = MATRIX_FACTORY.makeDense(tmpDim, tmpDim);
+        final PrimitiveMatrix.DenseReceiver retVal = MATRIX_FACTORY.makeDense(tmpDim, tmpDim);
 
         if (myConfidence.compareTo(BigMath.ONE) == 0) {
 
