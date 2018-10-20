@@ -22,7 +22,7 @@
 package org.ojalgo.finance.portfolio;
 
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.PhysicalBuilder;
+import org.ojalgo.matrix.BasicMatrix.PhysicalReceiver;
 import org.ojalgo.matrix.PrimitiveMatrix;
 
 class P20090115 {
@@ -52,7 +52,7 @@ class P20090115 {
         final int row = returns.length;
         final int col = returns[0].length;
 
-        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(row, col);
+        final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(row, col);
 
         for (int i = 0; i < row; i++) {
             for (int j = i; j < col; j++) {
@@ -69,7 +69,7 @@ class P20090115 {
         final int row = returns.length;
         final int col = returns[0].length;
 
-        final BasicMatrix.PhysicalBuilder<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(row);
+        final BasicMatrix.PhysicalReceiver<Double, PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(row);
 
         double riskFreeReturn = 0;
         for (int j = 0; j < col; j++) {

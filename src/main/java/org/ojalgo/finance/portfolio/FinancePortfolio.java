@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.ojalgo.function.PrimitiveFunction;
-import org.ojalgo.matrix.MatrixFactory;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.RandomUtils;
 import org.ojalgo.random.process.GeometricBrownianMotion;
@@ -60,7 +59,7 @@ public abstract class FinancePortfolio implements Comparable<FinancePortfolio> {
 
     }
 
-    protected static final MatrixFactory<Double, PrimitiveMatrix> MATRIX_FACTORY = PrimitiveMatrix.FACTORY;
+    protected static final PrimitiveMatrix.Factory MATRIX_FACTORY = PrimitiveMatrix.FACTORY;
 
     protected FinancePortfolio() {
         super();
