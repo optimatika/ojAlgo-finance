@@ -12,8 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <ojalgo.version>47.0.0-SNAPSHOT</ojalgo.version>
-        <junit.jupiter.version>5.1.0</junit.jupiter.version>
-        <junit.platform.version>1.1.0</junit.platform.version>
+        <junit.jupiter.version>5.3.1</junit.jupiter.version>
     </properties>
     <organization>
         <name>Optimatika</name>
@@ -73,14 +72,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
             <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <!-- Only required to run tests in an IDE that bundles an older 
-                version -->
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>${junit.platform.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
