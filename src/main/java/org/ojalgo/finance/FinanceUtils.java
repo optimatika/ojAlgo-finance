@@ -121,7 +121,6 @@ public abstract class FinanceUtils {
     }
 
     /**
-     * @param timeSeriesCollection
      * @return Annualised covariances
      */
     public static <V extends Number> PrimitiveMatrix makeCovarianceMatrix(final Collection<CalendarDateSeries<V>> timeSeriesCollection) {
