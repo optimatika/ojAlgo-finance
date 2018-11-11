@@ -30,31 +30,31 @@ import org.ojalgo.type.StandardType;
 
 public interface QuantityPriceAmountStructure {
 
-    static BigDecimal getImpliedAmount(final QuantityPriceAmountStructure aQuantityPriceAmount) {
-        final BigDecimal tmpQuantity = aQuantityPriceAmount.getQuantity();
-        final BigDecimal tmpPrice = aQuantityPriceAmount.getPrice();
-        if ((tmpQuantity != null) && (tmpPrice != null)) {
-            return BigFunction.MULTIPLY.invoke(tmpQuantity, tmpPrice);
+    static BigDecimal getImpliedAmount(final QuantityPriceAmountStructure structure) {
+        final BigDecimal quantity = structure.getQuantity();
+        final BigDecimal price = structure.getPrice();
+        if ((quantity != null) && (price != null)) {
+            return BigFunction.MULTIPLY.invoke(quantity, price);
         } else {
             return BigMath.ZERO;
         }
     }
 
-    static BigDecimal getImpliedPrice(final QuantityPriceAmountStructure aQuantityPriceAmount) {
-        final BigDecimal tmpQuantity = aQuantityPriceAmount.getQuantity();
-        final BigDecimal tmpAmount = aQuantityPriceAmount.getAmount();
-        if ((tmpAmount != null) && (tmpQuantity != null) && (tmpQuantity.signum() != 0)) {
-            return BigFunction.DIVIDE.invoke(tmpAmount, tmpQuantity);
+    static BigDecimal getImpliedPrice(final QuantityPriceAmountStructure structure) {
+        final BigDecimal quantity = structure.getQuantity();
+        final BigDecimal amount = structure.getAmount();
+        if ((amount != null) && (quantity != null) && (quantity.signum() != 0)) {
+            return BigFunction.DIVIDE.invoke(amount, quantity);
         } else {
             return BigMath.ONE;
         }
     }
 
-    static BigDecimal getImpliedQuantity(final QuantityPriceAmountStructure aQuantityPriceAmount) {
-        final BigDecimal tmpPrice = aQuantityPriceAmount.getPrice();
-        final BigDecimal tmpAmount = aQuantityPriceAmount.getAmount();
-        if ((tmpAmount != null) && (tmpPrice != null) && (tmpPrice.signum() != 0)) {
-            return BigFunction.DIVIDE.invoke(tmpAmount, tmpPrice);
+    static BigDecimal getImpliedQuantity(final QuantityPriceAmountStructure structure) {
+        final BigDecimal price = structure.getPrice();
+        final BigDecimal amount = structure.getAmount();
+        if ((amount != null) && (price != null) && (price.signum() != 0)) {
+            return BigFunction.DIVIDE.invoke(amount, price);
         } else {
             return BigMath.ZERO;
         }
