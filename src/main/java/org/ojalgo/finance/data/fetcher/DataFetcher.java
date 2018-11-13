@@ -99,6 +99,10 @@ public abstract class DataFetcher {
         return true;
     }
 
+    public CalendarDateUnit getResolution() {
+        return myResolution;
+    }
+
     public Reader getStreamReader() {
         return this.getResourceLocator().getStreamReader();
     }

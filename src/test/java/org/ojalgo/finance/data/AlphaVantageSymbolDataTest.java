@@ -49,7 +49,7 @@ public class AlphaVantageSymbolDataTest extends FinanceDataTests {
     @Test
     public void testAlphaVantageDaily() {
 
-        final HistoricalDataSource tmpAlphavantage = HistoricalDataSource.newAlphaVantageSymbol("MSFT", CalendarDateUnit.DAY, "demo");
+        final DataSource tmpAlphavantage = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
         //The demo api key expects URL in the exact format, if the order of the parameters are changed it will not work
         TestUtils.assertEquals(tmpAlphavantage.getResourceLocator().parameters().get("function"), "TIME_SERIES_DAILY_ADJUSTED");
         TestUtils.assertEquals(tmpAlphavantage.getResourceLocator().parameters().get("symbol"), "MSFT");
@@ -65,7 +65,7 @@ public class AlphaVantageSymbolDataTest extends FinanceDataTests {
     @Test
     public void testAlphaVantageMonthly() {
 
-        final HistoricalDataSource tmpAlphavantage = HistoricalDataSource.newAlphaVantageSymbol("MSFT", CalendarDateUnit.MONTH, "demo");
+        final DataSource tmpAlphavantage = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.MONTH, "demo");
         //The demo api key expects URL in the exact format, if the order of the parameters are changed it will not work
         TestUtils.assertEquals(tmpAlphavantage.getResourceLocator().parameters().get("function"), "TIME_SERIES_MONTHLY_ADJUSTED");
         TestUtils.assertEquals(tmpAlphavantage.getResourceLocator().parameters().get("symbol"), "MSFT");
@@ -81,7 +81,7 @@ public class AlphaVantageSymbolDataTest extends FinanceDataTests {
     @Test
     public void testAlphaVantageWeekly() {
 
-        final HistoricalDataSource tmpAlphavantage = HistoricalDataSource.newAlphaVantageSymbol("MSFT", CalendarDateUnit.WEEK, "demo");
+        final DataSource tmpAlphavantage = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.WEEK, "demo");
         TestUtils.assertEquals(tmpAlphavantage.getResourceLocator().parameters().get("function"), "TIME_SERIES_WEEKLY_ADJUSTED");
         TestUtils.assertEquals(tmpAlphavantage.getResourceLocator().parameters().get("symbol"), "MSFT");
         TestUtils.assertEquals(tmpAlphavantage.getResourceLocator().parameters().get("apikey"), "demo");
@@ -97,7 +97,7 @@ public class AlphaVantageSymbolDataTest extends FinanceDataTests {
     @Test
     public void testAlphaVantageDailyMSFT() {
 
-        final HistoricalDataSource tmpAlphavantage = HistoricalDataSource.newAlphaVantageSymbol("MSFT", CalendarDateUnit.DAY, "demo");
+        final DataSource tmpAlphavantage = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
         tmpAlphavantage.getResourceLocator().parameters().clear();
         tmpAlphavantage.getResourceLocator().parameter("function", "TIME_SERIES_DAILY_ADJUSTED&symbol=MSFT&apikey=demo&datatype=csv");
 

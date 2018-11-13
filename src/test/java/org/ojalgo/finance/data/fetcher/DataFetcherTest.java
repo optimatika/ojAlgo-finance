@@ -26,7 +26,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.finance.data.DatePrice;
-import org.ojalgo.finance.data.HistoricalDataSource;
+import org.ojalgo.finance.data.DataSource;
 import org.ojalgo.type.CalendarDateUnit;
 
 public class DataFetcherTest {
@@ -34,7 +34,7 @@ public class DataFetcherTest {
     @Test
     public void testAlphaVantageDailyMSFT() {
 
-        final HistoricalDataSource dataSource = HistoricalDataSource.newAlphaVantageSymbol("MSFT", CalendarDateUnit.DAY, "demo");
+        final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
 
         final List<DatePrice> rows = dataSource.getHistoricalPrices();
 
@@ -48,7 +48,7 @@ public class DataFetcherTest {
     @Test
     public void testAlphaVantageMonthlyMSFT() {
 
-        final HistoricalDataSource dataSource = HistoricalDataSource.newAlphaVantageSymbol("MSFT", CalendarDateUnit.MONTH, "demo");
+        final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.MONTH, "demo");
 
         final List<DatePrice> rows = dataSource.getHistoricalPrices();
 
@@ -62,7 +62,7 @@ public class DataFetcherTest {
     @Test
     public void testAlphaVantageWeeklyMSFT() {
 
-        final HistoricalDataSource dataSource = HistoricalDataSource.newAlphaVantageSymbol("MSFT", CalendarDateUnit.WEEK, "demo");
+        final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.WEEK, "demo");
 
         final List<DatePrice> rows = dataSource.getHistoricalPrices();
 
@@ -76,7 +76,7 @@ public class DataFetcherTest {
     @Test
     public void testIEXTradingDailyMSFT() {
 
-        final HistoricalDataSource dataSource = HistoricalDataSource.newIEXTradingSymbol("MSFT", CalendarDateUnit.DAY);
+        final DataSource dataSource = DataSource.newIEXTrading("MSFT", CalendarDateUnit.DAY);
 
         final List<DatePrice> rows = dataSource.getHistoricalPrices();
 

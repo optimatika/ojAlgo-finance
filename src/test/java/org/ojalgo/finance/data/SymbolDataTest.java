@@ -57,10 +57,10 @@ public class SymbolDataTest extends FinanceDataTests {
         final String tmpYahooSymbol = "AAPL";
         final String tmpGoogleSymbol = "NASDAQ:AAPL";
 
-        final HistoricalDataSource tmpYahooSource = HistoricalDataSource.newYahooSymbol(tmpYahooSymbol, CalendarDateUnit.DAY);
+        final DataSource tmpYahooSource = DataSource.newYahooSymbol(tmpYahooSymbol, CalendarDateUnit.DAY);
         final BasicSeries<LocalDate, Double> tmpYahooPrices = tmpYahooSource.getPriceSeries();
 
-        final HistoricalDataSource tmpGoogleSource = null; //new GoogleSymbol(tmpGoogleSymbol, CalendarDateUnit.DAY);
+        final DataSource tmpGoogleSource = null; //new GoogleSymbol(tmpGoogleSymbol, CalendarDateUnit.DAY);
         final BasicSeries<LocalDate, Double> tmpGooglePrices = tmpGoogleSource.getPriceSeries();
 
         CoordinationSet<Double> tmpCoordinator = new CoordinationSet<>();
@@ -110,7 +110,7 @@ public class SymbolDataTest extends FinanceDataTests {
     @Test
     public void testYahooDaily() {
 
-        final HistoricalDataSource tmpYahoo = HistoricalDataSource.newYahooSymbol("AAPL", CalendarDateUnit.DAY);
+        final DataSource tmpYahoo = DataSource.newYahooSymbol("AAPL", CalendarDateUnit.DAY);
         final List<? extends DatePrice> tmpRows = tmpYahoo.getHistoricalPrices();
         if (tmpRows.size() <= 1) {
             TestUtils.fail("No data!");
@@ -120,7 +120,7 @@ public class SymbolDataTest extends FinanceDataTests {
     @Test
     public void testYahooMonthly() {
 
-        final HistoricalDataSource tmpYahoo = HistoricalDataSource.newYahooSymbol("AAPL", CalendarDateUnit.MONTH);
+        final DataSource tmpYahoo = DataSource.newYahooSymbol("AAPL", CalendarDateUnit.MONTH);
         final List<? extends DatePrice> tmpRows = tmpYahoo.getHistoricalPrices();
         if (tmpRows.size() <= 1) {
             TestUtils.fail("No data!");
@@ -130,7 +130,7 @@ public class SymbolDataTest extends FinanceDataTests {
     @Test
     public void testYahooWeekly() {
 
-        final HistoricalDataSource tmpYahoo = HistoricalDataSource.newYahooSymbol("AAPL", CalendarDateUnit.WEEK);
+        final DataSource tmpYahoo = DataSource.newYahooSymbol("AAPL", CalendarDateUnit.WEEK);
         final List<? extends DatePrice> tmpRows = tmpYahoo.getHistoricalPrices();
         if (tmpRows.size() <= 1) {
             TestUtils.fail("No data!");
@@ -140,7 +140,7 @@ public class SymbolDataTest extends FinanceDataTests {
     @Test
     public void testYahooWeeklyAAPL() {
 
-        final HistoricalDataSource tmpYahoo = HistoricalDataSource.newYahooSymbol("AAPL", CalendarDateUnit.WEEK);
+        final DataSource tmpYahoo = DataSource.newYahooSymbol("AAPL", CalendarDateUnit.WEEK);
 
         final List<? extends DatePrice> tmpRows = tmpYahoo.getHistoricalPrices();
 

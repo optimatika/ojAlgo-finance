@@ -70,7 +70,7 @@ public class CalendarDateSeriesTest extends FinanceDataTests {
     @Disabled("Google and Yahoo Finance stopped working")
     public void testResample() {
 
-        final HistoricalDataSource tmpYahooSymbol = HistoricalDataSource.newYahooSymbol("AAPL", CalendarDateUnit.DAY);
+        final DataSource tmpYahooSymbol = DataSource.newYahooSymbol("AAPL", CalendarDateUnit.DAY);
         final List<DatePrice> tmpHistoricalPrices = tmpYahooSymbol.getHistoricalPrices();
         final double tmpLastPrice = tmpHistoricalPrices.get(tmpHistoricalPrices.size() - 1).getPrice();
 

@@ -29,6 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.ojalgo.array.Primitive64Array;
 import org.ojalgo.series.BasicSeries;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.type.CalendarDate;
@@ -59,7 +60,7 @@ public final class SourceCache {
 
     private static final Timer TIMER = new Timer("SourceCache-Daemon", true);
 
-    private final Map<HistoricalDataSource, SourceCache.Value> myCache = new ConcurrentHashMap<>();
+    private final Map<DataSource, SourceCache.Value> myCache = new ConcurrentHashMap<>();
     private final CalendarDateUnit myResolution;
 
     public SourceCache(final CalendarDateUnit aResolution) {
@@ -79,7 +80,7 @@ public final class SourceCache {
 
     }
 
-    public synchronized CalendarDateSeries<Double> get(final HistoricalDataSource key) {
+    public synchronized CalendarDateSeries<Double> get(final DataSource key) {
 
         final CalendarDate tmpNow = new CalendarDate();
 
@@ -109,7 +110,7 @@ public final class SourceCache {
 
         final CalendarDate tmpNow = new CalendarDate();
 
-        for (final Entry<HistoricalDataSource, SourceCache.Value> tmpEntry : myCache.entrySet()) {
+        for (final Entry<DataSource, SourceCache.Value> tmpEntry : myCache.entrySet()) {
 
             if (myResolution.count(tmpEntry.getValue().used.millis, tmpNow.millis) > 1L) {
                 tmpEntry.getValue().series.clear();
@@ -118,8 +119,8 @@ public final class SourceCache {
         }
     }
 
-    private void update(final Value aCacheValue, final HistoricalDataSource key, final CalendarDate now) {
-        BasicSeries<LocalDate, Double> priceSeries = key.getPriceSeries();
+    private void update(final Value aCacheValue, final DataSource key, final CalendarDate now) {
+        BasicSeries<LocalDate, Double> priceSeries = key.getPriceSeries(Primitive64Array.FACTORY);
         for (Entry<LocalDate, Double> entry : priceSeries.entrySet()) {
             LocalDate tmpKey = entry.getKey();
             aCacheValue.series.put(new GregorianCalendar(tmpKey.getYear(), tmpKey.getMonthValue() - 1, tmpKey.getDayOfMonth()), entry.getValue());
