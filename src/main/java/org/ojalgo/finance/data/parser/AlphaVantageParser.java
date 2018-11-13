@@ -7,7 +7,6 @@ import org.ojalgo.RecoverableCondition;
 import org.ojalgo.finance.data.DatePrice;
 import org.ojalgo.netio.ASCII;
 import org.ojalgo.netio.BasicParser;
-import org.ojalgo.type.CalendarDateUnit;
 
 /**
  * https://www.alphavantage.co/documentation/
@@ -45,7 +44,7 @@ public class AlphaVantageParser implements BasicParser<AlphaVantageParser.Data> 
 
     }
 
-    public AlphaVantageParser(CalendarDateUnit resolution) {
+    public AlphaVantageParser() {
         super();
     }
 

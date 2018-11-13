@@ -42,15 +42,19 @@ import org.ojalgo.type.CalendarDateUnit;
 
 public class HistoricalDataSource {
 
-    public static HistoricalDataSource newIEXTradingSymbol(String symbol, CalendarDateUnit resolution) {
-        IEXTradingFetcher fetcher = new IEXTradingFetcher(symbol, resolution);
-        IEXTradingParser parser = new IEXTradingParser(resolution);
+    public static HistoricalDataSource newAlphaVantageSymbol(String symbol, CalendarDateUnit resolution, String apiKey) {
+        return HistoricalDataSource.newAlphaVantageSymbol(symbol, resolution, apiKey, false);
+    }
+
+    public static HistoricalDataSource newAlphaVantageSymbol(String symbol, CalendarDateUnit resolution, String apiKey, boolean fullOutputSize) {
+        AlphaVantageFetcher fetcher = new AlphaVantageFetcher(symbol, resolution, apiKey, fullOutputSize);
+        AlphaVantageParser parser = new AlphaVantageParser();
         return new HistoricalDataSource(fetcher, parser);
     }
 
-    public static HistoricalDataSource newAlphaVantageSymbol(String symbol, CalendarDateUnit resolution, String apiKey) {
-        AlphaVantageFetcher fetcher = new AlphaVantageFetcher(symbol, resolution, apiKey);
-        AlphaVantageParser parser = new AlphaVantageParser(resolution);
+    public static HistoricalDataSource newIEXTradingSymbol(String symbol, CalendarDateUnit resolution) {
+        IEXTradingFetcher fetcher = new IEXTradingFetcher(symbol, resolution);
+        IEXTradingParser parser = new IEXTradingParser();
         return new HistoricalDataSource(fetcher, parser);
     }
 
@@ -60,7 +64,7 @@ public class HistoricalDataSource {
 
     public static HistoricalDataSource newYahooSymbol(String symbol, CalendarDateUnit resolution) {
         YahooFetcher fetcher = new YahooFetcher(symbol, resolution);
-        YahooParser parser = new YahooParser(resolution);
+        YahooParser parser = new YahooParser();
         return new HistoricalDataSource(fetcher, parser);
     }
 
@@ -95,17 +99,6 @@ public class HistoricalDataSource {
 
     }
 
-    public ResourceLocator getResourceLocator() {
-        // TODO Auto-generated method stub
-        return myFetcher.getResourceLocator();
-    }
-
-    void handleException(final String symbol, final CalendarDateUnit resolution, final ResourceLocator locator, final Exception exception) {
-        BasicLogger.error("Fetch prpblem from Alpha Vantage!");
-        BasicLogger.error("Symbol & Resolution: {} & {}", symbol, resolution);
-        BasicLogger.error("Resource locator: {}", locator);
-    }
-
     public BasicSeries<LocalDate, Double> getPriceSeries() {
         // TODO Auto-generated method stub
         return null;
@@ -113,6 +106,12 @@ public class HistoricalDataSource {
 
     public String getSymbol() {
         return myFetcher.getSymbol();
+    }
+
+    void handleException(final String symbol, final CalendarDateUnit resolution, final ResourceLocator locator, final Exception exception) {
+        BasicLogger.error("Fetch prpblem from Alpha Vantage!");
+        BasicLogger.error("Symbol & Resolution: {} & {}", symbol, resolution);
+        BasicLogger.error("Resource locator: {}", locator);
     }
 
 }

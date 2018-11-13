@@ -7,7 +7,6 @@ import org.ojalgo.RecoverableCondition;
 import org.ojalgo.finance.data.DatePrice;
 import org.ojalgo.netio.ASCII;
 import org.ojalgo.netio.BasicParser;
-import org.ojalgo.type.CalendarDateUnit;
 
 /**
  * https://iextrading.com/developer/docs/#chart
@@ -44,7 +43,7 @@ public class IEXTradingParser implements BasicParser<IEXTradingParser.Data> {
 
     }
 
-    public IEXTradingParser(CalendarDateUnit resolution) {
+    public IEXTradingParser() {
         super();
     }
 

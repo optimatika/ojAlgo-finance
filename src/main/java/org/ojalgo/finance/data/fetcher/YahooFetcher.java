@@ -38,8 +38,6 @@ import org.ojalgo.netio.ResourceLocator;
 import org.ojalgo.type.CalendarDateUnit;
 
 /**
- * YahooSymbol
- *
  * @author apete
  * @deprecated Doesn't work any longer
  */
@@ -97,10 +95,6 @@ public class YahooFetcher extends DataFetcher {
         }
     }
 
-    public YahooFetcher(final String symbol) {
-        this(symbol, CalendarDateUnit.DAY);
-    }
-
     public YahooFetcher(final String symbol, final CalendarDateUnit resolution) {
 
         super("query1.finance.yahoo.com", symbol, resolution);
@@ -131,29 +125,29 @@ public class YahooFetcher extends DataFetcher {
             }
         }
 
-        final ResourceLocator tmpResourceLocator = this.getResourceLocator();
+        final ResourceLocator resourceLocator = this.getResourceLocator();
 
-        tmpResourceLocator.path("/v7/finance/download/" + symbol);
+        resourceLocator.path("/v7/finance/download/" + symbol);
 
         switch (resolution) {
         case MONTH:
-            tmpResourceLocator.parameter("interval", 1 + "mo");
+            resourceLocator.parameter("interval", 1 + "mo");
             break;
         case WEEK:
-            tmpResourceLocator.parameter("interval", 1 + "wk");
+            resourceLocator.parameter("interval", 1 + "wk");
             break;
         default:
-            tmpResourceLocator.parameter("interval", 1 + "d");
+            resourceLocator.parameter("interval", 1 + "d");
             break;
         }
-        tmpResourceLocator.parameter("events", "history");
+        resourceLocator.parameter("events", "history");
 
         final Instant now = Instant.now();
 
-        tmpResourceLocator.parameter("period1", Long.toString(now.minusSeconds(60L * 60L * 24 * 366L * 10L).getEpochSecond()));
-        tmpResourceLocator.parameter("period2", Long.toString(now.getEpochSecond()));
-        tmpResourceLocator.parameter("crumb", CRUMB);
-        tmpResourceLocator.cookies(COOKIE_MANAGER);
+        resourceLocator.parameter("period1", Long.toString(now.minusSeconds(60L * 60L * 24 * 366L * 10L).getEpochSecond()));
+        resourceLocator.parameter("period2", Long.toString(now.getEpochSecond()));
+        resourceLocator.parameter("crumb", CRUMB);
+        resourceLocator.cookies(COOKIE_MANAGER);
     }
 
 }

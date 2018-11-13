@@ -28,7 +28,6 @@ import org.ojalgo.RecoverableCondition;
 import org.ojalgo.finance.data.DatePrice;
 import org.ojalgo.netio.ASCII;
 import org.ojalgo.netio.BasicParser;
-import org.ojalgo.type.CalendarDateUnit;
 
 /**
  * @author apete
@@ -63,7 +62,7 @@ public class YahooParser implements BasicParser<YahooParser.Data> {
 
     }
 
-    public YahooParser(CalendarDateUnit resolution) {
+    public YahooParser() {
         super();
     }
 

@@ -99,8 +99,8 @@ public abstract class DataFetcher {
         return true;
     }
 
-    public CalendarDateUnit getResolution() {
-        return myResolution;
+    public Reader getStreamReader() {
+        return this.getResourceLocator().getStreamReader();
     }
 
     public String getSymbol() {
@@ -116,12 +116,8 @@ public abstract class DataFetcher {
         return result;
     }
 
-    public ResourceLocator getResourceLocator() {
+    protected ResourceLocator getResourceLocator() {
         return myResourceLocator;
-    }
-
-    public Reader getStreamReader() {
-        return this.getResourceLocator().getStreamReader();
     }
 
 }
