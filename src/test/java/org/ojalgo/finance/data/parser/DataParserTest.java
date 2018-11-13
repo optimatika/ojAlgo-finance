@@ -22,14 +22,15 @@
 package org.ojalgo.finance.data.parser;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
+import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.finance.data.DatePrice;
-import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
 
 public class DataParserTest {
@@ -38,11 +39,11 @@ public class DataParserTest {
 
         List<DP> data = new ArrayList<>();
 
-        int size() {
-            return data.size();
+        public void accept(DP parsed) {
+            data.add(parsed);
         }
 
-        CalendarDate firstDate() {
+        LocalDate firstDate() {
             return data.get(0).key;
         }
 
@@ -50,7 +51,7 @@ public class DataParserTest {
             return data.get(0).getPrice();
         }
 
-        CalendarDate lastDate() {
+        LocalDate lastDate() {
             return data.get(data.size() - 1).key;
         }
 
@@ -58,8 +59,8 @@ public class DataParserTest {
             return data.get(data.size() - 1).getPrice();
         }
 
-        public void accept(DP parsed) {
-            data.add(parsed);
+        int size() {
+            return data.size();
         }
 
     }
@@ -70,7 +71,147 @@ public class DataParserTest {
     }
 
     @Test
-    public void testYahooDaily() {
+    public void testAlphaVantageDailyAAPL() {
+
+        File file = new File(PATH + "AlphaVantage-AAPL-daily.csv");
+
+        YahooParser parser = new YahooParser(CalendarDateUnit.DAY);
+
+        ResultsConsumer<YahooParser.Data> collector = new ResultsConsumer<>();
+
+        parser.parse(file, true, collector);
+
+        TestUtils.assertEquals(5251, collector.size());
+
+        TestUtils.assertEquals(LocalDate.of(2018, 11, 12), collector.firstDate());
+        TestUtils.assertEquals(194.1700, collector.firstPrice(), PrimitiveMath.MACHINE_EPSILON);
+
+        TestUtils.assertEquals(LocalDate.of(1998, 1, 2), collector.lastDate());
+        TestUtils.assertEquals(0.5125, collector.lastPrice(), PrimitiveMath.MACHINE_EPSILON);
+    }
+
+    @Test
+    public void testIEXTradingDailyAAPL() {
+
+        File file = new File(PATH + "IEXTrading-AAPL-daily.csv");
+
+        IEXTradingParser parser = new IEXTradingParser(CalendarDateUnit.DAY);
+
+        ResultsConsumer<IEXTradingParser.Data> collector = new ResultsConsumer<>();
+
+        parser.parse(file, true, collector);
+
+        TestUtils.assertEquals(1259, collector.size());
+
+        TestUtils.assertEquals(LocalDate.of(2013, 11, 13), collector.firstDate());
+        TestUtils.assertEquals(68.2606, collector.firstPrice(), PrimitiveMath.MACHINE_EPSILON);
+
+        TestUtils.assertEquals(LocalDate.of(2018, 11, 12), collector.lastDate());
+        TestUtils.assertEquals(194.17, collector.lastPrice(), PrimitiveMath.MACHINE_EPSILON);
+    }
+
+    @Test
+    public void testAlphaVantageDailyMSFT() {
+
+        File file = new File(PATH + "AlphaVantage-MSFT-daily.csv");
+
+        YahooParser parser = new YahooParser(CalendarDateUnit.DAY);
+
+        ResultsConsumer<YahooParser.Data> collector = new ResultsConsumer<>();
+
+        parser.parse(file, true, collector);
+
+        TestUtils.assertEquals(100, collector.size());
+
+        TestUtils.assertEquals(LocalDate.of(2018, 11, 12), collector.firstDate());
+        TestUtils.assertEquals(106.7600, collector.firstPrice(), PrimitiveMath.MACHINE_EPSILON);
+
+        TestUtils.assertEquals(LocalDate.of(2018, 6, 22), collector.lastDate());
+        TestUtils.assertEquals(100.0198, collector.lastPrice(), PrimitiveMath.MACHINE_EPSILON);
+    }
+
+    @Test
+    public void testAlphaVantageMonthlyAAPL() {
+
+        File file = new File(PATH + "AlphaVantage-AAPL-monthly.csv");
+
+        YahooParser parser = new YahooParser(CalendarDateUnit.DAY);
+
+        ResultsConsumer<YahooParser.Data> collector = new ResultsConsumer<>();
+
+        parser.parse(file, true, collector);
+
+        TestUtils.assertEquals(250, collector.size());
+
+        TestUtils.assertEquals(LocalDate.of(2018, 11, 12), collector.firstDate());
+        TestUtils.assertEquals(194.1700, collector.firstPrice(), PrimitiveMath.MACHINE_EPSILON);
+
+        TestUtils.assertEquals(LocalDate.of(1998, 2, 27), collector.lastDate());
+        TestUtils.assertEquals(0.7450, collector.lastPrice(), PrimitiveMath.MACHINE_EPSILON);
+    }
+
+    @Test
+    public void testAlphaVantageMonthlyMSFT() {
+
+        File file = new File(PATH + "AlphaVantage-MSFT-monthly.csv");
+
+        YahooParser parser = new YahooParser(CalendarDateUnit.DAY);
+
+        ResultsConsumer<YahooParser.Data> collector = new ResultsConsumer<>();
+
+        parser.parse(file, true, collector);
+
+        TestUtils.assertEquals(250, collector.size());
+
+        TestUtils.assertEquals(LocalDate.of(2018, 11, 12), collector.firstDate());
+        TestUtils.assertEquals(106.8100, collector.firstPrice(), PrimitiveMath.MACHINE_EPSILON);
+
+        TestUtils.assertEquals(LocalDate.of(1998, 2, 27), collector.lastDate());
+        TestUtils.assertEquals(13.9246, collector.lastPrice(), PrimitiveMath.MACHINE_EPSILON);
+    }
+
+    @Test
+    public void testAlphaVantageWeeklyAAPL() {
+
+        File file = new File(PATH + "AlphaVantage-AAPL-weekly.csv");
+
+        YahooParser parser = new YahooParser(CalendarDateUnit.DAY);
+
+        ResultsConsumer<YahooParser.Data> collector = new ResultsConsumer<>();
+
+        parser.parse(file, true, collector);
+
+        TestUtils.assertEquals(1089, collector.size());
+
+        TestUtils.assertEquals(LocalDate.of(2018, 11, 12), collector.firstDate());
+        TestUtils.assertEquals(194.1700, collector.firstPrice(), PrimitiveMath.MACHINE_EPSILON);
+
+        TestUtils.assertEquals(LocalDate.of(1998, 1, 9), collector.lastDate());
+        TestUtils.assertEquals(0.5737, collector.lastPrice(), PrimitiveMath.MACHINE_EPSILON);
+    }
+
+    @Test
+    public void testAlphaVantageWeeklyMSFT() {
+
+        File file = new File(PATH + "AlphaVantage-MSFT-weekly.csv");
+
+        YahooParser parser = new YahooParser(CalendarDateUnit.DAY);
+
+        ResultsConsumer<YahooParser.Data> collector = new ResultsConsumer<>();
+
+        parser.parse(file, true, collector);
+
+        TestUtils.assertEquals(1089, collector.size());
+
+        TestUtils.assertEquals(LocalDate.of(2018, 11, 12), collector.firstDate());
+        TestUtils.assertEquals(106.9363, collector.firstPrice(), PrimitiveMath.MACHINE_EPSILON);
+
+        TestUtils.assertEquals(LocalDate.of(1998, 1, 9), collector.lastDate());
+        TestUtils.assertEquals(10.4332, collector.lastPrice(), PrimitiveMath.MACHINE_EPSILON);
+    }
+
+    @Test
+    public void testYahooDailyAAPL() {
 
         File file = new File(PATH + "Yahoo-AAPL-daily.csv");
 
@@ -81,6 +222,52 @@ public class DataParserTest {
         parser.parse(file, true, collector);
 
         TestUtils.assertEquals(9562, collector.size());
+
+        TestUtils.assertEquals(LocalDate.of(1980, 12, 12), collector.firstDate());
+        TestUtils.assertEquals(0.023106, collector.firstPrice(), PrimitiveMath.MACHINE_EPSILON);
+
+        TestUtils.assertEquals(LocalDate.of(2018, 11, 9), collector.lastDate());
+        TestUtils.assertEquals(204.470001, collector.lastPrice(), PrimitiveMath.MACHINE_EPSILON);
+    }
+
+    @Test
+    public void testYahooMonthlyAAPL() {
+
+        File file = new File(PATH + "Yahoo-AAPL-monthly.csv");
+
+        YahooParser parser = new YahooParser(CalendarDateUnit.DAY);
+
+        ResultsConsumer<YahooParser.Data> collector = new ResultsConsumer<>();
+
+        parser.parse(file, true, collector);
+
+        TestUtils.assertEquals(457, collector.size());
+
+        TestUtils.assertEquals(LocalDate.of(1980, 12, 1), collector.firstDate());
+        TestUtils.assertEquals(0.027425, collector.firstPrice(), PrimitiveMath.MACHINE_EPSILON);
+
+        TestUtils.assertEquals(LocalDate.of(2018, 11, 9), collector.lastDate());
+        TestUtils.assertEquals(204.470001, collector.lastPrice(), PrimitiveMath.MACHINE_EPSILON);
+    }
+
+    @Test
+    public void testYahooWeeklyAAPL() {
+
+        File file = new File(PATH + "Yahoo-AAPL-weekly.csv");
+
+        YahooParser parser = new YahooParser(CalendarDateUnit.DAY);
+
+        ResultsConsumer<YahooParser.Data> collector = new ResultsConsumer<>();
+
+        parser.parse(file, true, collector);
+
+        TestUtils.assertEquals(1980, collector.size());
+
+        TestUtils.assertEquals(LocalDate.of(1980, 12, 8), collector.firstDate());
+        TestUtils.assertEquals(0.023106, collector.firstPrice(), PrimitiveMath.MACHINE_EPSILON);
+
+        TestUtils.assertEquals(LocalDate.of(2018, 11, 9), collector.lastDate());
+        TestUtils.assertEquals(204.470001, collector.lastPrice(), PrimitiveMath.MACHINE_EPSILON);
     }
 
 }

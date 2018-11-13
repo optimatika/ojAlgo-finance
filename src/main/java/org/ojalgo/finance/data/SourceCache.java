@@ -21,12 +21,15 @@
  */
 package org.ojalgo.finance.data;
 
+import java.time.LocalDate;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.ojalgo.series.BasicSeries;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
@@ -56,7 +59,7 @@ public final class SourceCache {
 
     private static final Timer TIMER = new Timer("SourceCache-Daemon", true);
 
-    private final Map<DataSource<?>, SourceCache.Value> myCache = new ConcurrentHashMap<>();
+    private final Map<HistoricalDataSource, SourceCache.Value> myCache = new ConcurrentHashMap<>();
     private final CalendarDateUnit myResolution;
 
     public SourceCache(final CalendarDateUnit aResolution) {
@@ -76,7 +79,7 @@ public final class SourceCache {
 
     }
 
-    public synchronized CalendarDateSeries<Double> get(final DataSource<?> key) {
+    public synchronized CalendarDateSeries<Double> get(final HistoricalDataSource key) {
 
         final CalendarDate tmpNow = new CalendarDate();
 
@@ -106,7 +109,7 @@ public final class SourceCache {
 
         final CalendarDate tmpNow = new CalendarDate();
 
-        for (final Entry<DataSource<?>, SourceCache.Value> tmpEntry : myCache.entrySet()) {
+        for (final Entry<HistoricalDataSource, SourceCache.Value> tmpEntry : myCache.entrySet()) {
 
             if (myResolution.count(tmpEntry.getValue().used.millis, tmpNow.millis) > 1L) {
                 tmpEntry.getValue().series.clear();
@@ -115,8 +118,13 @@ public final class SourceCache {
         }
     }
 
-    private void update(final Value aCacheValue, final DataSource<?> key, final CalendarDate now) {
-        aCacheValue.series.putAll(key.getPriceSeries());
+    private void update(final Value aCacheValue, final HistoricalDataSource key, final CalendarDate now) {
+        BasicSeries<LocalDate, Double> priceSeries = key.getPriceSeries();
+        for (Entry<LocalDate, Double> entry : priceSeries.entrySet()) {
+            LocalDate tmpKey = entry.getKey();
+            aCacheValue.series.put(new GregorianCalendar(tmpKey.getYear(), tmpKey.getMonthValue() - 1, tmpKey.getDayOfMonth()), entry.getValue());
+        }
+
         aCacheValue.updated = now;
     }
 }

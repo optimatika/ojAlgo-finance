@@ -22,6 +22,7 @@
 package org.ojalgo.finance.data;
 
 import java.io.Reader;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,11 +30,14 @@ import java.util.List;
 import org.ojalgo.finance.data.fetcher.AlphaVantageFetcher;
 import org.ojalgo.finance.data.fetcher.DataFetcher;
 import org.ojalgo.finance.data.fetcher.IEXTradingFetcher;
+import org.ojalgo.finance.data.fetcher.YahooFetcher;
 import org.ojalgo.finance.data.parser.AlphaVantageParser;
-import org.ojalgo.finance.data.parser.DataParser;
 import org.ojalgo.finance.data.parser.IEXTradingParser;
+import org.ojalgo.finance.data.parser.YahooParser;
 import org.ojalgo.netio.BasicLogger;
+import org.ojalgo.netio.BasicParser;
 import org.ojalgo.netio.ResourceLocator;
+import org.ojalgo.series.BasicSeries;
 import org.ojalgo.type.CalendarDateUnit;
 
 public class HistoricalDataSource {
@@ -50,10 +54,20 @@ public class HistoricalDataSource {
         return new HistoricalDataSource(fetcher, parser);
     }
 
-    private final DataFetcher myFetcher;
-    private final DataParser<?> myParser;
+    public static HistoricalDataSource newYahooSymbol(String symbol) {
+        return HistoricalDataSource.newYahooSymbol(symbol, CalendarDateUnit.DAY);
+    }
 
-    HistoricalDataSource(DataFetcher fetcher, DataParser<?> parser) {
+    public static HistoricalDataSource newYahooSymbol(String symbol, CalendarDateUnit resolution) {
+        YahooFetcher fetcher = new YahooFetcher(symbol, resolution);
+        YahooParser parser = new YahooParser(resolution);
+        return new HistoricalDataSource(fetcher, parser);
+    }
+
+    private final DataFetcher myFetcher;
+    private final BasicParser<? extends DatePrice> myParser;
+
+    HistoricalDataSource(DataFetcher fetcher, BasicParser<? extends DatePrice> parser) {
         super();
         myFetcher = fetcher;
         myParser = parser;
@@ -90,6 +104,15 @@ public class HistoricalDataSource {
         BasicLogger.error("Fetch prpblem from Alpha Vantage!");
         BasicLogger.error("Symbol & Resolution: {} & {}", symbol, resolution);
         BasicLogger.error("Resource locator: {}", locator);
+    }
+
+    public BasicSeries<LocalDate, Double> getPriceSeries() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getSymbol() {
+        return myFetcher.getSymbol();
     }
 
 }

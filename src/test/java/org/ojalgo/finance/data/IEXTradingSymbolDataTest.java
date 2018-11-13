@@ -63,7 +63,7 @@ public class IEXTradingSymbolDataTest extends FinanceDataTests {
         final List<? extends DatePrice> tmpRows = tmpIEXTrading.getHistoricalPrices();
 
         final CalendarDateSeries<Double> tmpDaySeries = new CalendarDateSeries<>(CalendarDateUnit.DAY);
-        tmpDaySeries.putAll(tmpRows);
+        // tmpDaySeries.putAll(tmpRows);
         final CalendarDateSeries<Double> tmpYearSeries = tmpDaySeries.resample(CalendarDateUnit.YEAR);
         final CalendarDateSeries<Double> tmpMonthSeries = tmpDaySeries.resample(CalendarDateUnit.MONTH);
 

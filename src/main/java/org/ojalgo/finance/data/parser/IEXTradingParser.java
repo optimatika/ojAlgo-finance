@@ -1,21 +1,20 @@
 package org.ojalgo.finance.data.parser;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.ojalgo.RecoverableCondition;
 import org.ojalgo.finance.data.DatePrice;
 import org.ojalgo.netio.ASCII;
+import org.ojalgo.netio.BasicParser;
 import org.ojalgo.type.CalendarDateUnit;
-import org.ojalgo.type.context.GenericContext;
 
 /**
+ * https://iextrading.com/developer/docs/#chart
+ *
  * @author stefanvanegmond
  */
-public class IEXTradingParser extends DataParser<IEXTradingParser.Data> {
+public class IEXTradingParser implements BasicParser<IEXTradingParser.Data> {
 
     public static final class Data extends DatePrice {
 
@@ -23,22 +22,19 @@ public class IEXTradingParser extends DataParser<IEXTradingParser.Data> {
         public double high;
         public double low;
         public double open;
+        public double unadjustedVolume;
         public double volume;
 
-        protected Data(final Calendar calendar) {
-            super(calendar);
+        Data(CharSequence text) {
+            super(text);
         }
 
-        protected Data(final Date date) {
+        Data(CharSequence text, DateTimeFormatter formatter) {
+            super(text, formatter);
+        }
+
+        Data(LocalDate date) {
             super(date);
-        }
-
-        protected Data(final long millis) {
-            super(millis);
-        }
-
-        protected Data(final String sqlString) throws RecoverableCondition {
-            super(sqlString);
         }
 
         @Override
@@ -48,69 +44,76 @@ public class IEXTradingParser extends DataParser<IEXTradingParser.Data> {
 
     }
 
-    private static final GenericContext<Date> DATE_FORMAT = new GenericContext<>(new SimpleDateFormat("dd-MM-yy", Locale.US));
-
     public IEXTradingParser(CalendarDateUnit resolution) {
-        super(resolution);
+        super();
     }
 
     @Override
     public IEXTradingParser.Data parse(String line) throws RecoverableCondition {
 
+        // date,open,high,low,close,volume,unadjustedVolume,change,changePercent,vwap,label,changeOverTime
+
         IEXTradingParser.Data retVal;
 
         try {
 
-            int tmpInclusiveBegin = 0;
-            int tmpExclusiveEnd = line.indexOf(ASCII.COMMA, tmpInclusiveBegin);
-            String tmpString = line.substring(tmpInclusiveBegin, tmpExclusiveEnd);
-            final Calendar tmpCalendar = new GregorianCalendar();
-            tmpCalendar.setTime(DATE_FORMAT.parse(tmpString));
-            this.getResolution().round(tmpCalendar);
-            retVal = new IEXTradingParser.Data(tmpCalendar);
+            int inclBegin = 0;
+            int exclEnd = line.indexOf(ASCII.COMMA, inclBegin);
+            String part = line.substring(inclBegin, exclEnd);
+            retVal = new IEXTradingParser.Data(part);
 
-            tmpInclusiveBegin = tmpExclusiveEnd + 1;
-            tmpExclusiveEnd = line.indexOf(ASCII.COMMA, tmpInclusiveBegin);
-            tmpString = line.substring(tmpInclusiveBegin, tmpExclusiveEnd);
+            inclBegin = exclEnd + 1;
+            exclEnd = line.indexOf(ASCII.COMMA, inclBegin);
+            part = line.substring(inclBegin, exclEnd);
             try {
-                retVal.open = Double.parseDouble(tmpString);
+                retVal.open = Double.parseDouble(part);
             } catch (final NumberFormatException ex) {
                 retVal.open = Double.NaN;
             }
 
-            tmpInclusiveBegin = tmpExclusiveEnd + 1;
-            tmpExclusiveEnd = line.indexOf(ASCII.COMMA, tmpInclusiveBegin);
-            tmpString = line.substring(tmpInclusiveBegin, tmpExclusiveEnd);
+            inclBegin = exclEnd + 1;
+            exclEnd = line.indexOf(ASCII.COMMA, inclBegin);
+            part = line.substring(inclBegin, exclEnd);
             try {
-                retVal.high = Double.parseDouble(tmpString);
+                retVal.high = Double.parseDouble(part);
             } catch (final NumberFormatException ex) {
                 retVal.high = Double.NaN;
             }
 
-            tmpInclusiveBegin = tmpExclusiveEnd + 1;
-            tmpExclusiveEnd = line.indexOf(ASCII.COMMA, tmpInclusiveBegin);
-            tmpString = line.substring(tmpInclusiveBegin, tmpExclusiveEnd);
+            inclBegin = exclEnd + 1;
+            exclEnd = line.indexOf(ASCII.COMMA, inclBegin);
+            part = line.substring(inclBegin, exclEnd);
             try {
-                retVal.low = Double.parseDouble(tmpString);
+                retVal.low = Double.parseDouble(part);
             } catch (final NumberFormatException ex) {
                 retVal.low = Double.NaN;
             }
 
-            tmpInclusiveBegin = tmpExclusiveEnd + 1;
-            tmpExclusiveEnd = line.indexOf(ASCII.COMMA, tmpInclusiveBegin);
-            tmpString = line.substring(tmpInclusiveBegin, tmpExclusiveEnd);
+            inclBegin = exclEnd + 1;
+            exclEnd = line.indexOf(ASCII.COMMA, inclBegin);
+            part = line.substring(inclBegin, exclEnd);
             try {
-                retVal.close = Double.parseDouble(tmpString);
+                retVal.close = Double.parseDouble(part);
             } catch (final NumberFormatException ex) {
                 retVal.close = Double.NaN;
             }
 
-            tmpInclusiveBegin = tmpExclusiveEnd + 1;
-            tmpString = line.substring(tmpInclusiveBegin);
+            inclBegin = exclEnd + 1;
+            exclEnd = line.indexOf(ASCII.COMMA, inclBegin);
+            part = line.substring(inclBegin, exclEnd);
             try {
-                retVal.volume = Double.parseDouble(tmpString);
+                retVal.volume = Double.parseDouble(part);
             } catch (final NumberFormatException ex) {
                 retVal.volume = Double.NaN;
+            }
+
+            inclBegin = exclEnd + 1;
+            exclEnd = line.indexOf(ASCII.COMMA, inclBegin);
+            part = line.substring(inclBegin, exclEnd);
+            try {
+                retVal.unadjustedVolume = Double.parseDouble(part);
+            } catch (final NumberFormatException ex) {
+                retVal.unadjustedVolume = Double.NaN;
             }
 
         } catch (final Exception exception) {

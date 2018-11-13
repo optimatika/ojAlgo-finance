@@ -1,12 +1,9 @@
 package org.ojalgo.finance.data.fetcher;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.ojalgo.RecoverableCondition;
-import org.ojalgo.finance.data.DatePrice;
 import org.ojalgo.netio.ResourceLocator;
 import org.ojalgo.type.CalendarDateUnit;
 import org.ojalgo.type.context.GenericContext;
@@ -17,37 +14,6 @@ import org.ojalgo.type.context.GenericContext;
  * @author stefanvanegmond
  */
 public class IEXTradingFetcher extends DataFetcher {
-
-    public static final class Data extends DatePrice {
-
-        public double close;
-        public double high;
-        public double low;
-        public double open;
-        public double volume;
-
-        protected Data(final Calendar calendar) {
-            super(calendar);
-        }
-
-        protected Data(final Date date) {
-            super(date);
-        }
-
-        protected Data(final long millis) {
-            super(millis);
-        }
-
-        protected Data(final String sqlString) throws RecoverableCondition {
-            super(sqlString);
-        }
-
-        @Override
-        public double getPrice() {
-            return close;
-        }
-
-    }
 
     //parser
     private static final GenericContext<Date> DATE_FORMAT = new GenericContext<>(new SimpleDateFormat("dd-MM-yy", Locale.US));

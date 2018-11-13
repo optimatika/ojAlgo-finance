@@ -70,8 +70,8 @@ public class CalendarDateSeriesTest extends FinanceDataTests {
     @Disabled("Google and Yahoo Finance stopped working")
     public void testResample() {
 
-        final YahooSymbol tmpYahooSymbol = new YahooSymbol("AAPL", CalendarDateUnit.DAY);
-        final List<YahooSymbol.Data> tmpHistoricalPrices = tmpYahooSymbol.getHistoricalPrices();
+        final HistoricalDataSource tmpYahooSymbol = HistoricalDataSource.newYahooSymbol("AAPL", CalendarDateUnit.DAY);
+        final List<DatePrice> tmpHistoricalPrices = tmpYahooSymbol.getHistoricalPrices();
         final double tmpLastPrice = tmpHistoricalPrices.get(tmpHistoricalPrices.size() - 1).getPrice();
 
         final CalendarDateSeries<Double> tmpDaySeries = new CalendarDateSeries<Double>(CalendarDateUnit.DAY).name("Day");
@@ -84,14 +84,14 @@ public class CalendarDateSeriesTest extends FinanceDataTests {
         final CalendarDateSeries<Double> tmpMilleniumSeries = new CalendarDateSeries<Double>(CalendarDateUnit.MILLENIUM).name("MIllenium");
 
         for (final DatePrice tmpDatePrice : tmpHistoricalPrices) {
-            tmpDaySeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
-            tmpWeekSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
-            tmpMonthSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
-            tmpQuarterSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
-            tmpYearSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
-            tmpDecadeSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
-            tmpCenturySeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
-            tmpMilleniumSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
+            //            tmpDaySeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
+            //            tmpWeekSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
+            //            tmpMonthSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
+            //            tmpQuarterSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
+            //            tmpYearSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
+            //            tmpDecadeSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
+            //            tmpCenturySeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
+            //            tmpMilleniumSeries.put(tmpDatePrice.key, tmpDatePrice.getPrice());
         }
 
         tmpDaySeries.complete();
