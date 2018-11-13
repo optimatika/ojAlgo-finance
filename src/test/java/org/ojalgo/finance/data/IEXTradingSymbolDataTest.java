@@ -48,7 +48,7 @@ public class IEXTradingSymbolDataTest extends FinanceDataTests {
     @Test
     public void testIEXTradingDaily() {
 
-        final IEXTradingSymbol tmpIEXTrading = new IEXTradingSymbol("AAPL", CalendarDateUnit.DAY);
+        final HistoricalDataSource tmpIEXTrading = HistoricalDataSource.newIEXTradingSymbol("AAPL", CalendarDateUnit.DAY);
         final List<? extends DatePrice> tmpRows = tmpIEXTrading.getHistoricalPrices();
         if (tmpRows.size() <= 1) {
             TestUtils.fail("No data!");
@@ -58,7 +58,7 @@ public class IEXTradingSymbolDataTest extends FinanceDataTests {
     @Test
     public void testIEXTradingDailyAAPL() {
 
-        final IEXTradingSymbol tmpIEXTrading = new IEXTradingSymbol("AAPL", CalendarDateUnit.DAY);
+        final HistoricalDataSource tmpIEXTrading = HistoricalDataSource.newIEXTradingSymbol("AAPL", CalendarDateUnit.DAY);
 
         final List<? extends DatePrice> tmpRows = tmpIEXTrading.getHistoricalPrices();
 
