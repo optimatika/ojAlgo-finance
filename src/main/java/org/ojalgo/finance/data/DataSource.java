@@ -23,11 +23,13 @@ package org.ojalgo.finance.data;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.ojalgo.array.DenseArray;
@@ -38,9 +40,9 @@ import org.ojalgo.finance.data.parser.AlphaVantageParser;
 import org.ojalgo.finance.data.parser.IEXTradingParser;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.netio.BasicParser;
-import org.ojalgo.netio.ResourceLocator;
 import org.ojalgo.series.BasicSeries;
 import org.ojalgo.series.CalendarDateSeries;
+import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
 
 public final class DataSource {
@@ -110,19 +112,26 @@ public final class DataSource {
             return retVal;
         } catch (final Exception exception) {
             exception.printStackTrace();
-            this.handleException(null, null, null, exception);
+            BasicLogger.error("Fetch problem for {}!", this.myFetcher.getClass().getSimpleName());
+            BasicLogger.error("Symbol & Resolution: {} & {}", this.myFetcher.getSymbol(), this.myFetcher.getResolution());
             return Collections.emptyList();
         }
     }
 
+    public CalendarDateSeries<Double> getPriceSeries() {
+        return this.getPriceSeries(myFetcher.getResolution(), LocalTime.NOON, ZoneOffset.UTC);
+    }
+
     public CalendarDateSeries<Double> getPriceSeries(CalendarDateUnit resolution) {
+        return this.getPriceSeries(resolution, LocalTime.NOON, ZoneOffset.UTC);
+    }
+
+    public CalendarDateSeries<Double> getPriceSeries(CalendarDateUnit resolution, LocalTime time, ZoneId zoneId) {
 
         CalendarDateSeries<Double> retVal = new CalendarDateSeries<>(resolution);
 
         for (DatePrice datePrice : this.getHistoricalPrices()) {
-            LocalDate localDate = datePrice.key;
-            GregorianCalendar calendar = new GregorianCalendar(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
-            retVal.put(calendar, datePrice.getPrice());
+            retVal.put(CalendarDate.valueOf(datePrice.key.atTime(time).atZone(zoneId)), datePrice.getPrice());
         }
 
         return retVal;
@@ -151,6 +160,10 @@ public final class DataSource {
         return retVal;
     }
 
+    public CalendarDateSeries<Double> getPriceSeries(LocalTime time, ZoneId zoneId) {
+        return this.getPriceSeries(myFetcher.getResolution(), time, zoneId);
+    }
+
     public String getSymbol() {
         return myFetcher.getSymbol();
     }
@@ -162,12 +175,6 @@ public final class DataSource {
         result = (prime * result) + ((myFetcher == null) ? 0 : myFetcher.hashCode());
         result = (prime * result) + ((myParser == null) ? 0 : myParser.hashCode());
         return result;
-    }
-
-    void handleException(final String symbol, final CalendarDateUnit resolution, final ResourceLocator locator, final Exception exception) {
-        BasicLogger.error("Fetch prpblem from Alpha Vantage!");
-        BasicLogger.error("Symbol & Resolution: {} & {}", symbol, resolution);
-        BasicLogger.error("Resource locator: {}", locator);
     }
 
 }

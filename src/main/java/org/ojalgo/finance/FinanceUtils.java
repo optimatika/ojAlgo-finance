@@ -68,9 +68,9 @@ public abstract class FinanceUtils {
         final SampleSet tmpSampleSet = FinanceUtils.makeExcessGrowthRateSampleSet(priceSeries, riskFreeInterestRateSeries);
 
         // The average number of millis between to subsequent keys in the series.
-        double tmpStepSize = priceSeries.getResolution().size();
+        double tmpStepSize = priceSeries.getResolution().toDurationInMillis();
         // The time between to keys expressed in terms of the specified time meassure and unit.
-        tmpStepSize /= timeUnit.size();
+        tmpStepSize /= timeUnit.toDurationInMillis();
 
         final double tmpExp = tmpSampleSet.getMean();
         final double tmpVar = tmpSampleSet.getVariance();
@@ -89,7 +89,7 @@ public abstract class FinanceUtils {
         final CalendarDateSeries<RandomNumber> retVal = new CalendarDateSeries<>(timeUnit);
         retVal.name(series.getName()).colour(series.getColour());
 
-        final double tmpSamplePeriod = (double) series.getAverageStepSize() / (double) timeUnit.size();
+        final double tmpSamplePeriod = (double) series.getAverageStepSize() / (double) timeUnit.toDurationInMillis();
         final GeometricBrownianMotion tmpProcess = GeometricBrownianMotion.estimate(series.asPrimitive(), tmpSamplePeriod);
 
         if (includeOriginalSeries) {
@@ -104,7 +104,7 @@ public abstract class FinanceUtils {
         tmpProcess.setValue(tmpLastValue);
 
         for (int i = 1; i <= pointCount; i++) {
-            retVal.put(tmpLastKey.millis + (i * timeUnit.size()), tmpProcess.getDistribution(i));
+            retVal.put(tmpLastKey.millis + (i * timeUnit.toDurationInMillis()), tmpProcess.getDistribution(i));
         }
 
         return retVal;
@@ -145,7 +145,7 @@ public abstract class FinanceUtils {
 
         final PrimitiveMatrix.DenseReceiver retValStore = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
 
-        final double tmpToYearFactor = (double) CalendarDateUnit.YEAR.size() / (double) tmpCoordinator.getResolution().size();
+        final double tmpToYearFactor = (double) CalendarDateUnit.YEAR.toDurationInMillis() / (double) tmpCoordinator.getResolution().toDurationInMillis();
 
         SampleSet tmpRowSet;
         SampleSet tmpColSet;
@@ -185,7 +185,7 @@ public abstract class FinanceUtils {
 
         final PrimitiveMatrix.DenseReceiver tmpMatrixBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
 
-        final double tmpToYearFactor = (double) CalendarDateUnit.YEAR.size() / (double) tmpDataResolution.size();
+        final double tmpToYearFactor = (double) CalendarDateUnit.YEAR.toDurationInMillis() / (double) tmpDataResolution.toDurationInMillis();
 
         SampleSet tmpSampleSet;
         final SampleSet[] tmpSampleSets = new SampleSet[tmpSize];

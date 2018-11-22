@@ -21,22 +21,25 @@
  */
 package org.ojalgo.finance.data;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
+import org.ojalgo.array.Primitive64Array;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.random.Uniform;
+import org.ojalgo.series.BasicSeries.NaturallySequenced;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.type.CalendarDateUnit;
 
 /**
  * @author apete
  */
-public class CalendarDateSeriesTest extends FinanceDataTests {
+public class BasicSeriesTest extends FinanceDataTests {
 
-    public CalendarDateSeriesTest() {
+    public BasicSeriesTest() {
         super();
     }
 
@@ -60,6 +63,19 @@ public class CalendarDateSeriesTest extends FinanceDataTests {
         for (int i = 0; i < dim; i++) {
             TestUtils.assertEquals(keys[i], Double.longBitsToDouble(indices[i]));
         }
+    }
+
+    @Test
+    public void testCoordinateDifferentSources() {
+
+        final DataSource sourceIEX = DataSource.newIEXTrading("MSFT", CalendarDateUnit.DAY);
+        final DataSource sourceAVa = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
+
+        NaturallySequenced<LocalDate, Double> seriesIEX = sourceIEX.getPriceSeries(Primitive64Array.FACTORY);
+        NaturallySequenced<LocalDate, Double> seriesAVa = sourceAVa.getPriceSeries(Primitive64Array.FACTORY);
+
+        // BasicSeries;
+
     }
 
     @Test

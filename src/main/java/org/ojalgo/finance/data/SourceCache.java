@@ -76,7 +76,7 @@ public final class SourceCache {
                 SourceCache.this.cleanUp();
             }
 
-        }, 0L, aResolution.size());
+        }, 0L, aResolution.toDurationInMillis());
 
     }
 
