@@ -36,8 +36,10 @@ import org.ojalgo.array.DenseArray;
 import org.ojalgo.finance.data.fetcher.AlphaVantageFetcher;
 import org.ojalgo.finance.data.fetcher.DataFetcher;
 import org.ojalgo.finance.data.fetcher.IEXTradingFetcher;
+import org.ojalgo.finance.data.fetcher.YahooFetcher;
 import org.ojalgo.finance.data.parser.AlphaVantageParser;
 import org.ojalgo.finance.data.parser.IEXTradingParser;
+import org.ojalgo.finance.data.parser.YahooParser;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.netio.BasicParser;
 import org.ojalgo.series.BasicSeries;
@@ -63,6 +65,12 @@ public final class DataSource {
     public static DataSource newIEXTrading(String symbol, CalendarDateUnit resolution) {
         IEXTradingFetcher fetcher = new IEXTradingFetcher(symbol, resolution);
         IEXTradingParser parser = new IEXTradingParser();
+        return new DataSource(fetcher, parser);
+    }
+
+    public static DataSource newYahoo(String symbol, CalendarDateUnit resolution) {
+        YahooFetcher fetcher = new YahooFetcher(symbol, resolution);
+        YahooParser parser = new YahooParser();
         return new DataSource(fetcher, parser);
     }
 
@@ -112,8 +120,8 @@ public final class DataSource {
             return retVal;
         } catch (final Exception exception) {
             exception.printStackTrace();
-            BasicLogger.error("Fetch problem for {}!", this.myFetcher.getClass().getSimpleName());
-            BasicLogger.error("Symbol & Resolution: {} & {}", this.myFetcher.getSymbol(), this.myFetcher.getResolution());
+            BasicLogger.error("Fetch problem for {}!", myFetcher.getClass().getSimpleName());
+            BasicLogger.error("Symbol & Resolution: {} & {}", myFetcher.getSymbol(), myFetcher.getResolution());
             return Collections.emptyList();
         }
     }

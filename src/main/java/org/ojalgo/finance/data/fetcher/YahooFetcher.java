@@ -29,7 +29,6 @@ import java.net.CookiePolicy;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Properties;
@@ -84,15 +83,15 @@ public class YahooFetcher extends DataFetcher {
 
         }, CookiePolicy.ACCEPT_ALL);
 
-        HttpCookie eu = new HttpCookie("EuConsent",
-                "BOW0RACOW0RAGAOABCSVB0qAAAAid6fJfe7f98fR9v_lVkR7Gn6MwWiTwEQ4PUcH5ATzwQJhegZg0HcIydxJAoQQMARALYJCDEgSkiMSoAiGgpQwoMosABwYEA");
+        //        HttpCookie eu = new HttpCookie("EuConsent",
+        //                "BOW0RACOW0RAGAOABCSVB0qAAAAid6fJfe7f98fR9v_lVkR7Gn6MwWiTwEQ4PUcH5ATzwQJhegZg0HcIydxJAoQQMARALYJCDEgSkiMSoAiGgpQwoMosABwYEA");
 
-        try {
-            COOKIE_MANAGER.getCookieStore().add(new URI("yahoo.com"), eu);
-        } catch (URISyntaxException exception) {
-            // TODO Auto-generated catch block
-            exception.printStackTrace();
-        }
+        //        try {
+        //            COOKIE_MANAGER.getCookieStore().add(new URI("yahoo.com"), eu);
+        //        } catch (URISyntaxException exception) {
+        //            // TODO Auto-generated catch block
+        //            exception.printStackTrace();
+        //        }
     }
 
     public YahooFetcher(final String symbol, final CalendarDateUnit resolution) {

@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
-import org.ojalgo.finance.data.DatePrice;
 import org.ojalgo.finance.data.DataSource;
+import org.ojalgo.finance.data.DatePrice;
 import org.ojalgo.type.CalendarDateUnit;
 
 public class DataFetcherTest {
@@ -83,6 +83,48 @@ public class DataFetcherTest {
         if (rows.size() <= 0) {
             TestUtils.fail("No data!");
         } else if (rows.size() < 1259) {
+            TestUtils.fail("Less data than usual! only got: " + rows.size());
+        }
+    }
+
+    @Test
+    public void testYahooDailyAAPL() {
+
+        final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.DAY);
+
+        final List<DatePrice> rows = dataSource.getHistoricalPrices();
+
+        if (rows.size() <= 0) {
+            TestUtils.fail("No data!");
+        } else if (rows.size() < 1) {
+            TestUtils.fail("Less data than usual! only got: " + rows.size());
+        }
+    }
+
+    @Test
+    public void testYahooMonthlyAAPL() {
+
+        final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.MONTH);
+
+        final List<DatePrice> rows = dataSource.getHistoricalPrices();
+
+        if (rows.size() <= 0) {
+            TestUtils.fail("No data!");
+        } else if (rows.size() < 1) {
+            TestUtils.fail("Less data than usual! only got: " + rows.size());
+        }
+    }
+
+    @Test
+    public void testYahooWeeklyAAPL() {
+
+        final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.WEEK);
+
+        final List<DatePrice> rows = dataSource.getHistoricalPrices();
+
+        if (rows.size() <= 0) {
+            TestUtils.fail("No data!");
+        } else if (rows.size() < 1) {
             TestUtils.fail("Less data than usual! only got: " + rows.size());
         }
     }
