@@ -23,102 +23,73 @@ package org.ojalgo.finance.data.fetcher;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.CookieStore;
-import java.net.HttpCookie;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.netio.ResourceLocator;
+import org.ojalgo.netio.ResourceLocator.Request;
+import org.ojalgo.netio.ResourceLocator.Response;
+import org.ojalgo.netio.ResourceLocator.Session;
 
-@Disabled
 public class YahooFinanceTest {
 
     @Test
     public void testInitial() throws IOException, URISyntaxException {
 
-        ResourceLocator locator1 = new ResourceLocator("finance.yahoo.com");
+        Session session = ResourceLocator.session();
 
-        final CookieStore delegateCS = ResourceLocator.DEFAULT_COOKIE_MANAGER.getCookieStore();
+        Request request1 = session.request().host("finance.yahoo.com");
+        Response response1 = request1.response();
 
-        CookieManager cookieManager = new CookieManager(new CookieStore() {
+        BasicLogger.DEBUG.println(response1.getResponseHeaders());
+        BasicLogger.DEBUG.println(((CookieManager) CookieHandler.getDefault()).getCookieStore().getCookies());
 
-            public void add(final URI uri, final HttpCookie cookie) {
-                if (cookie.getMaxAge() == 0L) {
-                    cookie.setMaxAge(-1L);
-                }
-                delegateCS.add(uri, cookie);
-            }
-
-            public List<HttpCookie> get(final URI uri) {
-                return delegateCS.get(uri);
-            }
-
-            public List<HttpCookie> getCookies() {
-                return delegateCS.getCookies();
-            }
-
-            public List<URI> getURIs() {
-                return delegateCS.getURIs();
-            }
-
-            public boolean remove(final URI uri, final HttpCookie cookie) {
-                return delegateCS.remove(uri, cookie);
-            }
-
-            public boolean removeAll() {
-                return delegateCS.removeAll();
-            }
-
-        }, CookiePolicy.ACCEPT_ALL);
-
-        locator1.cookies(cookieManager);
-
-        ;
-
-        BasicLogger.DEBUG.println(locator1.getResponseHeaders());
-
-        BufferedReader reader1 = new BufferedReader(locator1.getStreamReader());
+        BufferedReader reader1 = new BufferedReader(response1.getStreamReader());
         String line = null;
         while ((line = reader1.readLine()) != null) {
-            BasicLogger.DEBUG.println(line);
+            if (line.length() > 0) {
+                BasicLogger.DEBUG.println(line);
+            }
         }
 
+        BasicLogger.DEBUG.println(response1.getResponseHeaders());
+        BasicLogger.DEBUG.println(((CookieManager) CookieHandler.getDefault()).getCookieStore().getCookies());
+
         // https://guce.oath.com/consent
-        ResourceLocator locator2 = new ResourceLocator("guce.oath.com");
-        locator2.path("/consent");
-        locator2.cookies(cookieManager);
+        Request request2 = session.request().host("guce.oath.com").path("/consent");
 
-        locator2.parameter("consentCollectionStep", "EU_SINGLEPAGE");
-        locator2.parameter("previousStep", "");
-        locator2.parameter("csrfToken", "ys3FnM4CLn57YaJEC0O95pIrKU4vECaT");
-        locator2.parameter("jurisdiction", "");
-        locator2.parameter("locale", "sv-SE");
-        locator2.parameter("doneUrl", "https://guce.yahoo.com/copyConsent?sessionId=3_cc-session_197ab237-da28-418b-9702-c7d86fc9a8d3&inline=false&lang=sv-SE");
-        locator2.parameter("tosId", "eu");
-        locator2.parameter("sessionId", "3_cc-session_197ab237-da28-418b-9702-c7d86fc9a8d3");
-        locator2.parameter("namespace", "yahoo");
-        locator2.parameter("originalDoneUrl", "https://finance.yahoo.com/?guccounter=1");
-        locator2.parameter("inline", "false");
-        locator2.parameter("startStep", "EU_SINGLEPAGE");
-        locator2.parameter("isSDK", "false");
-        locator2.parameter("brandBid", "e9a82d1dvvlno");
-        locator2.parameter("userType", "NON_REG");
-        locator2.parameter("country", "SE");
-        locator2.parameter("ybarNamespace", "YAHOO");
-        locator2.parameter("agree", "agree");
+        request2.parameter("consentCollectionStep", "EU_SINGLEPAGE");
+        request2.parameter("previousStep", "");
+        request2.parameter("csrfToken", "ys3FnM4CLn57YaJEC0O95pIrKU4vECaT");
+        request2.parameter("jurisdiction", "");
+        request2.parameter("locale", "sv-SE");
+        request2.parameter("doneUrl", "https://guce.yahoo.com/copyConsent?sessionId=3_cc-session_197ab237-da28-418b-9702-c7d86fc9a8d3&inline=false&lang=sv-SE");
+        request2.parameter("tosId", "eu");
+        request2.parameter("sessionId", "3_cc-session_197ab237-da28-418b-9702-c7d86fc9a8d3");
+        request2.parameter("namespace", "yahoo");
+        request2.parameter("originalDoneUrl", "https://finance.yahoo.com/?guccounter=1");
+        request2.parameter("inline", "false");
+        request2.parameter("startStep", "EU_SINGLEPAGE");
+        request2.parameter("isSDK", "false");
+        request2.parameter("brandBid", "e9a82d1dvvlno");
+        request2.parameter("userType", "NON_REG");
+        request2.parameter("country", "SE");
+        request2.parameter("ybarNamespace", "YAHOO");
+        request2.parameter("agree", "agree");
 
-        BasicLogger.DEBUG.println(locator2.getResponseHeaders());
+        BasicLogger.DEBUG.println(response1.getResponseHeaders());
+        BasicLogger.DEBUG.println(((CookieManager) CookieHandler.getDefault()).getCookieStore().getCookies());
 
-        BufferedReader reader2 = new BufferedReader(locator2.getStreamReader());
+        BufferedReader reader2 = new BufferedReader(request2.response().getStreamReader());
         while ((line = reader2.readLine()) != null) {
             BasicLogger.DEBUG.println(line);
         }
+
+        BasicLogger.DEBUG.println(response1.getResponseHeaders());
+        BasicLogger.DEBUG.println(((CookieManager) CookieHandler.getDefault()).getCookieStore().getCookies());
 
     }
 
