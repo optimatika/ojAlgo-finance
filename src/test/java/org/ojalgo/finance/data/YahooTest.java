@@ -22,6 +22,7 @@
  */
 package org.ojalgo.finance.data;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.type.CalendarDateUnit;
@@ -31,6 +32,7 @@ import org.ojalgo.type.CalendarDateUnit;
  *
  * @author apete
  */
+@Disabled
 public class YahooTest extends FinanceDataTests {
 
     public YahooTest() {

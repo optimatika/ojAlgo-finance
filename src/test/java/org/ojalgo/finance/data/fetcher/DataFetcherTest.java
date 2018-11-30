@@ -23,6 +23,7 @@ package org.ojalgo.finance.data.fetcher;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.finance.data.DataSource;
@@ -88,6 +89,7 @@ public class DataFetcherTest {
     }
 
     @Test
+    @Disabled
     public void testYahooDailyAAPL() {
 
         final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.DAY);
@@ -102,6 +104,7 @@ public class DataFetcherTest {
     }
 
     @Test
+    @Disabled
     public void testYahooMonthlyAAPL() {
 
         final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.MONTH);
@@ -116,6 +119,7 @@ public class DataFetcherTest {
     }
 
     @Test
+    @Disabled
     public void testYahooWeeklyAAPL() {
 
         final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.WEEK);

@@ -31,10 +31,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.netio.ResourceLocator;
 
+@Disabled
 public class YahooFinanceTest {
 
     @Test
