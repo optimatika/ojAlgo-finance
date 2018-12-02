@@ -47,7 +47,7 @@ import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
 
-public final class DataSource {
+public final class DataSource implements FinanceData {
 
     private static final TemporalAdjuster FRIDAY = TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY);
     private static final TemporalAdjuster LAST_DAY_OF_MONTH = TemporalAdjusters.lastDayOfMonth();

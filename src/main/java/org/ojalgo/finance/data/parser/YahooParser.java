@@ -51,7 +51,7 @@ public class YahooParser implements BasicParser<YahooParser.Data> {
             super(text, formatter);
         }
 
-        Data(LocalDate date) {
+        public Data(LocalDate date) {
             super(date);
         }
 
