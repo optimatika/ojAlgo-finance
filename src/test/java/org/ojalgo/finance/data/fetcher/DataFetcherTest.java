@@ -28,22 +28,30 @@ import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.finance.data.DataSource;
 import org.ojalgo.finance.data.DatePrice;
+import org.ojalgo.finance.data.FinanceData;
 import org.ojalgo.type.CalendarDateUnit;
 
 public class DataFetcherTest {
+
+    static void assertAtLeastExpectedItems(final FinanceData dataSource, int expected) {
+
+        final List<DatePrice> rows = dataSource.getHistoricalPrices();
+
+        if (rows.size() <= 0) {
+            TestUtils.fail("No data!");
+        } else {
+            if (rows.size() < expected) {
+                TestUtils.fail("Less data than usual! only got: " + rows.size());
+            }
+        }
+    }
 
     @Test
     public void testAlphaVantageDailyMSFT() {
 
         final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
 
-        final List<DatePrice> rows = dataSource.getHistoricalPrices();
-
-        if (rows.size() <= 0) {
-            TestUtils.fail("No data!");
-        } else if (rows.size() < 100) {
-            TestUtils.fail("Less data than usual! only got: " + rows.size());
-        }
+        DataFetcherTest.assertAtLeastExpectedItems(dataSource, 100);
     }
 
     @Test
@@ -51,13 +59,7 @@ public class DataFetcherTest {
 
         final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.MONTH, "demo");
 
-        final List<DatePrice> rows = dataSource.getHistoricalPrices();
-
-        if (rows.size() <= 0) {
-            TestUtils.fail("No data!");
-        } else if (rows.size() < 250) {
-            TestUtils.fail("Less data than usual! only got: " + rows.size());
-        }
+        DataFetcherTest.assertAtLeastExpectedItems(dataSource, 250);
     }
 
     @Test
@@ -65,13 +67,7 @@ public class DataFetcherTest {
 
         final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.WEEK, "demo");
 
-        final List<DatePrice> rows = dataSource.getHistoricalPrices();
-
-        if (rows.size() <= 0) {
-            TestUtils.fail("No data!");
-        } else if (rows.size() < 1089) {
-            TestUtils.fail("Less data than usual! only got: " + rows.size());
-        }
+        DataFetcherTest.assertAtLeastExpectedItems(dataSource, 1089);
     }
 
     @Test
@@ -79,13 +75,7 @@ public class DataFetcherTest {
 
         final DataSource dataSource = DataSource.newIEXTrading("MSFT", CalendarDateUnit.DAY);
 
-        final List<DatePrice> rows = dataSource.getHistoricalPrices();
-
-        if (rows.size() <= 0) {
-            TestUtils.fail("No data!");
-        } else if (rows.size() < 1259) {
-            TestUtils.fail("Less data than usual! only got: " + rows.size());
-        }
+        DataFetcherTest.assertAtLeastExpectedItems(dataSource, 1259);
     }
 
     @Test
@@ -94,13 +84,7 @@ public class DataFetcherTest {
 
         final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.DAY);
 
-        final List<DatePrice> rows = dataSource.getHistoricalPrices();
-
-        if (rows.size() <= 0) {
-            TestUtils.fail("No data!");
-        } else if (rows.size() < 1) {
-            TestUtils.fail("Less data than usual! only got: " + rows.size());
-        }
+        DataFetcherTest.assertAtLeastExpectedItems(dataSource, 1);
     }
 
     @Test
@@ -109,13 +93,7 @@ public class DataFetcherTest {
 
         final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.MONTH);
 
-        final List<DatePrice> rows = dataSource.getHistoricalPrices();
-
-        if (rows.size() <= 0) {
-            TestUtils.fail("No data!");
-        } else if (rows.size() < 1) {
-            TestUtils.fail("Less data than usual! only got: " + rows.size());
-        }
+        DataFetcherTest.assertAtLeastExpectedItems(dataSource, 1);
     }
 
     @Test
@@ -124,13 +102,7 @@ public class DataFetcherTest {
 
         final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.WEEK);
 
-        final List<DatePrice> rows = dataSource.getHistoricalPrices();
-
-        if (rows.size() <= 0) {
-            TestUtils.fail("No data!");
-        } else if (rows.size() < 1) {
-            TestUtils.fail("Less data than usual! only got: " + rows.size());
-        }
+        DataFetcherTest.assertAtLeastExpectedItems(dataSource, 1);
     }
 
 }

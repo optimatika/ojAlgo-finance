@@ -22,6 +22,7 @@
 package org.ojalgo.finance.data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.ojalgo.array.DenseArray.Factory;
 import org.ojalgo.series.BasicSeries;
@@ -31,5 +32,7 @@ public interface FinanceData {
     String getSymbol();
 
     BasicSeries<LocalDate, Double> getPriceSeries(Factory<Double> factory);
+
+    List<DatePrice> getHistoricalPrices();
 
 }
