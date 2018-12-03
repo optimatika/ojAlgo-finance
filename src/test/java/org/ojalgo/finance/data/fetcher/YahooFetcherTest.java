@@ -22,6 +22,8 @@
 package org.ojalgo.finance.data.fetcher;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.netio.BasicLogger;
@@ -38,6 +40,10 @@ public class YahooFetcherTest {
 
     @Test
     public void testSequence() throws IOException {
+
+        Properties props = new Properties();
+        props.setProperty("crumb", "3OCj0.Pb\u002F4G");
+        BasicLogger.DEBUG.println(props.getProperty("crumb"));
 
         ResourceLocator.Session session = ResourceLocator.session();
 
@@ -117,6 +123,42 @@ public class YahooFetcherTest {
         BasicLogger.DEBUG.println(session.getCookies());
         BasicLogger.DEBUG.println(response3.getResponseHeaders());
         BasicLogger.DEBUG.println(response3.toString());
+        BasicLogger.DEBUG.println(session.getCookies());
+
+        // https://query1.finance.yahoo.com/v1/test/getcrumb
+
+        Request request4 = session.request().host("query1.finance.yahoo.com").path("/v1/test/getcrumb");
+
+        Response response4 = request4.response();
+
+        BasicLogger.DEBUG.println();
+        BasicLogger.DEBUG.println(response4.toString());
+        BasicLogger.DEBUG.println(session.getCookies());
+        BasicLogger.DEBUG.println(response4.getResponseHeaders());
+        String crumb = response4.toString();
+        while (!crumb.equals(URLEncoder.encode(crumb, "UTF-8"))) {
+            crumb = request4.response().toString();
+        }
+
+        ;
+        BasicLogger.DEBUG.println(crumb);
+        BasicLogger.DEBUG.println(session.getCookies());
+
+        // https://query1.finance.yahoo.com/v7/finance/download/AAPL?period1=597106800&period2=1543791600&interval=1d&crumb=sbdcG19gKoC
+
+        Request request5 = session.request().host("query1.finance.yahoo.com").path("/v7/finance/download/AAPL");
+        request5.query("period1", "597106800");
+        request5.query("period2", "1543791600");
+        request5.query("interval", "1d");
+        request5.query("crumb", crumb);
+
+        Response response5 = request5.response();
+
+        BasicLogger.DEBUG.println();
+        BasicLogger.DEBUG.println(response5.toString());
+        BasicLogger.DEBUG.println(session.getCookies());
+        BasicLogger.DEBUG.println(response5.getResponseHeaders());
+        BasicLogger.DEBUG.println(response5.toString());
         BasicLogger.DEBUG.println(session.getCookies());
 
     }

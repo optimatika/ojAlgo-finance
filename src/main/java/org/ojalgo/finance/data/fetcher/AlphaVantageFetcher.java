@@ -19,20 +19,20 @@ public class AlphaVantageFetcher extends DataFetcher {
 
         switch (resolution) {
         case MONTH:
-            resourceLocator.parameter("function", "TIME_SERIES_MONTHLY_ADJUSTED");
+            resourceLocator.query("function", "TIME_SERIES_MONTHLY_ADJUSTED");
             break;
         case WEEK:
-            resourceLocator.parameter("function", "TIME_SERIES_WEEKLY_ADJUSTED");
+            resourceLocator.query("function", "TIME_SERIES_WEEKLY_ADJUSTED");
             break;
         default:
-            resourceLocator.parameter("function", "TIME_SERIES_DAILY_ADJUSTED");
+            resourceLocator.query("function", "TIME_SERIES_DAILY_ADJUSTED");
             break;
         }
-        resourceLocator.parameter("symbol", symbol);
-        resourceLocator.parameter("apikey", apiKey);
-        resourceLocator.parameter("datatype", "csv");
+        resourceLocator.query("symbol", symbol);
+        resourceLocator.query("apikey", apiKey);
+        resourceLocator.query("datatype", "csv");
         if (fullOutputSize && (resolution == CalendarDateUnit.DAY) && !"demo".equals(apiKey)) {
-            resourceLocator.parameter("outputsize", "full");
+            resourceLocator.query("outputsize", "full");
         }
 
     }

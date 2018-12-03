@@ -76,22 +76,22 @@ public class YahooFetcher extends DataFetcher {
 
         switch (resolution) {
         case MONTH:
-            resourceLocator.parameter("interval", 1 + "mo");
+            resourceLocator.query("interval", 1 + "mo");
             break;
         case WEEK:
-            resourceLocator.parameter("interval", 1 + "wk");
+            resourceLocator.query("interval", 1 + "wk");
             break;
         default:
-            resourceLocator.parameter("interval", 1 + "d");
+            resourceLocator.query("interval", 1 + "d");
             break;
         }
-        resourceLocator.parameter("events", "history");
+        resourceLocator.query("events", "history");
 
         final Instant now = Instant.now();
 
-        resourceLocator.parameter("period1", Long.toString(now.minusSeconds(60L * 60L * 24 * 366L * 10L).getEpochSecond()));
-        resourceLocator.parameter("period2", Long.toString(now.getEpochSecond()));
-        resourceLocator.parameter("crumb", CRUMB);
+        resourceLocator.query("period1", Long.toString(now.minusSeconds(60L * 60L * 24 * 366L * 10L).getEpochSecond()));
+        resourceLocator.query("period2", Long.toString(now.getEpochSecond()));
+        resourceLocator.query("crumb", CRUMB);
 
     }
 

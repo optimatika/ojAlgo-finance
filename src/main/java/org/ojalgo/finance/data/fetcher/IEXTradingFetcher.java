@@ -23,7 +23,7 @@ public class IEXTradingFetcher extends DataFetcher {
         resourceLocator.cookies(null);
         resourceLocator.path("/1.0/stock/" + symbol + "/chart/5y");
 
-        resourceLocator.parameter("format", "csv");
+        resourceLocator.query("format", "csv");
     }
 
 }
