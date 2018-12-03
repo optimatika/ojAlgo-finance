@@ -21,13 +21,10 @@
  */
 package org.ojalgo.finance.data;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,9 +45,6 @@ import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
 
 public final class DataSource implements FinanceData {
-
-    private static final TemporalAdjuster FRIDAY = TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY);
-    private static final TemporalAdjuster LAST_DAY_OF_MONTH = TemporalAdjusters.lastDayOfMonth();
 
     public static DataSource newAlphaVantage(String symbol, CalendarDateUnit resolution, String apiKey) {
         return DataSource.newAlphaVantage(symbol, resolution, apiKey, false);
@@ -153,10 +147,10 @@ public final class DataSource implements FinanceData {
         for (DatePrice datePrice : this.getHistoricalPrices()) {
             switch (myFetcher.getResolution()) {
             case MONTH:
-                adjusted = (LocalDate) LAST_DAY_OF_MONTH.adjustInto(datePrice.key);
+                adjusted = (LocalDate) FinanceData.LAST_DAY_OF_MONTH.adjustInto(datePrice.key);
                 break;
             case WEEK:
-                adjusted = (LocalDate) FRIDAY.adjustInto(datePrice.key);
+                adjusted = (LocalDate) FinanceData.FRIDAY_OF_WEEK.adjustInto(datePrice.key);
                 break;
             default:
                 adjusted = datePrice.key;

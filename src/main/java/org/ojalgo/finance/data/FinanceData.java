@@ -21,7 +21,10 @@
  */
 package org.ojalgo.finance.data;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import org.ojalgo.array.DenseArray.Factory;
@@ -29,10 +32,17 @@ import org.ojalgo.series.BasicSeries;
 
 public interface FinanceData {
 
-    String getSymbol();
+    /**
+     * Assumes there will be no data for weekends. If there is the implementation nedds to be changed to
+     * <code>(temporal) -> TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY).adjustInto(temporal.minus(2, ChronoUnit.DAYS))</code>.
+     */
+    TemporalAdjuster FRIDAY_OF_WEEK = TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY);
+    TemporalAdjuster LAST_DAY_OF_MONTH = TemporalAdjusters.lastDayOfMonth();
+
+    List<DatePrice> getHistoricalPrices();
 
     BasicSeries<LocalDate, Double> getPriceSeries(Factory<Double> factory);
 
-    List<DatePrice> getHistoricalPrices();
+    String getSymbol();
 
 }
