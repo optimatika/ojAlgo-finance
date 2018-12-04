@@ -44,6 +44,19 @@ public class BasicSeriesTest extends FinanceDataTests {
     }
 
     @Test
+    public void testCoordinateDifferentSources() {
+
+        final DataSource sourceIEX = DataSource.newIEXTrading("MSFT", CalendarDateUnit.DAY);
+        final DataSource sourceAVa = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
+
+        NaturallySequenced<LocalDate, Double> seriesIEX = sourceIEX.getPriceSeries(Primitive64Array.FACTORY);
+        NaturallySequenced<LocalDate, Double> seriesAVa = sourceAVa.getPriceSeries(Primitive64Array.FACTORY);
+
+        // BasicSeries;
+
+    }
+
+    @Test
     public void testDoubleKeys() {
 
         final int dim = 1000;
@@ -63,19 +76,6 @@ public class BasicSeriesTest extends FinanceDataTests {
         for (int i = 0; i < dim; i++) {
             TestUtils.assertEquals(keys[i], Double.longBitsToDouble(indices[i]));
         }
-    }
-
-    @Test
-    public void testCoordinateDifferentSources() {
-
-        final DataSource sourceIEX = DataSource.newIEXTrading("MSFT", CalendarDateUnit.DAY);
-        final DataSource sourceAVa = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
-
-        NaturallySequenced<LocalDate, Double> seriesIEX = sourceIEX.getPriceSeries(Primitive64Array.FACTORY);
-        NaturallySequenced<LocalDate, Double> seriesAVa = sourceAVa.getPriceSeries(Primitive64Array.FACTORY);
-
-        // BasicSeries;
-
     }
 
     @Test

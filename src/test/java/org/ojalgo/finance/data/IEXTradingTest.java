@@ -37,6 +37,14 @@ public class IEXTradingTest extends FinanceDataTests {
     }
 
     @Test
+    public void testDeriveDistributions() {
+
+        final DataSource dataSource = DataSource.newIEXTrading("AAPL", CalendarDateUnit.DAY);
+
+        FinanceDataTests.doTestDeriveDistribution(dataSource);
+    }
+
+    @Test
     public void testFetchDaily() {
 
         if (DataSource.newIEXTrading("AAPL", CalendarDateUnit.DAY).getHistoricalPrices().size() <= 1) {
@@ -45,11 +53,11 @@ public class IEXTradingTest extends FinanceDataTests {
     }
 
     @Test
-    public void testDeriveDistributions() {
+    public void testIEXTradingDailyMSFT() {
 
-        final DataSource dataSource = DataSource.newIEXTrading("AAPL", CalendarDateUnit.DAY);
+        final DataSource dataSource = DataSource.newIEXTrading("MSFT", CalendarDateUnit.DAY);
 
-        FinanceDataTests.doTestDeriveDistribution(dataSource);
+        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1259);
     }
 
 }

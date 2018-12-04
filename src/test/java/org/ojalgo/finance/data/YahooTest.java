@@ -40,6 +40,14 @@ public class YahooTest extends FinanceDataTests {
     }
 
     @Test
+    public void testDeriveDistributions() {
+
+        final DataSource dataSource = DataSource.newYahoo("MSFT", CalendarDateUnit.DAY);
+
+        FinanceDataTests.doTestDeriveDistribution(dataSource);
+    }
+
+    @Test
     public void testFetchDaily() {
 
         if (DataSource.newYahoo("MSFT", CalendarDateUnit.DAY).getHistoricalPrices().size() <= 1) {
@@ -64,11 +72,30 @@ public class YahooTest extends FinanceDataTests {
     }
 
     @Test
-    public void testDeriveDistributions() {
+    @Disabled
+    public void testYahooDailyAAPL() {
+    
+        final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.DAY);
+    
+        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1);
+    }
 
-        final DataSource dataSource = DataSource.newYahoo("MSFT", CalendarDateUnit.DAY);
+    @Test
+    @Disabled
+    public void testYahooMonthlyAAPL() {
+    
+        final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.MONTH);
+    
+        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1);
+    }
 
-        FinanceDataTests.doTestDeriveDistribution(dataSource);
+    @Test
+    @Disabled
+    public void testYahooWeeklyAAPL() {
+    
+        final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.WEEK);
+    
+        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1);
     }
 
 }

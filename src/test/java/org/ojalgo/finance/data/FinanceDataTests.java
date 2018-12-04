@@ -21,6 +21,7 @@
  */
 package org.ojalgo.finance.data;
 
+import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,8 +58,17 @@ public abstract class FinanceDataTests extends FunctionalityTest {
         }
     }
 
-    protected FinanceDataTests() {
-        super();
+    static void assertAtLeastExpectedItems(final FinanceData dataSource, int expected) {
+    
+        final List<DatePrice> rows = dataSource.getHistoricalPrices();
+    
+        if (rows.size() <= 0) {
+            TestUtils.fail("No data!");
+        } else {
+            if (rows.size() < expected) {
+                TestUtils.fail("Less data than usual! only got: " + rows.size());
+            }
+        }
     }
 
     static void doTestDeriveDistribution(final DataSource dataSource) {
@@ -92,6 +102,10 @@ public abstract class FinanceDataTests extends FunctionalityTest {
         TestUtils.assertEquals("Monthly Expected", expDistr.getExpected(), actDistr.getExpected(), delta);
         TestUtils.assertEquals("Monthly Var", expDistr.getVariance(), actDistr.getVariance(), delta);
         TestUtils.assertEquals("Monthly StdDev", expDistr.getStandardDeviation(), actDistr.getStandardDeviation(), delta);
+    }
+
+    protected FinanceDataTests() {
+        super();
     }
 
 }

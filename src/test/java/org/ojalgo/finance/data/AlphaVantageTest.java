@@ -38,6 +38,38 @@ public class AlphaVantageTest extends FinanceDataTests {
     }
 
     @Test
+    public void testAlphaVantageDailyMSFT() {
+    
+        final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
+    
+        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 100);
+    }
+
+    @Test
+    public void testAlphaVantageMonthlyMSFT() {
+    
+        final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.MONTH, "demo");
+    
+        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 250);
+    }
+
+    @Test
+    public void testAlphaVantageWeeklyMSFT() {
+    
+        final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.WEEK, "demo");
+    
+        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1089);
+    }
+
+    @Test
+    public void testDeriveDistributions() {
+
+        final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
+
+        FinanceDataTests.doTestDeriveDistribution(dataSource);
+    }
+
+    @Test
     public void testFetchDaily() {
 
         if (DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo").getHistoricalPrices().size() <= 1) {
@@ -59,14 +91,6 @@ public class AlphaVantageTest extends FinanceDataTests {
         if (DataSource.newAlphaVantage("MSFT", CalendarDateUnit.WEEK, "demo").getHistoricalPrices().size() <= 1) {
             TestUtils.fail("No data!");
         }
-    }
-
-    @Test
-    public void testDeriveDistributions() {
-
-        final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
-
-        FinanceDataTests.doTestDeriveDistribution(dataSource);
     }
 
 }

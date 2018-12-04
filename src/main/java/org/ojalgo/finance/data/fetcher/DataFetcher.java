@@ -46,7 +46,7 @@ public abstract class DataFetcher {
 
         super();
 
-        myResourceLocator = new ResourceLocator(host);
+        myResourceLocator = new ResourceLocator().host(host);
 
         mySymbol = symbol;
         myResolution = resolution;
@@ -57,7 +57,7 @@ public abstract class DataFetcher {
 
         super();
 
-        myResourceLocator = new ResourceLocator(host);
+        myResourceLocator = new ResourceLocator().host(host);
 
         mySymbol = symbol;
         myResolution = resolution;
