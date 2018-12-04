@@ -8,28 +8,39 @@ import org.ojalgo.type.CalendarDateUnit;
 /**
  * @author stefanvanegmond
  */
-public class IEXTradingFetcher extends SimpleFetcher implements DataFetcher {
+public class IEXTradingFetcher implements DataFetcher {
+
+    private final ResourceLocator myResourceLocator;
+    private final String mySymbol;
 
     /**
      * Maximum of 5 years data
      *
      * @param symbol Symbol of stock
-     * @param resolution This will always be by day
      */
-    public IEXTradingFetcher(final String symbol, final CalendarDateUnit resolution) {
+    public IEXTradingFetcher(final String symbol) {
 
-        super("api.iextrading.com", symbol, resolution);
+        super();
 
-        final ResourceLocator resourceLocator = this.getResourceLocator();
+        mySymbol = symbol;
 
-        resourceLocator.cookies(null);
-        resourceLocator.path("/1.0/stock/" + symbol + "/chart/5y");
+        myResourceLocator = new ResourceLocator().host("api.iextrading.com").path("/1.0/stock/" + symbol + "/chart/5y").query("format", "csv");
+    }
 
-        resourceLocator.query("format", "csv");
+    /**
+     * This will always be by day.
+     *
+     * @see org.ojalgo.finance.data.fetcher.DataFetcher#getResolution()
+     */
+    public CalendarDateUnit getResolution() {
+        return CalendarDateUnit.DAY;
     }
 
     public Reader getStreamOfCSV() {
-        return this.getResourceLocator().getStreamReader();
+        return myResourceLocator.getStreamReader();
     }
 
+    public String getSymbol() {
+        return mySymbol;
+    }
 }

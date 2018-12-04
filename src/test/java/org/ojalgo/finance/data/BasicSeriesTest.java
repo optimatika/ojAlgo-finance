@@ -46,7 +46,7 @@ public class BasicSeriesTest extends FinanceDataTests {
     @Test
     public void testCoordinateDifferentSources() {
 
-        final DataSource sourceIEX = DataSource.newIEXTrading("MSFT", CalendarDateUnit.DAY);
+        final DataSource sourceIEX = DataSource.newIEXTrading("MSFT");
         final DataSource sourceAVa = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
 
         NaturallySequenced<LocalDate, Double> seriesIEX = sourceIEX.getPriceSeries(Primitive64Array.FACTORY);
@@ -81,7 +81,7 @@ public class BasicSeriesTest extends FinanceDataTests {
     @Test
     public void testResample() {
 
-        final DataSource dataSource = DataSource.newIEXTrading("AAPL", CalendarDateUnit.DAY);
+        final DataSource dataSource = DataSource.newIEXTrading("AAPL");
         final List<DatePrice> historicalPrices = dataSource.getHistoricalPrices();
         final double lastPrice = historicalPrices.get(historicalPrices.size() - 1).getPrice();
 

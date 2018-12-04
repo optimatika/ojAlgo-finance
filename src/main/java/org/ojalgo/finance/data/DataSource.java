@@ -56,8 +56,8 @@ public final class DataSource implements FinanceData {
         return new DataSource(fetcher, parser);
     }
 
-    public static DataSource newIEXTrading(String symbol, CalendarDateUnit resolution) {
-        IEXTradingFetcher fetcher = new IEXTradingFetcher(symbol, resolution);
+    public static DataSource newIEXTrading(String symbol) {
+        IEXTradingFetcher fetcher = new IEXTradingFetcher(symbol);
         IEXTradingParser parser = new IEXTradingParser();
         return new DataSource(fetcher, parser);
     }

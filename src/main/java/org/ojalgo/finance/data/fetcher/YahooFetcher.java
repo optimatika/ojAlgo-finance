@@ -36,15 +36,24 @@ import org.ojalgo.type.CalendarDateUnit;
  * @deprecated Doesn't work any longer
  */
 @Deprecated
-public class YahooFetcher extends SimpleFetcher implements DataFetcher {
+public class YahooFetcher implements DataFetcher {
 
     private static String CRUMB = null;
     private static final String MATCH_BEGIN = "CrumbStore\":{\"crumb\":\"";
     private static final String MATCH_END = "\"}";
 
+    private final CalendarDateUnit myResolution;
+    private final ResourceLocator myResourceLocator;
+    private final String mySymbol;
+
     public YahooFetcher(final String symbol, final CalendarDateUnit resolution) {
 
-        super("query1.finance.yahoo.com", symbol, resolution);
+        super();
+
+        myResourceLocator = new ResourceLocator().host("query1.finance.yahoo.com");
+
+        mySymbol = symbol;
+        myResolution = resolution;
 
         if (CRUMB == null) {
 
@@ -71,7 +80,7 @@ public class YahooFetcher extends SimpleFetcher implements DataFetcher {
             }
         }
 
-        final ResourceLocator resourceLocator = this.getResourceLocator();
+        final ResourceLocator resourceLocator = myResourceLocator;
 
         resourceLocator.path("/v7/finance/download/" + symbol);
 
@@ -96,8 +105,15 @@ public class YahooFetcher extends SimpleFetcher implements DataFetcher {
 
     }
 
-    public Reader getStreamOfCSV() {
-        return this.getResourceLocator().getStreamReader();
+    public CalendarDateUnit getResolution() {
+        return myResolution;
     }
 
+    public Reader getStreamOfCSV() {
+        return myResourceLocator.getStreamReader();
+    }
+
+    public String getSymbol() {
+        return mySymbol;
+    }
 }

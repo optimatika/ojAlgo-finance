@@ -23,7 +23,6 @@ package org.ojalgo.finance.data;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
-import org.ojalgo.type.CalendarDateUnit;
 
 /**
  * SymbolDataTest
@@ -39,7 +38,7 @@ public class IEXTradingTest extends FinanceDataTests {
     @Test
     public void testDeriveDistributions() {
 
-        final DataSource dataSource = DataSource.newIEXTrading("AAPL", CalendarDateUnit.DAY);
+        final DataSource dataSource = DataSource.newIEXTrading("AAPL");
 
         FinanceDataTests.doTestDeriveDistribution(dataSource);
     }
@@ -47,7 +46,7 @@ public class IEXTradingTest extends FinanceDataTests {
     @Test
     public void testFetchDaily() {
 
-        if (DataSource.newIEXTrading("AAPL", CalendarDateUnit.DAY).getHistoricalPrices().size() <= 1) {
+        if (DataSource.newIEXTrading("AAPL").getHistoricalPrices().size() <= 1) {
             TestUtils.fail("No data!");
         }
     }
@@ -55,7 +54,7 @@ public class IEXTradingTest extends FinanceDataTests {
     @Test
     public void testIEXTradingDailyMSFT() {
 
-        final DataSource dataSource = DataSource.newIEXTrading("MSFT", CalendarDateUnit.DAY);
+        final DataSource dataSource = DataSource.newIEXTrading("MSFT");
 
         FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1259);
     }

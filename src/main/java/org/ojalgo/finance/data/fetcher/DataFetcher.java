@@ -27,6 +27,9 @@ import org.ojalgo.type.CalendarDateUnit;
 
 public interface DataFetcher {
 
+    /**
+     * @return Typically DAY(ly), WEEK(ly) or MONTH(ly)
+     */
     CalendarDateUnit getResolution();
 
     Reader getStreamOfCSV();

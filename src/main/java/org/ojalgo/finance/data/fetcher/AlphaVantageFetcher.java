@@ -8,39 +8,50 @@ import org.ojalgo.type.CalendarDateUnit;
 /**
  * @author stefanvanegmond
  */
-public class AlphaVantageFetcher extends SimpleFetcher implements DataFetcher {
+public class AlphaVantageFetcher implements DataFetcher {
+
+    private final CalendarDateUnit myResolution;
+    private final ResourceLocator myResourceLocator;
+    private final String mySymbol;
 
     public AlphaVantageFetcher(final String symbol, final CalendarDateUnit resolution, final String apiKey, boolean fullOutputSize) {
 
-        super("www.alphavantage.co", symbol, resolution, apiKey);
+        super();
 
-        final ResourceLocator resourceLocator = this.getResourceLocator();
+        mySymbol = symbol;
+        myResolution = resolution;
 
-        resourceLocator.cookies(null);
-        resourceLocator.path("/query");
+        myResourceLocator = new ResourceLocator().host("www.alphavantage.co").path("/query");
 
         switch (resolution) {
         case MONTH:
-            resourceLocator.query("function", "TIME_SERIES_MONTHLY_ADJUSTED");
+            myResourceLocator.query("function", "TIME_SERIES_MONTHLY_ADJUSTED");
             break;
         case WEEK:
-            resourceLocator.query("function", "TIME_SERIES_WEEKLY_ADJUSTED");
+            myResourceLocator.query("function", "TIME_SERIES_WEEKLY_ADJUSTED");
             break;
         default:
-            resourceLocator.query("function", "TIME_SERIES_DAILY_ADJUSTED");
+            myResourceLocator.query("function", "TIME_SERIES_DAILY_ADJUSTED");
             break;
         }
-        resourceLocator.query("symbol", symbol);
-        resourceLocator.query("apikey", apiKey);
-        resourceLocator.query("datatype", "csv");
+        myResourceLocator.query("symbol", symbol);
+        myResourceLocator.query("apikey", apiKey);
+        myResourceLocator.query("datatype", "csv");
         if (fullOutputSize && (resolution == CalendarDateUnit.DAY) && !"demo".equals(apiKey)) {
-            resourceLocator.query("outputsize", "full");
+            myResourceLocator.query("outputsize", "full");
         }
+    }
 
+    public CalendarDateUnit getResolution() {
+        return myResolution;
     }
 
     public Reader getStreamOfCSV() {
-        return this.getResourceLocator().getStreamReader();
+        return myResourceLocator.getStreamReader();
+    }
+
+    public String getSymbol() {
+        return mySymbol;
     }
 
 }
