@@ -21,15 +21,17 @@
  */
 package org.ojalgo.finance.data.fetcher;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.ojalgo.netio.BasicLogger;
+import org.ojalgo.TestUtils;
+import org.ojalgo.finance.data.parser.YahooParser;
 import org.ojalgo.netio.ResourceLocator;
 import org.ojalgo.netio.ResourceLocator.Request;
 import org.ojalgo.netio.ResourceLocator.Response;
+import org.ojalgo.netio.ResourceLocator.Session;
+import org.ojalgo.type.CalendarDateUnit;
 
 /**
  * https://blog.alwold.com/2011/06/30/how-to-trust-a-certificate-in-java-on-mac-os-x/
@@ -39,128 +41,50 @@ import org.ojalgo.netio.ResourceLocator.Response;
 public class YahooFetcherTest {
 
     @Test
-    public void testSequence() throws IOException {
+    public void testSequence() {
 
-        Properties props = new Properties();
-        props.setProperty("crumb", "3OCj0.Pb\u002F4G");
-        BasicLogger.DEBUG.println(props.getProperty("crumb"));
+        Session session = ResourceLocator.session();
+        String symbol = "AAPL";
+        CalendarDateUnit resolution = CalendarDateUnit.DAY;
 
-        ResourceLocator.Session session = ResourceLocator.session();
+        // A request that requires consent, but not the crumb
+        Request challengeRequest = YahooSession.buildChallengeRequest(session, symbol);
+        Response challengeResponse = challengeRequest.response();
 
-        // https://query1.finance.yahoo.com/v7/finance/quote?symbols=AAPL
-
-        ResourceLocator.Request request1 = session.request().host("query1.finance.yahoo.com").path("/v7/finance/quote").query("symbols", "AAPL");
-
-        ResourceLocator.Response response1 = request1.response();
-
-        BasicLogger.DEBUG.println();
-        BasicLogger.DEBUG.println(request1.toString());
-        BasicLogger.DEBUG.println(response1.toString());
-
-        // https://finance.yahoo.com/quote/%5EGSPC/options
-
-        ResourceLocator.Request request2 = session.request().host("finance.yahoo.com").path("/quote/%5EGSPC/options");
-
-        ResourceLocator.Response response2 = request2.response();
-
-        BasicLogger.DEBUG.println();
-        BasicLogger.DEBUG.println(request2.toString());
-        BasicLogger.DEBUG.println(session.getCookies());
-        BasicLogger.DEBUG.println(response2.getResponseHeaders());
-        Request request = response2.getRequest();
-        BasicLogger.DEBUG.println(request.getQueryValue("sessionId"));
-        String string2 = response2.toString();
-        BasicLogger.DEBUG.println(string2);
-        BasicLogger.DEBUG.println(session.getCookies());
-
-        // https://guce.oath.com/consent
-
-        String crfT = "<input type=\"hidden\" name=\"csrfToken\" value=\"";
-        String brandT = "<input type=\"hidden\" name=\"brandBid\" value=\"";
-        String end = "\">";
-
-        int begin = string2.indexOf(crfT);
-        if (begin >= 0) {
-            begin += crfT.length();
-        }
-        int end3 = string2.indexOf(end, begin);
-
-        String csrfToken = string2.substring(begin, end3);
-
-        begin = string2.indexOf(brandT);
-        if (begin >= 0) {
-            begin += brandT.length();
-        }
-        end3 = string2.indexOf(end, begin);
-
-        String brandBid = string2.substring(begin, end3);
-
-        Request request3 = session.request().method(ResourceLocator.Method.POST).host("guce.oath.com").path("/consent");
-
-        request3.form("country", "SE");
-        request3.form("ybarNamespace", "YAHOO");
-        request3.form("previousStep", "");
-        request3.form("tosId", "eu");
-        request3.form("jurisdiction", "");
-        request3.form("originalDoneUrl", request2.toString()); // https://finance.yahoo.com/quote/%5EGSPC/options
-        request3.form("brandBid", brandBid); // 3hl7s45e09sc4
-        request3.form("sessionId", request.getQueryValue("sessionId")); // 3_cc-session_5bafe9c1-316b-437b-864f-299d24ad0920
-        request3.form("agree", "agree");
-        request3.form("locale", "sv-SE");
-        request3.form("isSDK", "false");
-        request3.form("csrfToken", csrfToken); // Gc-RLnvmNLePnQN1jAbxIWkItrST5j2M
-        request3.form("inline", "false");
-        request3.form("namespace", "yahoo");
-        request3.form("consentCollectionStep", "EU_SINGLEPAGE");
-        request3.form("doneUrl", "https://guce.yahoo.com/copyConsent?sessionId=" + request.getQueryValue("sessionId") + "&inline=false&lang=sv-SE"); // https://guce.yahoo.com/copyConsent?sessionId=3_cc-session_5bafe9c1-316b-437b-864f-299d24ad0920&inline=false&lang=sv-SE
-        request3.form("startStep", "EU_SINGLEPAGE");
-        request3.form("userType", "NON_REG");
-
-        Response response3 = request3.response();
-
-        BasicLogger.DEBUG.println();
-        BasicLogger.DEBUG.println(response3.toString());
-        BasicLogger.DEBUG.println(session.getCookies());
-        BasicLogger.DEBUG.println(response3.getResponseHeaders());
-        BasicLogger.DEBUG.println(response3.toString());
-        BasicLogger.DEBUG.println(session.getCookies());
-
-        // https://query1.finance.yahoo.com/v1/test/getcrumb
-
-        Request request4 = session.request().host("query1.finance.yahoo.com").path("/v1/test/getcrumb");
-
-        Response response4 = request4.response();
-
-        BasicLogger.DEBUG.println();
-        BasicLogger.DEBUG.println(response4.toString());
-        BasicLogger.DEBUG.println(session.getCookies());
-        BasicLogger.DEBUG.println(response4.getResponseHeaders());
-        String crumb = response4.toString();
-        while (!crumb.equals(URLEncoder.encode(crumb, "UTF-8"))) {
-            crumb = request4.response().toString();
+        String challengeResponseBody = challengeResponse.toString();
+        TestUtils.assertNotNullOrEmpty(challengeResponseBody);
+        // Must get this after the http body has been read
+        if (challengeRequest.equals(challengeResponse.getRequest())) {
+            TestUtils.fail("Not redirect - supposed to redirect to the consent page - something changed!");
         }
 
-        ;
-        BasicLogger.DEBUG.println(crumb);
-        BasicLogger.DEBUG.println(session.getCookies());
+        YahooSession.scrapeChallengeResponse(session, challengeResponse);
 
-        // https://query1.finance.yahoo.com/v7/finance/download/AAPL?period1=597106800&period2=1543791600&interval=1d&crumb=sbdcG19gKoC
+        TestUtils.assertNotNullOrEmpty(session.getParameterValue(YahooSession.SESSION_ID));
+        TestUtils.assertNotNullOrEmpty(session.getParameterValue(YahooSession.CSRF_TOKEN));
+        TestUtils.assertNotNullOrEmpty(session.getParameterValue(YahooSession.BRAND_BID));
 
-        Request request5 = session.request().host("query1.finance.yahoo.com").path("/v7/finance/download/AAPL");
-        request5.query("period1", "597106800");
-        request5.query("period2", "1543791600");
-        request5.query("interval", "1d");
-        request5.query("crumb", crumb);
+        Request consentRequest = YahooSession.buildConsentRequest(session, challengeRequest);
+        Response consentResponse = consentRequest.response();
 
-        Response response5 = request5.response();
+        TestUtils.assertInRange(200, 300, consentResponse.getResponseCode());
 
-        BasicLogger.DEBUG.println();
-        BasicLogger.DEBUG.println(response5.toString());
-        BasicLogger.DEBUG.println(session.getCookies());
-        BasicLogger.DEBUG.println(response5.getResponseHeaders());
-        BasicLogger.DEBUG.println(response5.toString());
-        BasicLogger.DEBUG.println(session.getCookies());
+        Request crumbRequest = YahooSession.buildCrumbRequest(session);
+        Response crumbResponse = crumbRequest.response();
 
+        YahooSession.scrapeCrumbResponse(session, crumbResponse);
+
+        TestUtils.assertNotNullOrEmpty(session.getParameterValue(YahooSession.CRUMB));
+        TestUtils.assertEquals(crumbResponse.toString(), session.getParameterValue(YahooSession.CRUMB));
+
+        Request dataRequest = YahooSession.buildDataRequest(session, symbol, resolution);
+        Response dataResponse = dataRequest.response();
+
+        YahooParser parser = new YahooParser();
+        List<YahooParser.Data> data = new ArrayList<>();
+        parser.parse(dataResponse.getStreamReader(), dp -> data.add(dp));
+
+        TestUtils.assertTrue(data.size() >= 7559);
     }
 
 }

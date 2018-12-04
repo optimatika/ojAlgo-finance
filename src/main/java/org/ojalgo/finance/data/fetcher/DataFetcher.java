@@ -32,8 +32,14 @@ public interface DataFetcher {
      */
     CalendarDateUnit getResolution();
 
+    /**
+     * @return A stream reader that can be sent to a CSV parser
+     */
     Reader getStreamOfCSV();
 
+    /**
+     * @return Data identifier
+     */
     String getSymbol();
 
 }

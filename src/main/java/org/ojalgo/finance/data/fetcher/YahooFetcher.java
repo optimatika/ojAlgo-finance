@@ -80,28 +80,26 @@ public class YahooFetcher implements DataFetcher {
             }
         }
 
-        final ResourceLocator resourceLocator = myResourceLocator;
-
-        resourceLocator.path("/v7/finance/download/" + symbol);
+        myResourceLocator.path("/v7/finance/download/" + symbol);
 
         switch (resolution) {
         case MONTH:
-            resourceLocator.query("interval", 1 + "mo");
+            myResourceLocator.query("interval", 1 + "mo");
             break;
         case WEEK:
-            resourceLocator.query("interval", 1 + "wk");
+            myResourceLocator.query("interval", 1 + "wk");
             break;
         default:
-            resourceLocator.query("interval", 1 + "d");
+            myResourceLocator.query("interval", 1 + "d");
             break;
         }
-        resourceLocator.query("events", "history");
+        myResourceLocator.query("events", "history");
 
         final Instant now = Instant.now();
 
-        resourceLocator.query("period1", Long.toString(now.minusSeconds(60L * 60L * 24 * 366L * 10L).getEpochSecond()));
-        resourceLocator.query("period2", Long.toString(now.getEpochSecond()));
-        resourceLocator.query("crumb", CRUMB);
+        myResourceLocator.query("period1", Long.toString(now.minusSeconds(60L * 60L * 24 * 366L * 10L).getEpochSecond()));
+        myResourceLocator.query("period2", Long.toString(now.getEpochSecond()));
+        myResourceLocator.query("crumb", CRUMB);
 
     }
 
