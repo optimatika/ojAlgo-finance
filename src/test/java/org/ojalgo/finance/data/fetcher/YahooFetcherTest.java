@@ -68,7 +68,7 @@ public class YahooFetcherTest {
         BasicLogger.DEBUG.println(session.getCookies());
         BasicLogger.DEBUG.println(response2.getResponseHeaders());
         Request request = response2.getRequest();
-        BasicLogger.DEBUG.println(request.getParameter("sessionId"));
+        BasicLogger.DEBUG.println(request.getQueryValue("sessionId"));
         String string2 = response2.toString();
         BasicLogger.DEBUG.println(string2);
         BasicLogger.DEBUG.println(session.getCookies());
@@ -104,7 +104,7 @@ public class YahooFetcherTest {
         request3.form("jurisdiction", "");
         request3.form("originalDoneUrl", request2.toString()); // https://finance.yahoo.com/quote/%5EGSPC/options
         request3.form("brandBid", brandBid); // 3hl7s45e09sc4
-        request3.form("sessionId", request.getParameter("sessionId")); // 3_cc-session_5bafe9c1-316b-437b-864f-299d24ad0920
+        request3.form("sessionId", request.getQueryValue("sessionId")); // 3_cc-session_5bafe9c1-316b-437b-864f-299d24ad0920
         request3.form("agree", "agree");
         request3.form("locale", "sv-SE");
         request3.form("isSDK", "false");
@@ -112,7 +112,7 @@ public class YahooFetcherTest {
         request3.form("inline", "false");
         request3.form("namespace", "yahoo");
         request3.form("consentCollectionStep", "EU_SINGLEPAGE");
-        request3.form("doneUrl", "https://guce.yahoo.com/copyConsent?sessionId=" + request.getParameter("sessionId") + "&inline=false&lang=sv-SE"); // https://guce.yahoo.com/copyConsent?sessionId=3_cc-session_5bafe9c1-316b-437b-864f-299d24ad0920&inline=false&lang=sv-SE
+        request3.form("doneUrl", "https://guce.yahoo.com/copyConsent?sessionId=" + request.getQueryValue("sessionId") + "&inline=false&lang=sv-SE"); // https://guce.yahoo.com/copyConsent?sessionId=3_cc-session_5bafe9c1-316b-437b-864f-299d24ad0920&inline=false&lang=sv-SE
         request3.form("startStep", "EU_SINGLEPAGE");
         request3.form("userType", "NON_REG");
 
