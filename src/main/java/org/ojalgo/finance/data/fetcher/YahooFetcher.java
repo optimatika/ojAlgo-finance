@@ -23,6 +23,7 @@ package org.ojalgo.finance.data.fetcher;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.time.Instant;
 import java.util.Properties;
@@ -35,7 +36,7 @@ import org.ojalgo.type.CalendarDateUnit;
  * @deprecated Doesn't work any longer
  */
 @Deprecated
-public class YahooFetcher extends DataFetcher {
+public class YahooFetcher extends SimpleFetcher implements DataFetcher {
 
     private static String CRUMB = null;
     private static final String MATCH_BEGIN = "CrumbStore\":{\"crumb\":\"";
@@ -93,6 +94,10 @@ public class YahooFetcher extends DataFetcher {
         resourceLocator.query("period2", Long.toString(now.getEpochSecond()));
         resourceLocator.query("crumb", CRUMB);
 
+    }
+
+    public Reader getStreamOfCSV() {
+        return this.getResourceLocator().getStreamReader();
     }
 
 }

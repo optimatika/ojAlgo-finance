@@ -109,7 +109,7 @@ public final class DataSource implements FinanceData {
     public List<DatePrice> getHistoricalPrices() {
         try {
             final ArrayList<DatePrice> retVal = new ArrayList<>();
-            myParser.parse(myFetcher.getStreamReader(), row -> retVal.add(row));
+            myParser.parse(myFetcher.getStreamOfCSV(), row -> retVal.add(row));
             Collections.sort(retVal);
             return retVal;
         } catch (final Exception exception) {

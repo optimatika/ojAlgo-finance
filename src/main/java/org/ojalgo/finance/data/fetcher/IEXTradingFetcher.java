@@ -1,12 +1,14 @@
 package org.ojalgo.finance.data.fetcher;
 
+import java.io.Reader;
+
 import org.ojalgo.netio.ResourceLocator;
 import org.ojalgo.type.CalendarDateUnit;
 
 /**
  * @author stefanvanegmond
  */
-public class IEXTradingFetcher extends DataFetcher {
+public class IEXTradingFetcher extends SimpleFetcher implements DataFetcher {
 
     /**
      * Maximum of 5 years data
@@ -24,6 +26,10 @@ public class IEXTradingFetcher extends DataFetcher {
         resourceLocator.path("/1.0/stock/" + symbol + "/chart/5y");
 
         resourceLocator.query("format", "csv");
+    }
+
+    public Reader getStreamOfCSV() {
+        return this.getResourceLocator().getStreamReader();
     }
 
 }

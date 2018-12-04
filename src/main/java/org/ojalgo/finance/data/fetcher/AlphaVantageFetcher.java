@@ -1,12 +1,14 @@
 package org.ojalgo.finance.data.fetcher;
 
+import java.io.Reader;
+
 import org.ojalgo.netio.ResourceLocator;
 import org.ojalgo.type.CalendarDateUnit;
 
 /**
  * @author stefanvanegmond
  */
-public class AlphaVantageFetcher extends DataFetcher {
+public class AlphaVantageFetcher extends SimpleFetcher implements DataFetcher {
 
     public AlphaVantageFetcher(final String symbol, final CalendarDateUnit resolution, final String apiKey, boolean fullOutputSize) {
 
@@ -35,6 +37,10 @@ public class AlphaVantageFetcher extends DataFetcher {
             resourceLocator.query("outputsize", "full");
         }
 
+    }
+
+    public Reader getStreamOfCSV() {
+        return this.getResourceLocator().getStreamReader();
     }
 
 }
