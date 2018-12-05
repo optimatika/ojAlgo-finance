@@ -67,7 +67,7 @@ public class YahooFetcherTest {
         Request consentRequest = YahooSession.buildConsentRequest(session, challengeRequest);
         Response consentResponse = consentRequest.response();
 
-        TestUtils.assertInRange(200, 300, consentResponse.getResponseCode());
+        TestUtils.assertInRange(200, 300, consentResponse.getStatusCode());
 
         Request crumbRequest = YahooSession.buildCrumbRequest(session);
         Response crumbResponse = crumbRequest.response();

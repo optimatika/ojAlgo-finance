@@ -65,7 +65,7 @@ public class YahooSession {
                 Request consentRequest = YahooSession.buildConsentRequest(mySession, challengeRequest);
                 Response consentResponse = consentRequest.response();
 
-                int responseCode = consentResponse.getResponseCode();
+                int responseCode = consentResponse.getStatusCode();
                 if (!((200 <= responseCode) && (responseCode < 300))) {
 
                 }
