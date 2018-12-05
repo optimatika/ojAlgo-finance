@@ -439,10 +439,11 @@ public class PortfolioProblems extends FinancePortfolioTests {
             markowitzModel.setLowerLimit(i, BigDecimal.ZERO);
             markowitzModel.setUpperLimit(i, BigDecimal.ONE);
         }
-        markowitzModel.optimiser().validate(true);
-        markowitzModel.optimiser().debug(false);
 
         try {
+            // Validation should not throw an exception in this case
+            markowitzModel.optimiser().validate(true);
+            markowitzModel.optimiser().debug(false);
             markowitzModel.getWeights();
         } catch (Exception exception) {
             TestUtils.fail(exception);
