@@ -30,6 +30,7 @@ import org.ojalgo.TestUtils;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.BigFunction;
 import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.PrimitiveMatrix.DenseReceiver;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
 import org.ojalgo.netio.BasicLogger;
@@ -397,6 +398,55 @@ public class PortfolioProblems extends FinancePortfolioTests {
             TestUtils.assertEquals("Return is close to target", targetReturn, markowitzModel.getMeanReturn(), StandardType.PERCENT.newPrecision(2).newScale(2));
         }
 
+    }
+
+    /**
+     * https://github.com/optimatika/ojAlgo/issues/158 and https://github.com/optimatika/ojAlgo/issues/153
+     * It's reasonable that this covariance matrix passes validation.
+     */
+    @Test
+    public void testP20181204() {
+
+        final double[][] assetsCovariances = {
+                { 0.0036133015701268483, 7.389913608466776E-4, 6.41031397418522E-4, -2.3105096877969656E-5, 8.879125330915954E-4 },
+                { 7.389913608466776E-4, 1.8348350177020605E-4, 1.1482397012107551E-4, -8.167817650045201E-6, 2.701855163781939E-4 },
+                { 6.41031397418522E-4, 1.1482397012107551E-4, 1.2573449753628196E-4, -3.721569692276288E-5, 1.3670994762578353E-4 },
+                { -2.3105096877969656E-5, -8.167817650045201E-6, -3.721569692276288E-5, 3.7685337454122363E-4, -3.022900619430631E-4 },
+                { 8.879125330915954E-4, 2.701855163781939E-4, 1.3670994762578353E-4, -3.022900619430631E-4, 6.934651608369498E-4 } };
+        final double[] assetsReturns = { 1.43676262431851, 0.9538185507216703, 1.069364872519786, 1.1612520648051148, 0.8803365994805741 };
+        final double targetReturn = 0.08;
+
+        final DenseReceiver assetsCovariancesMatrix = PrimitiveMatrix.FACTORY.makeDense(assetsCovariances.length, assetsCovariances.length);
+        for (int i = 0; i < assetsCovariances.length; i++) {
+            for (int j = 0; j < assetsCovariances[i].length; j++) {
+                assetsCovariancesMatrix.set(i, j, assetsCovariances[i][j]);
+            }
+        }
+
+        final DenseReceiver assetsReturnsMatrix = PrimitiveMatrix.FACTORY.makeDense(assetsReturns.length);
+        for (int i = 0; i < assetsReturns.length; i++) {
+            assetsReturnsMatrix.set(i, 0, assetsReturns[i]);
+        }
+
+        final MarketEquilibrium marketEq = new MarketEquilibrium(assetsCovariancesMatrix.build());
+        final MarkowitzModel markowitzModel = new MarkowitzModel(marketEq, assetsReturnsMatrix.build());
+        final BigDecimal value = StandardType.PERCENT.enforce(BigDecimal.valueOf(targetReturn));
+
+        markowitzModel.setTargetReturn(value);
+
+        markowitzModel.setShortingAllowed(false);
+        for (int i = 0; i < assetsReturns.length; i++) {
+            markowitzModel.setLowerLimit(i, BigDecimal.ZERO);
+            markowitzModel.setUpperLimit(i, BigDecimal.ONE);
+        }
+        markowitzModel.optimiser().validate(true);
+        markowitzModel.optimiser().debug(false);
+
+        try {
+            markowitzModel.getWeights();
+        } catch (Exception exception) {
+            TestUtils.fail(exception);
+        }
     }
 
 }
