@@ -21,46 +21,37 @@
  */
 package org.ojalgo.finance.data;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-import org.ojalgo.RecoverableCondition;
-import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.keyvalue.KeyValue;
 
-public abstract class DatePrice implements KeyValue<CalendarDate, Double> {
+public abstract class DatePrice implements KeyValue<LocalDate, Double> {
 
-    public final CalendarDate key;
+    public final LocalDate key;
 
-    protected DatePrice(final Calendar calendar) {
-
-        super();
-
-        key = new CalendarDate(calendar);
-    }
-
-    protected DatePrice(final Date date) {
+    protected DatePrice(CharSequence text) {
 
         super();
 
-        key = new CalendarDate(date);
+        key = LocalDate.parse(text);
     }
 
-    protected DatePrice(final long millis) {
+    protected DatePrice(CharSequence text, DateTimeFormatter formatter) {
 
         super();
 
-        key = new CalendarDate(millis);
+        key = LocalDate.parse(text, formatter);
     }
 
-    protected DatePrice(final String sqlString) throws RecoverableCondition {
+    protected DatePrice(final LocalDate date) {
 
         super();
 
-        key = new CalendarDate(sqlString);
+        key = date;
     }
 
-    public int compareTo(final KeyValue<CalendarDate, ?> ref) {
+    public int compareTo(final KeyValue<LocalDate, ?> ref) {
         return key.compareTo(ref.getKey());
     }
 
@@ -86,7 +77,7 @@ public abstract class DatePrice implements KeyValue<CalendarDate, Double> {
         return true;
     }
 
-    public final CalendarDate getKey() {
+    public final LocalDate getKey() {
         return key;
     }
 

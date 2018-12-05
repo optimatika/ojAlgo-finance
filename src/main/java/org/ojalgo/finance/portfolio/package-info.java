@@ -10,7 +10,7 @@
  * deliver, an asset.</li>
  * <li>Financial portfolios contain financial instruments. Typically, in terms of investments, it is a
  * collection of assets with a common owner.</li>
- * <li>The distiction between assets, instruments and portfolios is fuzzy, and the terms can often bu used
+ * <li>The distiction between assets, instruments and portfolios is fuzzy, and the terms can often be used
  * interchangeably. Here the term portfolio represents the collection and ownership, and the term asset
  * represents components/contents and underlying value. We try to avoid using the term instrument.</li>
  * </ul>

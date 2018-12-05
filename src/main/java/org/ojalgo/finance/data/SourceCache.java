@@ -21,13 +21,15 @@
  */
 package org.ojalgo.finance.data;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.ojalgo.series.CalendarDateSeries;
+import org.ojalgo.array.Primitive64Array;
+import org.ojalgo.series.BasicSeries;
 import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
 
@@ -35,20 +37,15 @@ public final class SourceCache {
 
     private static final class Value {
 
-        final CalendarDateSeries<Double> series;
+        final BasicSeries<LocalDate, Double> series;
         CalendarDate updated = new CalendarDate();
         CalendarDate used = new CalendarDate();
 
-        @SuppressWarnings("unused")
-        private Value() {
-            this(null, null);
-        }
-
-        Value(final String name, final CalendarDateUnit resolution) {
+        Value(final String name) {
 
             super();
 
-            series = new CalendarDateSeries<>(resolution);
+            series = BasicSeries.LOCAL_DATE.build(Primitive64Array.FACTORY);
             series.name(name);
         }
 
@@ -56,14 +53,14 @@ public final class SourceCache {
 
     private static final Timer TIMER = new Timer("SourceCache-Daemon", true);
 
-    private final Map<DataSource<?>, SourceCache.Value> myCache = new ConcurrentHashMap<>();
-    private final CalendarDateUnit myResolution;
+    private final Map<FinanceData, SourceCache.Value> myCache = new ConcurrentHashMap<>();
+    private final CalendarDate.Resolution myRefreshInterval;
 
-    public SourceCache(final CalendarDateUnit aResolution) {
+    public SourceCache(final CalendarDateUnit refreshInterval) {
 
         super();
 
-        myResolution = aResolution;
+        myRefreshInterval = refreshInterval;
 
         TIMER.schedule(new TimerTask() {
 
@@ -72,51 +69,51 @@ public final class SourceCache {
                 SourceCache.this.cleanUp();
             }
 
-        }, 0L, aResolution.size());
+        }, 0L, refreshInterval.toDurationInMillis());
 
     }
 
-    public synchronized CalendarDateSeries<Double> get(final DataSource<?> key) {
+    public synchronized BasicSeries<LocalDate, Double> get(final FinanceData key) {
 
-        final CalendarDate tmpNow = new CalendarDate();
+        final CalendarDate now = new CalendarDate();
 
-        Value tmpValue = myCache.get(key);
+        Value value = myCache.get(key);
 
-        if (tmpValue != null) {
+        if (value == null) {
 
-            if (myResolution.count(tmpValue.updated.millis, tmpNow.millis) > 0L) {
-                this.update(tmpValue, key, tmpNow);
-            }
+            value = new SourceCache.Value(key.getSymbol());
 
-        } else {
+            myCache.put(key, value);
 
-            tmpValue = new SourceCache.Value(key.getSymbol(), myResolution);
+            this.update(value, key, now);
 
-            myCache.put(key, tmpValue);
+        } else if ((now.millis - value.updated.millis) > myRefreshInterval.toDurationInMillis()) {
 
-            this.update(tmpValue, key, tmpNow);
+            this.update(value, key, now);
         }
 
-        tmpValue.used = tmpNow;
+        value.used = now;
 
-        return tmpValue.series;
+        return value.series;
     }
 
     private void cleanUp() {
 
-        final CalendarDate tmpNow = new CalendarDate();
+        final CalendarDate now = new CalendarDate();
 
-        for (final Entry<DataSource<?>, SourceCache.Value> tmpEntry : myCache.entrySet()) {
-
-            if (myResolution.count(tmpEntry.getValue().used.millis, tmpNow.millis) > 1L) {
-                tmpEntry.getValue().series.clear();
-                myCache.remove(tmpEntry.getKey());
+        for (final Entry<FinanceData, SourceCache.Value> entry : myCache.entrySet()) {
+            if ((now.millis - entry.getValue().used.millis) > myRefreshInterval.toDurationInMillis()) {
+                entry.getValue().series.clear();
+                myCache.remove(entry.getKey());
             }
         }
     }
 
-    private void update(final Value aCacheValue, final DataSource<?> key, final CalendarDate now) {
-        aCacheValue.series.putAll(key.getPriceSeries());
-        aCacheValue.updated = now;
+    private void update(final Value cacheValue, final FinanceData cacheKey, final CalendarDate now) {
+        BasicSeries<LocalDate, Double> priceSeries = cacheKey.getPriceSeries(Primitive64Array.FACTORY);
+        for (Entry<LocalDate, Double> entry : priceSeries.entrySet()) {
+            cacheValue.series.put(entry.getKey(), entry.getValue());
+        }
+        cacheValue.updated = now;
     }
 }

@@ -21,15 +21,23 @@
  */
 package org.ojalgo.finance.data;
 
+import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.ojalgo.FunctionalityTest;
+import org.ojalgo.TestUtils;
+import org.ojalgo.constant.PrimitiveMath;
+import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.random.LogNormal;
+import org.ojalgo.random.SampleSet;
+import org.ojalgo.random.process.GeometricBrownianMotion;
+import org.ojalgo.series.CalendarDateSeries;
+import org.ojalgo.series.primitive.PrimitiveSeries;
+import org.ojalgo.type.CalendarDateUnit;
 
 /**
- * FinanceDataPackageTests
- *
  * @author apete
  */
 public abstract class FinanceDataTests extends FunctionalityTest {
@@ -48,6 +56,52 @@ public abstract class FinanceDataTests extends FunctionalityTest {
             logger.setUseParentHandlers(false);
             logger.addHandler(handler);
         }
+    }
+
+    static void assertAtLeastExpectedItems(final FinanceData dataSource, int expected) {
+    
+        final List<DatePrice> rows = dataSource.getHistoricalPrices();
+    
+        if (rows.size() <= 0) {
+            TestUtils.fail("No data!");
+        } else {
+            if (rows.size() < expected) {
+                TestUtils.fail("Less data than usual! only got: " + rows.size());
+            }
+        }
+    }
+
+    static void doTestDeriveDistribution(final DataSource dataSource) {
+
+        final CalendarDateSeries<Double> yearSeries = dataSource.getPriceSeries(CalendarDateUnit.YEAR);
+        final CalendarDateSeries<Double> monthSeries = dataSource.getPriceSeries(CalendarDateUnit.MONTH);
+
+        final PrimitiveSeries dataY = yearSeries.asPrimitive();
+        final PrimitiveSeries dataM = monthSeries.asPrimitive();
+
+        final SampleSet sampleSetY = SampleSet.wrap(dataY.log().differences());
+        final SampleSet sampleSetM = SampleSet.wrap(dataM.log().differences());
+
+        final GeometricBrownianMotion procY = GeometricBrownianMotion.estimate(dataY, 1.0);
+        procY.setValue(1.0);
+        final GeometricBrownianMotion procM = GeometricBrownianMotion.estimate(dataM, 1.0 / 12.0);
+        procM.setValue(1.0);
+
+        double delta = 1E-14 / PrimitiveMath.THREE;
+
+        LogNormal expDistr = new LogNormal(sampleSetY.getMean(), sampleSetY.getStandardDeviation());
+        LogNormal actDistr = procY.getDistribution(1.0);
+
+        TestUtils.assertEquals("Yearly Expected", expDistr.getExpected(), actDistr.getExpected(), delta);
+        TestUtils.assertEquals("Yearly Var", expDistr.getVariance(), actDistr.getVariance(), delta);
+        TestUtils.assertEquals("Yearly StdDev", expDistr.getStandardDeviation(), actDistr.getStandardDeviation(), delta);
+
+        expDistr = new LogNormal(sampleSetM.getMean() * 12.0, sampleSetM.getStandardDeviation() * PrimitiveFunction.SQRT.invoke(12.0));
+        actDistr = procM.getDistribution(1.0);
+
+        TestUtils.assertEquals("Monthly Expected", expDistr.getExpected(), actDistr.getExpected(), delta);
+        TestUtils.assertEquals("Monthly Var", expDistr.getVariance(), actDistr.getVariance(), delta);
+        TestUtils.assertEquals("Monthly StdDev", expDistr.getStandardDeviation(), actDistr.getStandardDeviation(), delta);
     }
 
     protected FinanceDataTests() {
