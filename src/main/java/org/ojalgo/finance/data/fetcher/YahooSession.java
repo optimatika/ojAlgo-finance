@@ -27,6 +27,7 @@ import java.time.temporal.ChronoUnit;
 
 import org.ojalgo.netio.ResourceLocator;
 import org.ojalgo.netio.ResourceLocator.Request;
+import org.ojalgo.netio.ResourceLocator.Response;
 import org.ojalgo.netio.ResourceLocator.Session;
 import org.ojalgo.type.CalendarDateDuration;
 import org.ojalgo.type.CalendarDateUnit;
@@ -52,8 +53,36 @@ public class YahooSession {
         }
 
         public Reader getStreamOfCSV() {
+
+            String sessionId = mySession.getParameterValue(SESSION_ID);
+            if ((sessionId == null) || (sessionId.length() <= 0)) {
+
+                Request challengeRequest = YahooSession.buildChallengeRequest(mySession, mySymbol);
+                Response challengeResponse = challengeRequest.response();
+
+                YahooSession.scrapeChallengeResponse(mySession, challengeResponse);
+
+                Request consentRequest = YahooSession.buildConsentRequest(mySession, challengeRequest);
+                Response consentResponse = consentRequest.response();
+
+                int responseCode = consentResponse.getResponseCode();
+                if (!((200 <= responseCode) && (responseCode < 300))) {
+
+                }
+            }
+
+            String crumb = mySession.getParameterValue(CRUMB);
+            if ((crumb == null) || (crumb.length() <= 0)) {
+
+                Request crumbRequest = YahooSession.buildCrumbRequest(mySession);
+                Response crumbResponse = crumbRequest.response();
+
+                YahooSession.scrapeCrumbResponse(mySession, crumbResponse);
+            }
+
             ResourceLocator.Request request = YahooSession.buildDataRequest(mySession, mySymbol, myResolution);
             ResourceLocator.Response response = request.response();
+
             return response.getStreamReader();
         }
 
@@ -77,6 +106,9 @@ public class YahooSession {
     static final String CSRF_TOKEN = "csrfToken";
     static final String SESSION_ID = "sessionId";
 
+    /**
+     * A request that requires consent, but not the crumb
+     */
     static ResourceLocator.Request buildChallengeRequest(ResourceLocator.Session session, String symbol) {
         return session.request().host(FINANCE_YAHOO_COM).path("/quote/" + symbol);
     }

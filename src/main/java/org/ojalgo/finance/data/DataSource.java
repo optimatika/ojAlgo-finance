@@ -33,7 +33,7 @@ import org.ojalgo.array.DenseArray;
 import org.ojalgo.finance.data.fetcher.AlphaVantageFetcher;
 import org.ojalgo.finance.data.fetcher.DataFetcher;
 import org.ojalgo.finance.data.fetcher.IEXTradingFetcher;
-import org.ojalgo.finance.data.fetcher.YahooFetcher;
+import org.ojalgo.finance.data.fetcher.YahooSession;
 import org.ojalgo.finance.data.parser.AlphaVantageParser;
 import org.ojalgo.finance.data.parser.IEXTradingParser;
 import org.ojalgo.finance.data.parser.YahooParser;
@@ -62,8 +62,8 @@ public final class DataSource implements FinanceData {
         return new DataSource(fetcher, parser);
     }
 
-    public static DataSource newYahoo(String symbol, CalendarDateUnit resolution) {
-        YahooFetcher fetcher = new YahooFetcher(symbol, resolution);
+    public static DataSource newYahoo(YahooSession session, String symbol, CalendarDateUnit resolution) {
+        YahooSession.Fetcher fetcher = session.newFetcher(symbol, resolution);
         YahooParser parser = new YahooParser();
         return new DataSource(fetcher, parser);
     }

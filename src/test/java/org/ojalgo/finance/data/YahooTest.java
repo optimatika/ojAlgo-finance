@@ -22,9 +22,9 @@
  */
 package org.ojalgo.finance.data;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
+import org.ojalgo.finance.data.fetcher.YahooSession;
 import org.ojalgo.type.CalendarDateUnit;
 
 /**
@@ -32,8 +32,9 @@ import org.ojalgo.type.CalendarDateUnit;
  *
  * @author apete
  */
-@Disabled
 public class YahooTest extends FinanceDataTests {
+
+    private static YahooSession SESSION = new YahooSession();
 
     public YahooTest() {
         super();
@@ -42,7 +43,7 @@ public class YahooTest extends FinanceDataTests {
     @Test
     public void testDeriveDistributions() {
 
-        final DataSource dataSource = DataSource.newYahoo("MSFT", CalendarDateUnit.DAY);
+        final DataSource dataSource = DataSource.newYahoo(SESSION, "MSFT", CalendarDateUnit.DAY);
 
         FinanceDataTests.doTestDeriveDistribution(dataSource);
     }
@@ -50,7 +51,7 @@ public class YahooTest extends FinanceDataTests {
     @Test
     public void testFetchDaily() {
 
-        if (DataSource.newYahoo("MSFT", CalendarDateUnit.DAY).getHistoricalPrices().size() <= 1) {
+        if (DataSource.newYahoo(SESSION, "MSFT", CalendarDateUnit.DAY).getHistoricalPrices().size() <= 1) {
             TestUtils.fail("No data!");
         }
     }
@@ -58,7 +59,7 @@ public class YahooTest extends FinanceDataTests {
     @Test
     public void testFetchMonthly() {
 
-        if (DataSource.newYahoo("MSFT", CalendarDateUnit.MONTH).getHistoricalPrices().size() <= 1) {
+        if (DataSource.newYahoo(SESSION, "MSFT", CalendarDateUnit.MONTH).getHistoricalPrices().size() <= 1) {
             TestUtils.fail("No data!");
         }
     }
@@ -66,35 +67,32 @@ public class YahooTest extends FinanceDataTests {
     @Test
     public void testFetchWeekly() {
 
-        if (DataSource.newYahoo("MSFT", CalendarDateUnit.WEEK).getHistoricalPrices().size() <= 1) {
+        if (DataSource.newYahoo(SESSION, "MSFT", CalendarDateUnit.WEEK).getHistoricalPrices().size() <= 1) {
             TestUtils.fail("No data!");
         }
     }
 
     @Test
-    @Disabled
     public void testYahooDailyAAPL() {
-    
-        final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.DAY);
-    
+
+        final DataSource dataSource = DataSource.newYahoo(SESSION, "AAPL", CalendarDateUnit.DAY);
+
         FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1);
     }
 
     @Test
-    @Disabled
     public void testYahooMonthlyAAPL() {
-    
-        final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.MONTH);
-    
+
+        final DataSource dataSource = DataSource.newYahoo(SESSION, "AAPL", CalendarDateUnit.MONTH);
+
         FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1);
     }
 
     @Test
-    @Disabled
     public void testYahooWeeklyAAPL() {
-    
-        final DataSource dataSource = DataSource.newYahoo("AAPL", CalendarDateUnit.WEEK);
-    
+
+        final DataSource dataSource = DataSource.newYahoo(SESSION, "AAPL", CalendarDateUnit.WEEK);
+
         FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1);
     }
 
