@@ -56,7 +56,7 @@ public class IEXTradingTest extends FinanceDataTests {
 
         final DataSource dataSource = DataSource.newIEXTrading("MSFT");
 
-        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1259);
+        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1258);
     }
 
 }
