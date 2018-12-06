@@ -69,14 +69,14 @@ public class BasicSeriesTest extends FinanceDataTests {
         final List<DatePrice> historicalPrices = dataSource.getHistoricalPrices();
         final double lastPrice = historicalPrices.get(historicalPrices.size() - 1).getPrice();
 
-        final CalendarDateSeries<Double> tmpDaySeries = dataSource.getPriceSeries(CalendarDateUnit.DAY).name("Day");
-        final CalendarDateSeries<Double> tmpWeekSeries = dataSource.getPriceSeries(CalendarDateUnit.WEEK).name("Week");
-        final CalendarDateSeries<Double> tmpMonthSeries = dataSource.getPriceSeries(CalendarDateUnit.MONTH).name("Month");
-        final CalendarDateSeries<Double> tmpQuarterSeries = dataSource.getPriceSeries(CalendarDateUnit.QUARTER).name("Quarter");
-        final CalendarDateSeries<Double> tmpYearSeries = dataSource.getPriceSeries(CalendarDateUnit.YEAR).name("Year");
-        final CalendarDateSeries<Double> tmpDecadeSeries = dataSource.getPriceSeries(CalendarDateUnit.DECADE).name("Decade");
-        final CalendarDateSeries<Double> tmpCenturySeries = dataSource.getPriceSeries(CalendarDateUnit.CENTURY).name("Century");
-        final CalendarDateSeries<Double> tmpMilleniumSeries = dataSource.getPriceSeries(CalendarDateUnit.MILLENIUM).name("MIllenium");
+        final CalendarDateSeries<Double> tmpDaySeries = dataSource.getCalendarDateSeries(CalendarDateUnit.DAY).name("Day");
+        final CalendarDateSeries<Double> tmpWeekSeries = dataSource.getCalendarDateSeries(CalendarDateUnit.WEEK).name("Week");
+        final CalendarDateSeries<Double> tmpMonthSeries = dataSource.getCalendarDateSeries(CalendarDateUnit.MONTH).name("Month");
+        final CalendarDateSeries<Double> tmpQuarterSeries = dataSource.getCalendarDateSeries(CalendarDateUnit.QUARTER).name("Quarter");
+        final CalendarDateSeries<Double> tmpYearSeries = dataSource.getCalendarDateSeries(CalendarDateUnit.YEAR).name("Year");
+        final CalendarDateSeries<Double> tmpDecadeSeries = dataSource.getCalendarDateSeries(CalendarDateUnit.DECADE).name("Decade");
+        final CalendarDateSeries<Double> tmpCenturySeries = dataSource.getCalendarDateSeries(CalendarDateUnit.CENTURY).name("Century");
+        final CalendarDateSeries<Double> tmpMilleniumSeries = dataSource.getCalendarDateSeries(CalendarDateUnit.MILLENIUM).name("MIllenium");
 
         tmpDaySeries.complete();
         tmpWeekSeries.complete();

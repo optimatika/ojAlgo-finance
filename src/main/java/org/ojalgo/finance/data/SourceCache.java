@@ -110,7 +110,7 @@ public final class SourceCache {
     }
 
     private void update(final Value cacheValue, final FinanceData cacheKey, final CalendarDate now) {
-        BasicSeries<LocalDate, Double> priceSeries = cacheKey.getPriceSeries(Primitive64Array.FACTORY);
+        BasicSeries<LocalDate, Double> priceSeries = cacheKey.getPriceSeries();
         for (Entry<LocalDate, Double> entry : priceSeries.entrySet()) {
             cacheValue.series.put(entry.getKey(), entry.getValue());
         }

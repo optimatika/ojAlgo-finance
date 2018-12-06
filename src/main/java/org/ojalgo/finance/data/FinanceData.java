@@ -27,7 +27,6 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
-import org.ojalgo.array.DenseArray.Factory;
 import org.ojalgo.series.BasicSeries;
 
 public interface FinanceData {
@@ -41,7 +40,7 @@ public interface FinanceData {
 
     List<DatePrice> getHistoricalPrices();
 
-    BasicSeries<LocalDate, Double> getPriceSeries(Factory<Double> factory);
+    BasicSeries<LocalDate, Double> getPriceSeries();
 
     String getSymbol();
 

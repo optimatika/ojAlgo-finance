@@ -73,8 +73,8 @@ public abstract class FinanceDataTests extends FunctionalityTest {
 
     static void doTestDeriveDistribution(final DataSource dataSource) {
 
-        final CalendarDateSeries<Double> yearSeries = dataSource.getPriceSeries(CalendarDateUnit.YEAR);
-        final CalendarDateSeries<Double> monthSeries = dataSource.getPriceSeries(CalendarDateUnit.MONTH);
+        final CalendarDateSeries<Double> yearSeries = dataSource.getCalendarDateSeries(CalendarDateUnit.YEAR);
+        final CalendarDateSeries<Double> monthSeries = dataSource.getCalendarDateSeries(CalendarDateUnit.MONTH);
 
         final PrimitiveSeries dataY = yearSeries.asPrimitive();
         final PrimitiveSeries dataM = monthSeries.asPrimitive();

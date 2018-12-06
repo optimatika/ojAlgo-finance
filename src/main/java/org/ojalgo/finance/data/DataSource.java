@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.ojalgo.array.DenseArray;
+import org.ojalgo.array.Primitive64Array;
 import org.ojalgo.finance.data.fetcher.AlphaVantageFetcher;
 import org.ojalgo.finance.data.fetcher.DataFetcher;
 import org.ojalgo.finance.data.fetcher.IEXTradingFetcher;
@@ -106,6 +107,29 @@ public final class DataSource implements FinanceData {
         return true;
     }
 
+    public CalendarDateSeries<Double> getCalendarDateSeries() {
+        return this.getCalendarDateSeries(myFetcher.getResolution(), LocalTime.NOON, ZoneOffset.UTC);
+    }
+
+    public CalendarDateSeries<Double> getCalendarDateSeries(CalendarDateUnit resolution) {
+        return this.getCalendarDateSeries(resolution, LocalTime.NOON, ZoneOffset.UTC);
+    }
+
+    public CalendarDateSeries<Double> getCalendarDateSeries(CalendarDateUnit resolution, LocalTime time, ZoneId zoneId) {
+
+        CalendarDateSeries<Double> retVal = new CalendarDateSeries<>(resolution);
+
+        for (DatePrice datePrice : this.getHistoricalPrices()) {
+            retVal.put(CalendarDate.valueOf(datePrice.key.atTime(time).atZone(zoneId)), datePrice.getPrice());
+        }
+
+        return retVal;
+    }
+
+    public CalendarDateSeries<Double> getCalendarDateSeries(LocalTime time, ZoneId zoneId) {
+        return this.getCalendarDateSeries(myFetcher.getResolution(), time, zoneId);
+    }
+
     public List<DatePrice> getHistoricalPrices() {
         try {
             final ArrayList<DatePrice> retVal = new ArrayList<>();
@@ -120,32 +144,48 @@ public final class DataSource implements FinanceData {
         }
     }
 
-    public CalendarDateSeries<Double> getPriceSeries() {
-        return this.getPriceSeries(myFetcher.getResolution(), LocalTime.NOON, ZoneOffset.UTC);
+    public BasicSeries.NaturallySequenced<LocalDate, Double> getLocalDateSeries() {
+        return this.getLocalDateSeries(this.getHistoricalPrices(), myFetcher.getResolution(), Primitive64Array.FACTORY);
     }
 
-    public CalendarDateSeries<Double> getPriceSeries(CalendarDateUnit resolution) {
-        return this.getPriceSeries(resolution, LocalTime.NOON, ZoneOffset.UTC);
+    public BasicSeries.NaturallySequenced<LocalDate, Double> getLocalDateSeries(CalendarDateUnit resolution) {
+        return this.getLocalDateSeries(this.getHistoricalPrices(), resolution, Primitive64Array.FACTORY);
     }
 
-    public CalendarDateSeries<Double> getPriceSeries(CalendarDateUnit resolution, LocalTime time, ZoneId zoneId) {
-
-        CalendarDateSeries<Double> retVal = new CalendarDateSeries<>(resolution);
-
-        for (DatePrice datePrice : this.getHistoricalPrices()) {
-            retVal.put(CalendarDate.valueOf(datePrice.key.atTime(time).atZone(zoneId)), datePrice.getPrice());
-        }
-
-        return retVal;
+    public BasicSeries.NaturallySequenced<LocalDate, Double> getLocalDateSeries(CalendarDateUnit resolution, DenseArray.Factory<Double> denseArrayFactory) {
+        return this.getLocalDateSeries(this.getHistoricalPrices(), resolution, denseArrayFactory);
     }
 
-    public BasicSeries.NaturallySequenced<LocalDate, Double> getPriceSeries(DenseArray.Factory<Double> denseArrayFactory) {
+    public BasicSeries.NaturallySequenced<LocalDate, Double> getLocalDateSeries(DenseArray.Factory<Double> denseArrayFactory) {
+        return this.getLocalDateSeries(this.getHistoricalPrices(), myFetcher.getResolution(), denseArrayFactory);
+    }
+
+    public BasicSeries<LocalDate, Double> getPriceSeries() {
+        return this.getLocalDateSeries(this.getHistoricalPrices(), myFetcher.getResolution(), Primitive64Array.FACTORY);
+    }
+
+    public String getSymbol() {
+        return myFetcher.getSymbol();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = (prime * result) + ((myFetcher == null) ? 0 : myFetcher.hashCode());
+        result = (prime * result) + ((myParser == null) ? 0 : myParser.hashCode());
+        return result;
+    }
+
+    private BasicSeries.NaturallySequenced<LocalDate, Double> getLocalDateSeries(List<DatePrice> historicalPrices, CalendarDateUnit resolution,
+            DenseArray.Factory<Double> denseArrayFactory) {
 
         BasicSeries.NaturallySequenced<LocalDate, Double> retVal = BasicSeries.LOCAL_DATE.build(denseArrayFactory);
+        retVal.name(this.getSymbol());
 
         LocalDate adjusted;
-        for (DatePrice datePrice : this.getHistoricalPrices()) {
-            switch (myFetcher.getResolution()) {
+        for (DatePrice datePrice : historicalPrices) {
+            switch (resolution) {
             case MONTH:
                 adjusted = (LocalDate) FinanceData.LAST_DAY_OF_MONTH.adjustInto(datePrice.key);
                 break;
@@ -160,23 +200,6 @@ public final class DataSource implements FinanceData {
         }
 
         return retVal;
-    }
-
-    public CalendarDateSeries<Double> getPriceSeries(LocalTime time, ZoneId zoneId) {
-        return this.getPriceSeries(myFetcher.getResolution(), time, zoneId);
-    }
-
-    public String getSymbol() {
-        return myFetcher.getSymbol();
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = (prime * result) + ((myFetcher == null) ? 0 : myFetcher.hashCode());
-        result = (prime * result) + ((myParser == null) ? 0 : myParser.hashCode());
-        return result;
     }
 
 }
