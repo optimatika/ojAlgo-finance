@@ -84,7 +84,7 @@ public class YahooFetcherTest {
         List<YahooParser.Data> data = new ArrayList<>();
         parser.parse(dataResponse.getStreamReader(), dp -> data.add(dp));
 
-        TestUtils.assertTrue(data.size() >= 7559);
+        TestUtils.assertTrue(data.size() >= 7557);
     }
 
 }
