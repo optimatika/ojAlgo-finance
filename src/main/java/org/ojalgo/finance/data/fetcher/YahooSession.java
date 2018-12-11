@@ -25,6 +25,7 @@ import java.io.Reader;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.netio.ResourceLocator;
 import org.ojalgo.netio.ResourceLocator.Request;
 import org.ojalgo.netio.ResourceLocator.Response;
@@ -60,14 +61,22 @@ public class YahooSession {
                 Request challengeRequest = YahooSession.buildChallengeRequest(mySession, mySymbol);
                 Response challengeResponse = challengeRequest.response();
 
+                // Must get this after the http body has been read
+                if (!challengeResponse.isResponseOK() || (challengeResponse.toString() == null) || challengeRequest.equals(challengeResponse.getRequest())) {
+                    BasicLogger.error("Original Challenge Reguest: {}", challengeRequest);
+                    BasicLogger.error("Recreated Challenge Reguest: {}", challengeResponse.getRequest());
+                    BasicLogger.error("Actual Challenge Response: {}", challengeResponse);
+                }
+
                 YahooSession.scrapeChallengeResponse(mySession, challengeResponse);
 
                 Request consentRequest = YahooSession.buildConsentRequest(mySession, challengeRequest);
                 Response consentResponse = consentRequest.response();
 
-                int responseCode = consentResponse.getStatusCode();
-                if (!((200 <= responseCode) && (responseCode < 300))) {
-
+                if (!consentResponse.isResponseOK()) {
+                    BasicLogger.error("Original Consent Reguest: {}", consentRequest);
+                    BasicLogger.error("Recreated Consent Reguest: {}", consentResponse.getRequest());
+                    BasicLogger.error("Actual Consent Response: {}", consentResponse);
                 }
             }
 
@@ -78,6 +87,12 @@ public class YahooSession {
                 Response crumbResponse = crumbRequest.response();
 
                 YahooSession.scrapeCrumbResponse(mySession, crumbResponse);
+
+                if (!crumbResponse.isResponseOK() || (mySession.getParameterValue(CRUMB) == null)) {
+                    BasicLogger.error("Original Crumb Reguest: {}", crumbRequest);
+                    BasicLogger.error("Recreated Crumb Reguest: {}", crumbResponse.getRequest());
+                    BasicLogger.error("Actual Crumb Response: {}", crumbResponse);
+                }
             }
 
             ResourceLocator.Request request = YahooSession.buildDataRequest(mySession, mySymbol, myResolution);
