@@ -62,21 +62,28 @@ public class YahooSession {
                 Response challengeResponse = challengeRequest.response();
 
                 // Must get this after the http body has been read
-                if (!challengeResponse.isResponseOK() || (challengeResponse.toString() == null) || challengeRequest.equals(challengeResponse.getRequest())) {
+                if (!challengeResponse.isResponseOK() || (challengeResponse.toString() == null)) {
+                    BasicLogger.error();
+                    BasicLogger.error("Fetcher Problem!");
                     BasicLogger.error("Original Challenge Reguest: {}", challengeRequest);
                     BasicLogger.error("Recreated Challenge Reguest: {}", challengeResponse.getRequest());
                     BasicLogger.error("Actual Challenge Response: {}", challengeResponse);
+                    BasicLogger.error();
                 }
 
-                YahooSession.scrapeChallengeResponse(mySession, challengeResponse);
+                if (YahooSession.scrapeChallengeResponse(mySession, challengeRequest, challengeResponse)) {
 
-                Request consentRequest = YahooSession.buildConsentRequest(mySession, challengeRequest);
-                Response consentResponse = consentRequest.response();
+                    Request consentRequest = YahooSession.buildConsentRequest(mySession, challengeRequest);
+                    Response consentResponse = consentRequest.response();
 
-                if (!consentResponse.isResponseOK()) {
-                    BasicLogger.error("Original Consent Reguest: {}", consentRequest);
-                    BasicLogger.error("Recreated Consent Reguest: {}", consentResponse.getRequest());
-                    BasicLogger.error("Actual Consent Response: {}", consentResponse);
+                    if (!consentResponse.isResponseOK()) {
+                        BasicLogger.error();
+                        BasicLogger.error("Fetcher Problem!");
+                        BasicLogger.error("Original Consent Reguest: {}", consentRequest);
+                        BasicLogger.error("Recreated Consent Reguest: {}", consentResponse.getRequest());
+                        BasicLogger.error("Actual Consent Response: {}", consentResponse);
+                        BasicLogger.error();
+                    }
                 }
             }
 
@@ -89,9 +96,12 @@ public class YahooSession {
                 YahooSession.scrapeCrumbResponse(mySession, crumbResponse);
 
                 if (!crumbResponse.isResponseOK() || (mySession.getParameterValue(CRUMB) == null)) {
+                    BasicLogger.error();
+                    BasicLogger.error("Fetcher Problem!");
                     BasicLogger.error("Original Crumb Reguest: {}", crumbRequest);
                     BasicLogger.error("Recreated Crumb Reguest: {}", crumbResponse.getRequest());
                     BasicLogger.error("Actual Crumb Response: {}", crumbResponse);
+                    BasicLogger.error();
                 }
             }
 
@@ -190,7 +200,8 @@ public class YahooSession {
         return request;
     }
 
-    static void scrapeChallengeResponse(ResourceLocator.Session session, ResourceLocator.Response challengeResponse) {
+    static boolean scrapeChallengeResponse(ResourceLocator.Session session, ResourceLocator.Request challengeRequest,
+            ResourceLocator.Response challengeResponse) {
 
         String challengeResponseBody = challengeResponse.toString();
         ResourceLocator.Request finalRequest = challengeResponse.getRequest();
@@ -198,25 +209,32 @@ public class YahooSession {
         String sessionId = finalRequest.getQueryValue(SESSION_ID);
         session.parameter(SESSION_ID, sessionId);
 
-        // https://guce.oath.com/consent
+        if (!challengeRequest.equals(challengeResponse.getRequest())) {
 
-        int begin = challengeResponseBody.indexOf(INPUT_TYPE_HIDDEN_NAME_CSRF_TOKEN_VALUE);
-        if (begin >= 0) {
-            begin += INPUT_TYPE_HIDDEN_NAME_CSRF_TOKEN_VALUE.length();
+            int begin = challengeResponseBody.indexOf(INPUT_TYPE_HIDDEN_NAME_CSRF_TOKEN_VALUE);
+            if (begin >= 0) {
+                begin += INPUT_TYPE_HIDDEN_NAME_CSRF_TOKEN_VALUE.length();
+            }
+            int end = challengeResponseBody.indexOf(END, begin);
+
+            String csrfToken = challengeResponseBody.substring(begin, end);
+            session.parameter(CSRF_TOKEN, csrfToken);
+
+            begin = challengeResponseBody.indexOf(INPUT_TYPE_HIDDEN_NAME_BRAND_BID_VALUE);
+            if (begin >= 0) {
+                begin += INPUT_TYPE_HIDDEN_NAME_BRAND_BID_VALUE.length();
+            }
+            end = challengeResponseBody.indexOf(END, begin);
+
+            String brandBid = challengeResponseBody.substring(begin, end);
+            session.parameter(BRAND_BID, brandBid);
+
+            return true;
+
+        } else {
+
+            return false;
         }
-        int end = challengeResponseBody.indexOf(END, begin);
-
-        String csrfToken = challengeResponseBody.substring(begin, end);
-        session.parameter(CSRF_TOKEN, csrfToken);
-
-        begin = challengeResponseBody.indexOf(INPUT_TYPE_HIDDEN_NAME_BRAND_BID_VALUE);
-        if (begin >= 0) {
-            begin += INPUT_TYPE_HIDDEN_NAME_BRAND_BID_VALUE.length();
-        }
-        end = challengeResponseBody.indexOf(END, begin);
-
-        String brandBid = challengeResponseBody.substring(begin, end);
-        session.parameter(BRAND_BID, brandBid);
     }
 
     static void scrapeCrumbResponse(ResourceLocator.Session session, ResourceLocator.Response crumbResponse) {
