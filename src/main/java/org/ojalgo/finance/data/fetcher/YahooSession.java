@@ -55,37 +55,36 @@ public class YahooSession {
 
         public Reader getStreamOfCSV() {
 
+            BasicLogger.debug();
+            BasicLogger.debug("Just started");
+            mySession.print(BasicLogger.DEBUG);
+            BasicLogger.debug();
+
             String sessionId = mySession.getParameterValue(SESSION_ID);
             if ((sessionId == null) || (sessionId.length() <= 0)) {
 
                 Request challengeRequest = YahooSession.buildChallengeRequest(mySession, mySymbol);
                 Response challengeResponse = challengeRequest.response();
 
-                // Must get this after the http body has been read
-                if (!challengeResponse.isResponseOK() || (challengeResponse.toString() == null)) {
-                    BasicLogger.error();
-                    BasicLogger.error("Fetcher Problem!");
-                    BasicLogger.error("Original Challenge Reguest: {}", challengeRequest);
-                    BasicLogger.error("Recreated Challenge Reguest: {}", challengeResponse.getRequest());
-                    BasicLogger.error("Actual Challenge Response: {}", challengeResponse);
-                    BasicLogger.error();
-                }
+                BasicLogger.debug("Challenge Original Challenge Reguest: {}", challengeRequest);
+                BasicLogger.debug("Challenge Recreated Challenge Reguest: {}", challengeResponse.getRequest());
+                BasicLogger.debug("Challenge Actual Challenge Response: {}", challengeResponse);
 
                 if (YahooSession.scrapeChallengeResponse(mySession, challengeRequest, challengeResponse)) {
 
                     Request consentRequest = YahooSession.buildConsentRequest(mySession, challengeRequest);
                     Response consentResponse = consentRequest.response();
 
-                    if (!consentResponse.isResponseOK()) {
-                        BasicLogger.error();
-                        BasicLogger.error("Fetcher Problem!");
-                        BasicLogger.error("Original Consent Reguest: {}", consentRequest);
-                        BasicLogger.error("Recreated Consent Reguest: {}", consentResponse.getRequest());
-                        BasicLogger.error("Actual Consent Response: {}", consentResponse);
-                        BasicLogger.error();
-                    }
+                    BasicLogger.debug("Consent Original Consent Reguest: {}", consentRequest);
+                    BasicLogger.debug("Consent Recreated Consent Reguest: {}", consentResponse.getRequest());
+                    BasicLogger.debug("Consent Actual Consent Response: {}", consentResponse);
                 }
             }
+
+            BasicLogger.debug();
+            BasicLogger.debug("Consent should be given now, but perhaps no crumb");
+            mySession.print(BasicLogger.DEBUG);
+            BasicLogger.debug();
 
             String crumb = mySession.getParameterValue(CRUMB);
             if ((crumb == null) || (crumb.length() <= 0)) {
@@ -95,15 +94,15 @@ public class YahooSession {
 
                 YahooSession.scrapeCrumbResponse(mySession, crumbResponse);
 
-                if (!crumbResponse.isResponseOK() || (mySession.getParameterValue(CRUMB) == null)) {
-                    BasicLogger.error();
-                    BasicLogger.error("Fetcher Problem!");
-                    BasicLogger.error("Original Crumb Reguest: {}", crumbRequest);
-                    BasicLogger.error("Recreated Crumb Reguest: {}", crumbResponse.getRequest());
-                    BasicLogger.error("Actual Crumb Response: {}", crumbResponse);
-                    BasicLogger.error();
-                }
+                BasicLogger.debug("Crumb Original Crumb Reguest: {}", crumbRequest);
+                BasicLogger.debug("Crumb Recreated Crumb Reguest: {}", crumbResponse.getRequest());
+                BasicLogger.debug("Crumb Actual Crumb Response: {}", crumbResponse);
             }
+
+            BasicLogger.debug();
+            BasicLogger.debug("Everything should be ok now - crumb and everything");
+            mySession.print(BasicLogger.DEBUG);
+            BasicLogger.debug();
 
             ResourceLocator.Request request = YahooSession.buildDataRequest(mySession, mySymbol, myResolution);
             ResourceLocator.Response response = request.response();
