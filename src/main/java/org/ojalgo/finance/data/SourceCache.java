@@ -39,7 +39,7 @@ public final class SourceCache {
 
         final BasicSeries<LocalDate, Double> series;
         CalendarDate updated = new CalendarDate();
-        CalendarDate used = new CalendarDate();
+        CalendarDate used = null;
 
         Value(final String name) {
 
@@ -54,6 +54,8 @@ public final class SourceCache {
     private static final Timer TIMER = new Timer("SourceCache-Daemon", true);
 
     private final Map<FinanceData, SourceCache.Value> myCache = new ConcurrentHashMap<>();
+    private final Map<FinanceData, FinanceData> myFallback = new ConcurrentHashMap<>();
+
     private final CalendarDate.Resolution myRefreshInterval;
 
     public SourceCache(final CalendarDateUnit refreshInterval) {
@@ -77,24 +79,27 @@ public final class SourceCache {
 
         final CalendarDate now = new CalendarDate();
 
-        Value value = myCache.get(key);
+        Value value = myCache.computeIfAbsent(key, k -> new SourceCache.Value(k.getSymbol()));
 
-        if (value == null) {
-
-            value = new SourceCache.Value(key.getSymbol());
-
-            myCache.put(key, value);
-
-            this.update(value, key, now);
-
-        } else if ((now.millis - value.updated.millis) > myRefreshInterval.toDurationInMillis()) {
-
+        if ((value.used == null) || ((now.millis - value.updated.millis) > myRefreshInterval.toDurationInMillis())) {
             this.update(value, key, now);
         }
 
-        value.used = now;
+        if ((value.series.size() <= 1) && myFallback.containsKey(key)) {
+            return this.get(myFallback.get(key));
+        } else {
+            value.used = now;
+            return value.series;
+        }
+    }
 
-        return value.series;
+    public synchronized void register(FinanceData primary, FinanceData secondary) {
+
+        myCache.computeIfAbsent(primary, k -> new SourceCache.Value(k.getSymbol()));
+
+        myCache.computeIfAbsent(secondary, k -> new SourceCache.Value(k.getSymbol()));
+
+        myFallback.put(primary, secondary);
     }
 
     private void cleanUp() {
@@ -102,9 +107,11 @@ public final class SourceCache {
         final CalendarDate now = new CalendarDate();
 
         for (final Entry<FinanceData, SourceCache.Value> entry : myCache.entrySet()) {
-            if ((now.millis - entry.getValue().used.millis) > myRefreshInterval.toDurationInMillis()) {
-                entry.getValue().series.clear();
-                myCache.remove(entry.getKey());
+            FinanceData key = entry.getKey();
+            Value value = entry.getValue();
+            if ((value.used == null) || ((now.millis - value.used.millis) > myRefreshInterval.toDurationInMillis())) {
+                value.series.clear();
+                myCache.remove(key);
             }
         }
     }
