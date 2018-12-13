@@ -58,7 +58,7 @@ public class YahooFetcherTest {
             TestUtils.fail("Not redirect - supposed to redirect to the consent page - something changed!");
         }
 
-        YahooSession.scrapeChallengeResponse(session, challengeRequest, challengeResponse);
+        YahooSession.scrapeChallengeResponse(session, challengeResponse);
 
         TestUtils.assertNotNullOrEmpty(session.getParameterValue(YahooSession.SESSION_ID));
         TestUtils.assertNotNullOrEmpty(session.getParameterValue(YahooSession.CSRF_TOKEN));

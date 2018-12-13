@@ -56,10 +56,12 @@ public class YahooSession {
         public Reader getStreamOfCSV() {
 
             BasicLogger.debug();
-            BasicLogger.debug("Just started to getStreamOfCSV");
+            BasicLogger.debug("Begin getStreamOfCSV");
+            BasicLogger.debug();
 
-            String sessionId = mySession.getParameterValue(SESSION_ID);
-            if ((sessionId == null) || (sessionId.length() <= 0)) {
+            String crumb = mySession.getParameterValue(CRUMB);
+            if ((crumb == null) || (crumb.length() <= 0)) {
+                // No crumb, and assume no cookie either
 
                 Request challengeRequest = YahooSession.buildChallengeRequest(mySession, mySymbol);
                 Response challengeResponse = challengeRequest.response();
@@ -67,7 +69,10 @@ public class YahooSession {
                 challengeRequest.print(BasicLogger.DEBUG);
                 challengeResponse.print(BasicLogger.DEBUG);
 
-                if (YahooSession.scrapeChallengeResponse(mySession, challengeRequest, challengeResponse)) {
+                if (!challengeRequest.equals(challengeResponse.getRequest())) {
+                    // Was redirect (to ask for consent)
+
+                    YahooSession.scrapeChallengeResponse(mySession, challengeResponse);
 
                     Request consentRequest = YahooSession.buildConsentRequest(mySession, challengeRequest);
                     Response consentResponse = consentRequest.response();
@@ -75,15 +80,6 @@ public class YahooSession {
                     consentRequest.print(BasicLogger.DEBUG);
                     consentResponse.print(BasicLogger.DEBUG);
                 }
-            }
-
-            BasicLogger.debug();
-            BasicLogger.debug("Consent should be given now, but perhaps no crumb");
-            mySession.print(BasicLogger.DEBUG);
-            BasicLogger.debug();
-
-            String crumb = mySession.getParameterValue(CRUMB);
-            if ((crumb == null) || (crumb.length() <= 0)) {
 
                 Request crumbRequest = YahooSession.buildCrumbRequest(mySession);
                 Response crumbResponse = crumbRequest.response();
@@ -95,7 +91,7 @@ public class YahooSession {
             }
 
             BasicLogger.debug();
-            BasicLogger.debug("Everything should be ok now - crumb and everything");
+            BasicLogger.debug("Should be ok now - crumb and cookie");
             mySession.print(BasicLogger.DEBUG);
             BasicLogger.debug();
 
@@ -197,8 +193,7 @@ public class YahooSession {
         return request;
     }
 
-    static boolean scrapeChallengeResponse(ResourceLocator.Session session, ResourceLocator.Request challengeRequest,
-            ResourceLocator.Response challengeResponse) {
+    static void scrapeChallengeResponse(ResourceLocator.Session session, ResourceLocator.Response challengeResponse) {
 
         String challengeResponseBody = challengeResponse.toString();
         ResourceLocator.Request finalRequest = challengeResponse.getRequest();
@@ -206,32 +201,23 @@ public class YahooSession {
         String sessionId = finalRequest.getQueryValue(SESSION_ID);
         session.parameter(SESSION_ID, sessionId);
 
-        if (!challengeRequest.equals(challengeResponse.getRequest())) {
-
-            int begin = challengeResponseBody.indexOf(INPUT_TYPE_HIDDEN_NAME_CSRF_TOKEN_VALUE);
-            if (begin >= 0) {
-                begin += INPUT_TYPE_HIDDEN_NAME_CSRF_TOKEN_VALUE.length();
-            }
-            int end = challengeResponseBody.indexOf(END, begin);
-
-            String csrfToken = challengeResponseBody.substring(begin, end);
-            session.parameter(CSRF_TOKEN, csrfToken);
-
-            begin = challengeResponseBody.indexOf(INPUT_TYPE_HIDDEN_NAME_BRAND_BID_VALUE);
-            if (begin >= 0) {
-                begin += INPUT_TYPE_HIDDEN_NAME_BRAND_BID_VALUE.length();
-            }
-            end = challengeResponseBody.indexOf(END, begin);
-
-            String brandBid = challengeResponseBody.substring(begin, end);
-            session.parameter(BRAND_BID, brandBid);
-
-            return true;
-
-        } else {
-
-            return false;
+        int begin = challengeResponseBody.indexOf(INPUT_TYPE_HIDDEN_NAME_CSRF_TOKEN_VALUE);
+        if (begin >= 0) {
+            begin += INPUT_TYPE_HIDDEN_NAME_CSRF_TOKEN_VALUE.length();
         }
+        int end = challengeResponseBody.indexOf(END, begin);
+
+        String csrfToken = challengeResponseBody.substring(begin, end);
+        session.parameter(CSRF_TOKEN, csrfToken);
+
+        begin = challengeResponseBody.indexOf(INPUT_TYPE_HIDDEN_NAME_BRAND_BID_VALUE);
+        if (begin >= 0) {
+            begin += INPUT_TYPE_HIDDEN_NAME_BRAND_BID_VALUE.length();
+        }
+        end = challengeResponseBody.indexOf(END, begin);
+
+        String brandBid = challengeResponseBody.substring(begin, end);
+        session.parameter(BRAND_BID, brandBid);
     }
 
     static void scrapeCrumbResponse(ResourceLocator.Session session, ResourceLocator.Response crumbResponse) {
