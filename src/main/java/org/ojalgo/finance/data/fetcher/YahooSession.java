@@ -126,10 +126,13 @@ public class YahooSession {
     static final String SESSION_ID = "sessionId";
 
     /**
-     * A request that requires consent, but not the crumb
+     * A request that requires consent and will set the "B" cookie, but not the crumb
      */
     static ResourceLocator.Request buildChallengeRequest(ResourceLocator.Session session, String symbol) {
-        return session.request().host(FINANCE_YAHOO_COM).path("/quote/" + symbol);
+        // The "options" part causes the cookie to be set.
+        // Other path endings may also work,
+        // but there has to be something after the symbol
+        return session.request().host(FINANCE_YAHOO_COM).path("/quote/" + symbol + "/options");
     }
 
     static ResourceLocator.Request buildConsentRequest(ResourceLocator.Session session, ResourceLocator.Request challengeRequest) {
