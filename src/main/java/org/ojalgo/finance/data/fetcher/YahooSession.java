@@ -56,9 +56,7 @@ public class YahooSession {
         public Reader getStreamOfCSV() {
 
             BasicLogger.debug();
-            BasicLogger.debug("Just started");
-            mySession.print(BasicLogger.DEBUG);
-            BasicLogger.debug();
+            BasicLogger.debug("Just started to getStreamOfCSV");
 
             String sessionId = mySession.getParameterValue(SESSION_ID);
             if ((sessionId == null) || (sessionId.length() <= 0)) {
@@ -66,18 +64,16 @@ public class YahooSession {
                 Request challengeRequest = YahooSession.buildChallengeRequest(mySession, mySymbol);
                 Response challengeResponse = challengeRequest.response();
 
-                BasicLogger.debug("Challenge Original Challenge Reguest: {}", challengeRequest);
-                BasicLogger.debug("Challenge Recreated Challenge Reguest: {}", challengeResponse.getRequest());
-                BasicLogger.debug("Challenge Actual Challenge Response: {}", challengeResponse);
+                challengeRequest.print(BasicLogger.DEBUG);
+                challengeResponse.print(BasicLogger.DEBUG);
 
                 if (YahooSession.scrapeChallengeResponse(mySession, challengeRequest, challengeResponse)) {
 
                     Request consentRequest = YahooSession.buildConsentRequest(mySession, challengeRequest);
                     Response consentResponse = consentRequest.response();
 
-                    BasicLogger.debug("Consent Original Consent Reguest: {}", consentRequest);
-                    BasicLogger.debug("Consent Recreated Consent Reguest: {}", consentResponse.getRequest());
-                    BasicLogger.debug("Consent Actual Consent Response: {}", consentResponse);
+                    consentRequest.print(BasicLogger.DEBUG);
+                    consentResponse.print(BasicLogger.DEBUG);
                 }
             }
 
@@ -92,11 +88,10 @@ public class YahooSession {
                 Request crumbRequest = YahooSession.buildCrumbRequest(mySession);
                 Response crumbResponse = crumbRequest.response();
 
-                YahooSession.scrapeCrumbResponse(mySession, crumbResponse);
+                crumbRequest.print(BasicLogger.DEBUG);
+                crumbResponse.print(BasicLogger.DEBUG);
 
-                BasicLogger.debug("Crumb Original Crumb Reguest: {}", crumbRequest);
-                BasicLogger.debug("Crumb Recreated Crumb Reguest: {}", crumbResponse.getRequest());
-                BasicLogger.debug("Crumb Actual Crumb Response: {}", crumbResponse);
+                YahooSession.scrapeCrumbResponse(mySession, crumbResponse);
             }
 
             BasicLogger.debug();
