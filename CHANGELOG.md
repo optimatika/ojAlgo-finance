@@ -1,6 +1,4 @@
-# Changelog
-
-## [Unreleased]
+# [Unreleased]
 
 ### Added
 
@@ -25,23 +23,17 @@
 ### Fixed
 ### Security
 
-## v1.1.0
+# v1.1.0 2018-06-09
+
+### Changed
+
+* 
+
+# v1.0.0 2017-09-27
 
 ### Added
-### Changed
-### Deprecated
-### Removed
-### Fixed
-### Security
 
-## v1.0.0
-
-### Added
-### Changed
-### Deprecated
-### Removed
-### Fixed
-### Security
+* Initial release in parallel with ojAlgo v44. Prior to the release of ojAlgo v44 ojAlgo-finance was an integral part of ojAlgo.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
