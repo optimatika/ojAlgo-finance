@@ -1,5 +1,23 @@
 # ojAlgo-finance [![Build Status](https://travis-ci.org/optimatika/ojAlgo-finance.svg?branch=master)](https://travis-ci.org/optimatika/ojAlgo-finance)
 
+Historically the development of ojAlgo was motivated by various financial applications and finance (domain) specific code was an integral part of ojAlgo. Now the finance specfic code is here in ojAlgo-finance.
+
+General information about ojAlgo is available at the project web site: http://ojalgo.org/
+
+### Artifacts
+
+ojAlgo-finance is available at [The Central (Maven) Repository](https://search.maven.org/artifact/org.ojalgo/ojalgo-finance) to be used with your favourite dependency management tool.
+
+```xml
+<dependency>
+    <groupId>org.ojalgo</groupId>
+    <artifactId>ojalgo-finance</artifactId>
+    <version>2.0.0</version>
+</dependency>
+``` 
+
+## 
+
 <h2>Modern Portfolio Theory</h2>
       <p> <em>"Modern portfolio theory (MPT)—or portfolio theory—was introduced
           by Harry Markowitz with his paper "Portfolio Selection," which
