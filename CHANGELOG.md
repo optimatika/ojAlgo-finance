@@ -14,20 +14,16 @@
 * All packages beginning with biz.ojalgo have been moved/renamed org.ojalgo.*
 * The various business logic interfaces had nested Logic classes. These have been removed and the methods the contained have been moved to the enclosing interface
 
-### Deprecated
 ### Removed
 
 * Removed old code to download historical financial data from Yahoo Finance
 * Removed old code to download historical financial data from Google Finance
 
-### Fixed
-### Security
-
 # v1.1.0: 2018-06-09
 
 ### Changed
 
-* 
+* Just to make it compatible with newer versions of ojAlgo.
 
 # v1.0.0: 2017-09-27
 
