@@ -70,7 +70,7 @@ public class YahooSession {
 
                 if (debug) {
                     challengeRequest.print(BasicLogger.DEBUG);
-                    // challengeResponse.print(BasicLogger.DEBUG);
+                    challengeResponse.print(BasicLogger.DEBUG);
                 }
 
                 if ((challengeResponse.toString() != null) && !challengeRequest.equals(challengeResponse.getRequest())) {
@@ -83,7 +83,7 @@ public class YahooSession {
 
                     if ((consentResponse.toString() != null) && debug) {
                         consentRequest.print(BasicLogger.DEBUG);
-                        // consentResponse.print(BasicLogger.DEBUG);
+                        consentResponse.print(BasicLogger.DEBUG);
                     }
                 }
 
@@ -92,7 +92,7 @@ public class YahooSession {
 
                 if (debug) {
                     crumbRequest.print(BasicLogger.DEBUG);
-                    // crumbResponse.print(BasicLogger.DEBUG);
+                    crumbResponse.print(BasicLogger.DEBUG);
                 }
 
                 YahooSession.scrapeCrumbResponse(mySession, crumbResponse);
@@ -130,7 +130,7 @@ public class YahooSession {
     static final String BRAND_BID = "brandBid";
     static final String CRUMB = "crumb";
     static final String CSRF_TOKEN = "csrfToken";
-    static boolean debug = true;
+    static boolean debug = false;
     static final String SESSION_ID = "sessionId";
 
     /**
