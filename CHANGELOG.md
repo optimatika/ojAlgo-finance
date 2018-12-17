@@ -1,4 +1,8 @@
-# v2.0.0: [Unreleased]
+# v3.0.0: [Not yet released]
+
+> corresponds to changes in the `develop` branch since the last release
+
+# v2.0.0: 2018-12-17
 
 ### Added
 
