@@ -1,6 +1,6 @@
 # ojAlgo-finance [![Build Status](https://travis-ci.org/optimatika/ojAlgo-finance.svg?branch=master)](https://travis-ci.org/optimatika/ojAlgo-finance)
 
-Historically the development of ojAlgo was motivated by various financial applications and finance (domain) specific code was an integral part of ojAlgo. Now the finance specfic code has been moved from the core project, ojAlgo, to its own project – ojAlgo-finance.
+Historically the development of ojAlgo was motivated by various financial applications and finance (domain) specific code was an integral part of ojAlgo. Now the finance specfic code has been moved from the core project (ojAlgo) to its own project – ojAlgo-finance.
 
 General information about ojAlgo and ojAlgo-finance is available at the project web site: http://ojalgo.org/
 
