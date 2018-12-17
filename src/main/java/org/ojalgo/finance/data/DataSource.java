@@ -21,44 +21,65 @@
  */
 package org.ojalgo.finance.data;
 
-import java.io.Reader;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.ojalgo.ProgrammingError;
+import org.ojalgo.array.DenseArray;
+import org.ojalgo.array.Primitive64Array;
+import org.ojalgo.finance.data.fetcher.AlphaVantageFetcher;
+import org.ojalgo.finance.data.fetcher.DataFetcher;
+import org.ojalgo.finance.data.fetcher.IEXTradingFetcher;
+import org.ojalgo.finance.data.fetcher.YahooSession;
+import org.ojalgo.finance.data.parser.AlphaVantageParser;
+import org.ojalgo.finance.data.parser.IEXTradingParser;
+import org.ojalgo.finance.data.parser.YahooParser;
+import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.netio.BasicParser;
-import org.ojalgo.netio.ResourceLocator;
+import org.ojalgo.series.BasicSeries;
 import org.ojalgo.series.CalendarDateSeries;
+import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
-import org.ojalgo.type.TypeCache;
 
-public abstract class DataSource<DP extends DatePrice> implements BasicParser<DP> {
+public final class DataSource implements FinanceData {
 
-    private final CalendarDateUnit myResolution;
-    private final ResourceLocator myResourceLocator;
-    private final String mySymbol;
-
-    @SuppressWarnings("unused")
-    private DataSource() {
-
-        this(null, null, null);
-
-        ProgrammingError.throwForIllegalInvocation();
+    public static DataSource newAlphaVantage(String symbol, CalendarDateUnit resolution, String apiKey) {
+        return DataSource.newAlphaVantage(symbol, resolution, apiKey, false);
     }
 
-    protected DataSource(final String host, final String symbol, final CalendarDateUnit resolution) {
+    public static DataSource newAlphaVantage(String symbol, CalendarDateUnit resolution, String apiKey, boolean fullOutputSize) {
+        AlphaVantageFetcher fetcher = new AlphaVantageFetcher(symbol, resolution, apiKey, fullOutputSize);
+        AlphaVantageParser parser = new AlphaVantageParser();
+        return new DataSource(fetcher, parser);
+    }
 
+    public static DataSource newIEXTrading(String symbol) {
+        IEXTradingFetcher fetcher = new IEXTradingFetcher(symbol);
+        IEXTradingParser parser = new IEXTradingParser();
+        return new DataSource(fetcher, parser);
+    }
+
+    public static DataSource newYahoo(YahooSession session, String symbol, CalendarDateUnit resolution) {
+        YahooSession.Fetcher fetcher = session.newFetcher(symbol, resolution);
+        YahooParser parser = new YahooParser();
+        return new DataSource(fetcher, parser);
+    }
+
+    private final DataFetcher myFetcher;
+    private final BasicParser<? extends DatePrice> myParser;
+
+    DataSource(DataFetcher fetcher, BasicParser<? extends DatePrice> parser) {
         super();
-
-        myResourceLocator = new ResourceLocator(host);
-
-        mySymbol = symbol;
-        myResolution = resolution;
+        myFetcher = fetcher;
+        myParser = parser;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -68,97 +89,117 @@ public abstract class DataSource<DP extends DatePrice> implements BasicParser<DP
         if (!(obj instanceof DataSource)) {
             return false;
         }
-        final DataSource<?> other = (DataSource<?>) obj;
-        if (myResolution != other.myResolution) {
-            return false;
-        }
-        if (!this.getClass().equals(other.getClass())) {
-            return false;
-        }
-        if (mySymbol == null) {
-            if (other.mySymbol != null) {
+        DataSource other = (DataSource) obj;
+        if (myFetcher == null) {
+            if (other.myFetcher != null) {
                 return false;
             }
-        } else if (!mySymbol.equals(other.mySymbol)) {
+        } else if (!myFetcher.equals(other.myFetcher)) {
+            return false;
+        }
+        if (myParser == null) {
+            if (other.myParser != null) {
+                return false;
+            }
+        } else if (!myParser.equals(other.myParser)) {
             return false;
         }
         return true;
     }
 
-    public List<DP> getHistoricalPrices() {
+    public CalendarDateSeries<Double> getCalendarDateSeries() {
+        return this.getCalendarDateSeries(myFetcher.getResolution(), LocalTime.NOON, ZoneOffset.UTC);
+    }
+
+    public CalendarDateSeries<Double> getCalendarDateSeries(CalendarDateUnit resolution) {
+        return this.getCalendarDateSeries(resolution, LocalTime.NOON, ZoneOffset.UTC);
+    }
+
+    public CalendarDateSeries<Double> getCalendarDateSeries(CalendarDateUnit resolution, LocalTime time, ZoneId zoneId) {
+
+        CalendarDateSeries<Double> retVal = new CalendarDateSeries<>(resolution);
+
+        for (DatePrice datePrice : this.getHistoricalPrices()) {
+            retVal.put(CalendarDate.valueOf(datePrice.key.atTime(time).atZone(zoneId)), datePrice.getPrice());
+        }
+
+        return retVal;
+    }
+
+    public CalendarDateSeries<Double> getCalendarDateSeries(LocalTime time, ZoneId zoneId) {
+        return this.getCalendarDateSeries(myFetcher.getResolution(), time, zoneId);
+    }
+
+    public List<DatePrice> getHistoricalPrices() {
         try {
-            return this.getHistoricalPrices(this.getResourceLocator().getStreamReader());
+            final ArrayList<DatePrice> retVal = new ArrayList<>();
+            myParser.parse(myFetcher.getStreamOfCSV(), row -> retVal.add(row));
+            Collections.sort(retVal);
+            return retVal;
         } catch (final Exception exception) {
             exception.printStackTrace();
-            this.handleException(mySymbol, myResolution, myResourceLocator, exception);
+            BasicLogger.error("Fetch problem for {}!", myFetcher.getClass().getSimpleName());
+            BasicLogger.error("Symbol & Resolution: {} & {}", myFetcher.getSymbol(), myFetcher.getResolution());
             return Collections.emptyList();
         }
     }
 
-    public List<DP> getHistoricalPrices(final Reader reader) {
-
-        final ArrayList<DP> retVal = new ArrayList<>();
-
-        this.parse(reader, i -> retVal.add(i));
-
-        Collections.sort(retVal);
-
-        return retVal;
-
+    public BasicSeries.NaturallySequenced<LocalDate, Double> getLocalDateSeries() {
+        return this.getLocalDateSeries(this.getHistoricalPrices(), myFetcher.getResolution(), Primitive64Array.FACTORY);
     }
 
-    public CalendarDateSeries<Double> getPriceSeries() {
-        try {
-            return this.getPriceSeries(this.getResourceLocator().getStreamReader());
-        } catch (final Exception exception) {
-            exception.printStackTrace();
-            this.handleException(mySymbol, myResolution, myResourceLocator, exception);
-            return new CalendarDateSeries<Double>(myResolution).name(mySymbol);
-        }
+    public BasicSeries.NaturallySequenced<LocalDate, Double> getLocalDateSeries(CalendarDateUnit resolution) {
+        return this.getLocalDateSeries(this.getHistoricalPrices(), resolution, Primitive64Array.FACTORY);
     }
 
-    public CalendarDateSeries<Double> getPriceSeries(final Reader reader) {
-
-        final CalendarDateSeries<Double> retVal = new CalendarDateSeries<Double>(myResolution).name(mySymbol);
-
-        for (final DatePrice tmpDatePrice : this.getHistoricalPrices(reader)) {
-            retVal.put(tmpDatePrice.getKey(), tmpDatePrice.getValue());
-        }
-
-        return retVal;
+    public BasicSeries.NaturallySequenced<LocalDate, Double> getLocalDateSeries(CalendarDateUnit resolution, DenseArray.Factory<Double> denseArrayFactory) {
+        return this.getLocalDateSeries(this.getHistoricalPrices(), resolution, denseArrayFactory);
     }
 
-    public CalendarDateUnit getResolution() {
-        return myResolution;
+    public BasicSeries.NaturallySequenced<LocalDate, Double> getLocalDateSeries(DenseArray.Factory<Double> denseArrayFactory) {
+        return this.getLocalDateSeries(this.getHistoricalPrices(), myFetcher.getResolution(), denseArrayFactory);
+    }
+
+    public BasicSeries<LocalDate, Double> getPriceSeries() {
+        return this.getLocalDateSeries(this.getHistoricalPrices(), myFetcher.getResolution(), Primitive64Array.FACTORY);
     }
 
     public String getSymbol() {
-        return mySymbol;
-    }
-
-    public TypeCache<? extends List<DP>> getSymbolCache(final long purgeIntervalMeassure, final CalendarDateUnit purgeIntervalUnit) {
-        return new TypeCache<List<DP>>(purgeIntervalMeassure, purgeIntervalUnit) {
-
-            @Override
-            protected List<DP> recreateCache() {
-                return DataSource.this.getHistoricalPrices();
-            }
-        };
+        return myFetcher.getSymbol();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + ((myResolution == null) ? 0 : myResolution.hashCode());
-        result = (prime * result) + ((mySymbol == null) ? 0 : mySymbol.hashCode());
+        result = (prime * result) + ((myFetcher == null) ? 0 : myFetcher.hashCode());
+        result = (prime * result) + ((myParser == null) ? 0 : myParser.hashCode());
         return result;
     }
 
-    protected ResourceLocator getResourceLocator() {
-        return myResourceLocator;
-    }
+    private BasicSeries.NaturallySequenced<LocalDate, Double> getLocalDateSeries(List<DatePrice> historicalPrices, CalendarDateUnit resolution,
+            DenseArray.Factory<Double> denseArrayFactory) {
 
-    abstract void handleException(String symbol, CalendarDateUnit resolution, ResourceLocator locator, Exception exception);
+        BasicSeries.NaturallySequenced<LocalDate, Double> retVal = BasicSeries.LOCAL_DATE.build(denseArrayFactory);
+        retVal.name(this.getSymbol());
+
+        LocalDate adjusted;
+        for (DatePrice datePrice : historicalPrices) {
+            switch (resolution) {
+            case MONTH:
+                adjusted = (LocalDate) FinanceData.LAST_DAY_OF_MONTH.adjustInto(datePrice.key);
+                break;
+            case WEEK:
+                adjusted = (LocalDate) FinanceData.FRIDAY_OF_WEEK.adjustInto(datePrice.key);
+                break;
+            default:
+                adjusted = datePrice.key;
+                break;
+            }
+            retVal.put(adjusted, datePrice.getPrice());
+        }
+
+        return retVal;
+    }
 
 }

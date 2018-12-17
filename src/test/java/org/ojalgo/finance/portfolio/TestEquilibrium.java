@@ -30,8 +30,6 @@ import org.ojalgo.TestUtils;
 import org.ojalgo.constant.BigMath;
 import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.function.UnaryFunction;
-import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.Builder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.store.PhysicalStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
@@ -65,7 +63,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
 
         final TestEquilibrium tm = new TestEquilibrium();
 
-        final BasicMatrix covariances = tm.getACovariances(om);
+        final PrimitiveMatrix covariances = tm.getACovariances(om);
 
         System.out.println(covariances);
 
@@ -73,7 +71,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
 
         final MarketEquilibrium marketEquilibrium = new MarketEquilibrium(covariances, riskAversion);
 
-        final Builder<PrimitiveMatrix> expectedExcessReturns1 = PrimitiveMatrix.FACTORY.getBuilder(assetNum, 1);
+        final PrimitiveMatrix.DenseReceiver expectedExcessReturns1 = PrimitiveMatrix.FACTORY.makeDense(assetNum, 1);
         expectedExcessReturns1.set(0, 0, 0.03360872);
         expectedExcessReturns1.set(1, 0, 0.027322319);
         expectedExcessReturns1.set(2, 0, 0.027668137);
@@ -120,12 +118,12 @@ public class TestEquilibrium extends FinancePortfolioTests {
         super();
     }
 
-    public BasicMatrix getACovariances(final double[][] returns) {
+    public PrimitiveMatrix getACovariances(final double[][] returns) {
 
         final int row = returns.length;
         final int col = returns[0].length;
 
-        final Builder<PrimitiveMatrix> covariances = PrimitiveMatrix.FACTORY.getBuilder(row, col);
+        final PrimitiveMatrix.DenseReceiver covariances = PrimitiveMatrix.FACTORY.makeDense(row, col);
 
         for (int i = 1; i <= row; i++) {
             for (int j = i; j <= col; j++) {
@@ -167,7 +165,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
 
         @SuppressWarnings("unchecked")
         final PrimitiveMatrix tmpGeneratedWeights = PrimitiveMatrix.FACTORY.columns(tmpNormalisedWeights);
-        final BasicMatrix tmpMatchingReturns = tmpEquilibrium.calculateAssetReturns(tmpGeneratedWeights);
+        final PrimitiveMatrix tmpMatchingReturns = tmpEquilibrium.calculateAssetReturns(tmpGeneratedWeights);
         TestUtils.assertEquals(tmpGeneratedWeights, tmpEquilibrium.calculateAssetWeights(tmpMatchingReturns), tmpWeightsContext);
 
         final FixedWeightsPortfolio tmpFW = new FixedWeightsPortfolio(tmpEquilibrium, tmpGeneratedWeights);
@@ -193,7 +191,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
         TestUtils.assertEquals(tmpGeneratedWeights, tmpBLM.getAssetWeights(), tmpWeightsContext);
 
         final MarkowitzModel tmpMM = new MarkowitzModel(tmpEquilibrium, tmpMatchingReturns);
-        final BasicMatrix tmpActual = tmpMM.getAssetWeights();
+        final PrimitiveMatrix tmpActual = tmpMM.getAssetWeights();
         TestUtils.assertEquals(tmpGeneratedWeights, tmpActual, tmpWeightsContext);
     }
 }

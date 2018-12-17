@@ -21,8 +21,6 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.Builder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 
 class P20090115 {
@@ -47,12 +45,12 @@ class P20090115 {
         return sum / (n - 1);
     }
 
-    public BasicMatrix getCovariances(final double[][] returns) {
+    public PrimitiveMatrix getCovariances(final double[][] returns) {
 
         final int row = returns.length;
         final int col = returns[0].length;
 
-        final Builder<PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(row, col);
+        final PrimitiveMatrix.DenseReceiver tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(row, col);
 
         for (int i = 0; i < row; i++) {
             for (int j = i; j < col; j++) {
@@ -64,12 +62,12 @@ class P20090115 {
         return tmpBuilder.build();
     }
 
-    public BasicMatrix getExpectedExcessReturns(final double[][] returns) {
+    public PrimitiveMatrix getExpectedExcessReturns(final double[][] returns) {
 
         final int row = returns.length;
         final int col = returns[0].length;
 
-        final Builder<PrimitiveMatrix> tmpBuilder = PrimitiveMatrix.FACTORY.getBuilder(row);
+        final PrimitiveMatrix.DenseReceiver tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(row);
 
         double riskFreeReturn = 0;
         for (int j = 0; j < col; j++) {

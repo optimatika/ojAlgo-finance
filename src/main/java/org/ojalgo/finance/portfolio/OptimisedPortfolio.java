@@ -27,8 +27,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.Builder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.optimisation.Expression;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
@@ -85,13 +83,13 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
     static final String BALANCE = "Balance";
     static final String VARIANCE = "Variance";
 
-    private final BasicMatrix myExpectedExcessReturns;
+    private final PrimitiveMatrix myExpectedExcessReturns;
     private final Optimisation.Options myOptimisationOptions = new Optimisation.Options();
     private transient State myOptimisationState = State.UNEXPLORED;
     private boolean myShortingAllowed = false;
     private final Variable[] myVariables;
 
-    OptimisedPortfolio(final BasicMatrix covarianceMatrix, final BasicMatrix expectedExcessReturns) {
+    OptimisedPortfolio(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
         this(new MarketEquilibrium(covarianceMatrix), expectedExcessReturns);
     }
 
@@ -111,7 +109,7 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
         myOptimisationOptions.solution = myOptimisationOptions.solution.newPrecision(8).newScale(10);
     }
 
-    OptimisedPortfolio(final MarketEquilibrium marketEquilibrium, final BasicMatrix expectedExcessReturns) {
+    OptimisedPortfolio(final MarketEquilibrium marketEquilibrium, final PrimitiveMatrix expectedExcessReturns) {
 
         super(marketEquilibrium);
 
@@ -145,11 +143,11 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
     }
 
     @Override
-    protected final BasicMatrix calculateAssetReturns() {
+    protected final PrimitiveMatrix calculateAssetReturns() {
         return myExpectedExcessReturns;
     }
 
-    protected final BasicMatrix handle(final Optimisation.Result optimisationResult) {
+    protected final PrimitiveMatrix handle(final Optimisation.Result optimisationResult) {
 
         final int tmpLength = myVariables.length;
 
@@ -157,7 +155,7 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
         final boolean tmpFeasible = optimisationResult.getState().isFeasible();
         final boolean tmpShortingAllowed = this.isShortingAllowed();
 
-        final Builder<PrimitiveMatrix> tmpMtrxBuilder = MATRIX_FACTORY.getBuilder(tmpLength);
+        final PrimitiveMatrix.DenseReceiver tmpMtrxBuilder = MATRIX_FACTORY.makeDense(tmpLength);
 
         BigDecimal tmpValue;
         for (int i = 0; i < tmpLength; i++) {
@@ -206,7 +204,7 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
         retVal.addVariables(tmpVariables);
 
         final Expression myOptimisationVariance = retVal.addExpression(VARIANCE);
-        final BasicMatrix tmpCovariances = this.getCovariances();
+        final PrimitiveMatrix tmpCovariances = this.getCovariances();
         for (int j = 0; j < tmpLength; j++) {
             for (int i = 0; i < tmpLength; i++) {
                 myOptimisationVariance.set(i, j, tmpCovariances.get(i, j));

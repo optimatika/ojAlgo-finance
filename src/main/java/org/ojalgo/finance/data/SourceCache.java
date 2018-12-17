@@ -21,13 +21,15 @@
  */
 package org.ojalgo.finance.data;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.ojalgo.series.CalendarDateSeries;
+import org.ojalgo.array.Primitive64Array;
+import org.ojalgo.series.BasicSeries;
 import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
 
@@ -35,20 +37,15 @@ public final class SourceCache {
 
     private static final class Value {
 
-        final CalendarDateSeries<Double> series;
+        final BasicSeries<LocalDate, Double> series;
         CalendarDate updated = new CalendarDate();
-        CalendarDate used = new CalendarDate();
+        CalendarDate used = null;
 
-        @SuppressWarnings("unused")
-        private Value() {
-            this(null, null);
-        }
-
-        Value(final String name, final CalendarDateUnit resolution) {
+        Value(final String name) {
 
             super();
 
-            series = new CalendarDateSeries<>(resolution);
+            series = BasicSeries.LOCAL_DATE.build(Primitive64Array.FACTORY);
             series.name(name);
         }
 
@@ -56,14 +53,16 @@ public final class SourceCache {
 
     private static final Timer TIMER = new Timer("SourceCache-Daemon", true);
 
-    private final Map<DataSource<?>, SourceCache.Value> myCache = new ConcurrentHashMap<>();
-    private final CalendarDateUnit myResolution;
+    private final Map<FinanceData, SourceCache.Value> myCache = new ConcurrentHashMap<>();
+    private final Map<FinanceData, FinanceData> myFallback = new ConcurrentHashMap<>();
 
-    public SourceCache(final CalendarDateUnit aResolution) {
+    private final CalendarDate.Resolution myRefreshInterval;
+
+    public SourceCache(final CalendarDateUnit refreshInterval) {
 
         super();
 
-        myResolution = aResolution;
+        myRefreshInterval = refreshInterval;
 
         TIMER.schedule(new TimerTask() {
 
@@ -72,51 +71,56 @@ public final class SourceCache {
                 SourceCache.this.cleanUp();
             }
 
-        }, 0L, aResolution.size());
+        }, 0L, refreshInterval.toDurationInMillis());
 
     }
 
-    public synchronized CalendarDateSeries<Double> get(final DataSource<?> key) {
+    public synchronized BasicSeries<LocalDate, Double> get(final FinanceData key) {
 
-        final CalendarDate tmpNow = new CalendarDate();
+        final CalendarDate now = new CalendarDate();
 
-        Value tmpValue = myCache.get(key);
+        Value value = myCache.computeIfAbsent(key, k -> new SourceCache.Value(k.getSymbol()));
 
-        if (tmpValue != null) {
-
-            if (myResolution.count(tmpValue.updated.millis, tmpNow.millis) > 0L) {
-                this.update(tmpValue, key, tmpNow);
-            }
-
-        } else {
-
-            tmpValue = new SourceCache.Value(key.getSymbol(), myResolution);
-
-            myCache.put(key, tmpValue);
-
-            this.update(tmpValue, key, tmpNow);
+        if ((value.used == null) || ((now.millis - value.updated.millis) > myRefreshInterval.toDurationInMillis())) {
+            this.update(value, key, now);
         }
 
-        tmpValue.used = tmpNow;
+        if ((value.series.size() <= 1) && myFallback.containsKey(key)) {
+            return this.get(myFallback.get(key));
+        } else {
+            value.used = now;
+            return value.series;
+        }
+    }
 
-        return tmpValue.series;
+    public synchronized void register(FinanceData primary, FinanceData secondary) {
+
+        myCache.computeIfAbsent(primary, k -> new SourceCache.Value(k.getSymbol()));
+
+        myCache.computeIfAbsent(secondary, k -> new SourceCache.Value(k.getSymbol()));
+
+        myFallback.put(primary, secondary);
     }
 
     private void cleanUp() {
 
-        final CalendarDate tmpNow = new CalendarDate();
+        final CalendarDate now = new CalendarDate();
 
-        for (final Entry<DataSource<?>, SourceCache.Value> tmpEntry : myCache.entrySet()) {
-
-            if (myResolution.count(tmpEntry.getValue().used.millis, tmpNow.millis) > 1L) {
-                tmpEntry.getValue().series.clear();
-                myCache.remove(tmpEntry.getKey());
+        for (final Entry<FinanceData, SourceCache.Value> entry : myCache.entrySet()) {
+            FinanceData key = entry.getKey();
+            Value value = entry.getValue();
+            if ((value.used == null) || ((now.millis - value.used.millis) > myRefreshInterval.toDurationInMillis())) {
+                value.series.clear();
+                myCache.remove(key);
             }
         }
     }
 
-    private void update(final Value aCacheValue, final DataSource<?> key, final CalendarDate now) {
-        aCacheValue.series.putAll(key.getPriceSeries());
-        aCacheValue.updated = now;
+    private void update(final Value cacheValue, final FinanceData cacheKey, final CalendarDate now) {
+        BasicSeries<LocalDate, Double> priceSeries = cacheKey.getPriceSeries();
+        for (Entry<LocalDate, Double> entry : priceSeries.entrySet()) {
+            cacheValue.series.put(entry.getKey(), entry.getValue());
+        }
+        cacheValue.updated = now;
     }
 }

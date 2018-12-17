@@ -21,10 +21,10 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import org.ojalgo.access.Access1D;
-import org.ojalgo.access.Access2D;
 import org.ojalgo.finance.FinanceUtils;
 import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.structure.Access1D;
+import org.ojalgo.structure.Access2D;
 
 public class PortfolioContext implements FinancePortfolio.Context {
 

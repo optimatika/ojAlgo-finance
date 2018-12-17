@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.ojalgo.constant.BigMath;
-import org.ojalgo.matrix.BasicMatrix;
+import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
 import org.ojalgo.optimisation.Optimisation.Result;
 
@@ -41,7 +41,7 @@ public final class EfficientFrontier extends OptimisedPortfolio {
 
     private final ExpressionsBasedModel myOptimisationModel;
 
-    public EfficientFrontier(final BasicMatrix covarianceMatrix, final BasicMatrix expectedExcessReturns) {
+    public EfficientFrontier(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
 
         super(covarianceMatrix, expectedExcessReturns);
 
@@ -55,7 +55,7 @@ public final class EfficientFrontier extends OptimisedPortfolio {
         myOptimisationModel = this.makeModel(CONSTRAINTS);
     }
 
-    public EfficientFrontier(final MarketEquilibrium marketEquilibrium, final BasicMatrix expectedExcessReturns) {
+    public EfficientFrontier(final MarketEquilibrium marketEquilibrium, final PrimitiveMatrix expectedExcessReturns) {
 
         super(marketEquilibrium, expectedExcessReturns);
 
@@ -63,7 +63,7 @@ public final class EfficientFrontier extends OptimisedPortfolio {
     }
 
     @Override
-    protected BasicMatrix calculateAssetWeights() {
+    protected PrimitiveMatrix calculateAssetWeights() {
 
         myOptimisationModel.getExpression(VARIANCE).weight(this.getRiskAversion().doubleValue() / 2.0);
 

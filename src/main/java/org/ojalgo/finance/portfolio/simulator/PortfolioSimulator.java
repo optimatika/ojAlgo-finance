@@ -24,7 +24,6 @@ package org.ojalgo.finance.portfolio.simulator;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.ojalgo.access.Access2D;
 import org.ojalgo.array.Array1D;
 import org.ojalgo.array.Array2D;
 import org.ojalgo.array.Primitive64Array;
@@ -35,6 +34,7 @@ import org.ojalgo.function.aggregator.PrimitiveAggregator;
 import org.ojalgo.random.process.GeometricBrownian1D;
 import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.random.process.RandomProcess;
+import org.ojalgo.structure.Access2D;
 
 public class PortfolioSimulator {
 

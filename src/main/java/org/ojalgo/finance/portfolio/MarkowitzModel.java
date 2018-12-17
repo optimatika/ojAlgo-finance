@@ -26,14 +26,14 @@ import static org.ojalgo.constant.BigMath.*;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-import org.ojalgo.access.Access1D;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
-import org.ojalgo.matrix.BasicMatrix;
+import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
 import org.ojalgo.optimisation.Optimisation;
 import org.ojalgo.scalar.Scalar;
+import org.ojalgo.structure.Access1D;
 import org.ojalgo.type.context.NumberContext;
 
 /**
@@ -103,7 +103,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
     private BigDecimal myTargetReturn;
     private BigDecimal myTargetVariance;
 
-    public MarkowitzModel(final BasicMatrix covarianceMatrix, final BasicMatrix expectedExcessReturns) {
+    public MarkowitzModel(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
         super(covarianceMatrix, expectedExcessReturns);
     }
 
@@ -111,7 +111,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
         super(portfolioContext);
     }
 
-    public MarkowitzModel(final MarketEquilibrium marketEquilibrium, final BasicMatrix expectedExcessReturns) {
+    public MarkowitzModel(final MarketEquilibrium marketEquilibrium, final PrimitiveMatrix expectedExcessReturns) {
         super(marketEquilibrium, expectedExcessReturns);
     }
 
@@ -221,7 +221,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
      * Constrained optimisation.
      */
     @Override
-    protected BasicMatrix calculateAssetWeights() {
+    protected PrimitiveMatrix calculateAssetWeights() {
 
         if (this.getOptimisationOptions().logger_appender != null) {
             BasicLogger.debug();
@@ -319,7 +319,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
 
     }
 
-    final Scalar<?> calculatePortfolioReturn(final Access1D<?> weightsVctr, final BasicMatrix returnsVctr) {
+    final Scalar<?> calculatePortfolioReturn(final Access1D<?> weightsVctr, final PrimitiveMatrix returnsVctr) {
         return super.calculatePortfolioReturn(MATRIX_FACTORY.columns(weightsVctr), returnsVctr);
     }
 

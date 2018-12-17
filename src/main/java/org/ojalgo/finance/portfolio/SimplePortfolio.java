@@ -25,14 +25,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ojalgo.access.Access2D;
 import org.ojalgo.finance.portfolio.FinancePortfolio.Context;
 import org.ojalgo.finance.portfolio.simulator.PortfolioSimulator;
 import org.ojalgo.function.PrimitiveFunction;
-import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.Builder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.process.GeometricBrownianMotion;
+import org.ojalgo.structure.Access2D;
 
 public final class SimplePortfolio extends FinancePortfolio implements Context {
 
@@ -58,12 +56,12 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         return retVal;
     }
 
-    private transient BasicMatrix myAssetReturns = null;
-    private transient BasicMatrix myAssetVolatilities = null;
-    private transient BasicMatrix myAssetWeights = null;
+    private transient PrimitiveMatrix myAssetReturns = null;
+    private transient PrimitiveMatrix myAssetVolatilities = null;
+    private transient PrimitiveMatrix myAssetWeights = null;
     private final List<SimpleAsset> myComponents;
-    private final BasicMatrix myCorrelations;
-    private transient BasicMatrix myCovariances = null;
+    private final PrimitiveMatrix myCorrelations;
+    private transient PrimitiveMatrix myCovariances = null;
     private transient Number myMeanReturn;
     private transient Number myReturnVariance;
 
@@ -87,8 +85,8 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
         myCorrelations = portfolioContext.getCorrelations();
 
-        final BasicMatrix tmpCovariances = portfolioContext.getCovariances();
-        final BasicMatrix tmpAssetReturns = portfolioContext.getAssetReturns();
+        final PrimitiveMatrix tmpCovariances = portfolioContext.getCovariances();
+        final PrimitiveMatrix tmpAssetReturns = portfolioContext.getAssetReturns();
 
         final List<BigDecimal> tmpWeights = weightsPortfolio.getWeights();
 
@@ -119,24 +117,24 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
     public double calculatePortfolioReturn(final FinancePortfolio weightsPortfolio) {
         final List<BigDecimal> tmpWeights = weightsPortfolio.getWeights();
-        final BasicMatrix tmpAssetWeights = MATRIX_FACTORY.columns(tmpWeights);
-        final BasicMatrix tmpAssetReturns = this.getAssetReturns();
+        final PrimitiveMatrix tmpAssetWeights = MATRIX_FACTORY.columns(tmpWeights);
+        final PrimitiveMatrix tmpAssetReturns = this.getAssetReturns();
         return MarketEquilibrium.calculatePortfolioReturn(tmpAssetWeights, tmpAssetReturns).doubleValue();
     }
 
     public double calculatePortfolioVariance(final FinancePortfolio weightsPortfolio) {
         final List<BigDecimal> tmpWeights = weightsPortfolio.getWeights();
-        final BasicMatrix tmpAssetWeights = MATRIX_FACTORY.columns(tmpWeights);
+        final PrimitiveMatrix tmpAssetWeights = MATRIX_FACTORY.columns(tmpWeights);
         return new MarketEquilibrium(this.getCovariances()).calculatePortfolioVariance(tmpAssetWeights).doubleValue();
     }
 
-    public BasicMatrix getAssetReturns() {
+    public PrimitiveMatrix getAssetReturns() {
 
         if (myAssetReturns == null) {
 
             final int tmpSize = myComponents.size();
 
-            final Builder<PrimitiveMatrix> tmpReturns = MATRIX_FACTORY.getBuilder(tmpSize, 1);
+            final PrimitiveMatrix.DenseReceiver tmpReturns = MATRIX_FACTORY.makeDense(tmpSize, 1);
 
             for (int i = 0; i < tmpSize; i++) {
                 tmpReturns.set(i, 0, this.getMeanReturn(i));
@@ -148,13 +146,13 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         return myAssetReturns;
     }
 
-    public BasicMatrix getAssetVolatilities() {
+    public PrimitiveMatrix getAssetVolatilities() {
 
         if (myAssetVolatilities == null) {
 
             final int tmpSize = myComponents.size();
 
-            final Builder<PrimitiveMatrix> tmpVolatilities = MATRIX_FACTORY.getBuilder(tmpSize, 1);
+            final PrimitiveMatrix.DenseReceiver tmpVolatilities = MATRIX_FACTORY.makeDense(tmpSize, 1);
 
             for (int i = 0; i < tmpSize; i++) {
                 tmpVolatilities.set(i, 0, this.getVolatility(i));
@@ -170,13 +168,13 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         return myCorrelations.doubleValue(row, col);
     }
 
-    public BasicMatrix getCorrelations() {
+    public PrimitiveMatrix getCorrelations() {
         return myCorrelations;
     }
 
     public double getCovariance(final int row, final int col) {
 
-        final BasicMatrix tmpCovariances = myCovariances;
+        final PrimitiveMatrix tmpCovariances = myCovariances;
 
         if (tmpCovariances != null) {
 
@@ -193,13 +191,13 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         }
     }
 
-    public BasicMatrix getCovariances() {
+    public PrimitiveMatrix getCovariances() {
 
         if (myCovariances == null) {
 
             final int tmpSize = myComponents.size();
 
-            final Builder<PrimitiveMatrix> tmpCovaris = MATRIX_FACTORY.getBuilder(tmpSize, tmpSize);
+            final PrimitiveMatrix.DenseReceiver tmpCovaris = MATRIX_FACTORY.makeDense(tmpSize, tmpSize);
 
             for (int j = 0; j < tmpSize; j++) {
                 for (int i = 0; i < tmpSize; i++) {
@@ -217,8 +215,8 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
     public double getMeanReturn() {
 
         if (myMeanReturn == null) {
-            final BasicMatrix tmpWeightsVector = this.getAssetWeights();
-            final BasicMatrix tmpReturnsVector = this.getAssetReturns();
+            final PrimitiveMatrix tmpWeightsVector = this.getAssetWeights();
+            final PrimitiveMatrix tmpReturnsVector = this.getAssetReturns();
             myMeanReturn = MarketEquilibrium.calculatePortfolioReturn(tmpWeightsVector, tmpReturnsVector).get();
         }
 
@@ -234,7 +232,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
         if (myReturnVariance == null) {
             final MarketEquilibrium tmpMarketEquilibrium = new MarketEquilibrium(this.getCovariances());
-            final BasicMatrix tmpWeightsVector = this.getAssetWeights();
+            final PrimitiveMatrix tmpWeightsVector = this.getAssetWeights();
             myReturnVariance = tmpMarketEquilibrium.calculatePortfolioVariance(tmpWeightsVector).get();
         }
 
@@ -302,13 +300,13 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         }
     }
 
-    BasicMatrix getAssetWeights() {
+    PrimitiveMatrix getAssetWeights() {
 
         if (myAssetWeights == null) {
 
             final int tmpSize = myComponents.size();
 
-            final Builder<PrimitiveMatrix> tmpWeights = MATRIX_FACTORY.getBuilder(tmpSize, 1);
+            final PrimitiveMatrix.DenseReceiver tmpWeights = MATRIX_FACTORY.makeDense(tmpSize, 1);
 
             for (int i = 0; i < tmpSize; i++) {
                 tmpWeights.set(i, 0, this.getWeight(i));

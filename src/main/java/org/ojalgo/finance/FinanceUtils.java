@@ -31,15 +31,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.ojalgo.access.Access1D;
-import org.ojalgo.access.Access2D;
 import org.ojalgo.array.Array1D;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.function.aggregator.AggregatorFunction;
 import org.ojalgo.function.aggregator.PrimitiveAggregator;
-import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.BasicMatrix.Builder;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.decomposition.Eigenvalue;
 import org.ojalgo.matrix.store.MatrixStore;
@@ -52,6 +48,8 @@ import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.series.CoordinationSet;
 import org.ojalgo.series.primitive.PrimitiveSeries;
+import org.ojalgo.structure.Access1D;
+import org.ojalgo.structure.Access2D;
 import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
 
@@ -70,9 +68,9 @@ public abstract class FinanceUtils {
         final SampleSet tmpSampleSet = FinanceUtils.makeExcessGrowthRateSampleSet(priceSeries, riskFreeInterestRateSeries);
 
         // The average number of millis between to subsequent keys in the series.
-        double tmpStepSize = priceSeries.getResolution().size();
+        double tmpStepSize = priceSeries.getResolution().toDurationInMillis();
         // The time between to keys expressed in terms of the specified time meassure and unit.
-        tmpStepSize /= timeUnit.size();
+        tmpStepSize /= timeUnit.toDurationInMillis();
 
         final double tmpExp = tmpSampleSet.getMean();
         final double tmpVar = tmpSampleSet.getVariance();
@@ -91,7 +89,7 @@ public abstract class FinanceUtils {
         final CalendarDateSeries<RandomNumber> retVal = new CalendarDateSeries<>(timeUnit);
         retVal.name(series.getName()).colour(series.getColour());
 
-        final double tmpSamplePeriod = (double) series.getAverageStepSize() / (double) timeUnit.size();
+        final double tmpSamplePeriod = (double) series.getAverageStepSize() / (double) timeUnit.toDurationInMillis();
         final GeometricBrownianMotion tmpProcess = GeometricBrownianMotion.estimate(series.asPrimitive(), tmpSamplePeriod);
 
         if (includeOriginalSeries) {
@@ -106,7 +104,7 @@ public abstract class FinanceUtils {
         tmpProcess.setValue(tmpLastValue);
 
         for (int i = 1; i <= pointCount; i++) {
-            retVal.put(tmpLastKey.millis + (i * timeUnit.size()), tmpProcess.getDistribution(i));
+            retVal.put(tmpLastKey.millis + (i * timeUnit.toDurationInMillis()), tmpProcess.getDistribution(i));
         }
 
         return retVal;
@@ -123,10 +121,9 @@ public abstract class FinanceUtils {
     }
 
     /**
-     * @param timeSeriesCollection
      * @return Annualised covariances
      */
-    public static <V extends Number> BasicMatrix makeCovarianceMatrix(final Collection<CalendarDateSeries<V>> timeSeriesCollection) {
+    public static <V extends Number> PrimitiveMatrix makeCovarianceMatrix(final Collection<CalendarDateSeries<V>> timeSeriesCollection) {
 
         final CoordinationSet<V> tmpCoordinator = new CoordinationSet<>(timeSeriesCollection).prune();
 
@@ -146,9 +143,9 @@ public abstract class FinanceUtils {
 
         final int tmpSize = timeSeriesCollection.size();
 
-        final Builder<PrimitiveMatrix> retValStore = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+        final PrimitiveMatrix.DenseReceiver retValStore = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
 
-        final double tmpToYearFactor = (double) CalendarDateUnit.YEAR.size() / (double) tmpCoordinator.getResolution().size();
+        final double tmpToYearFactor = (double) CalendarDateUnit.YEAR.toDurationInMillis() / (double) tmpCoordinator.getResolution().toDurationInMillis();
 
         SampleSet tmpRowSet;
         SampleSet tmpColSet;
@@ -186,9 +183,9 @@ public abstract class FinanceUtils {
 
         final CoordinationSet<N> tmpCoordinated = tmpUncoordinated.prune(tmpDataResolution);
 
-        final Builder<PrimitiveMatrix> tmpMatrixBuilder = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+        final PrimitiveMatrix.DenseReceiver tmpMatrixBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
 
-        final double tmpToYearFactor = (double) CalendarDateUnit.YEAR.size() / (double) tmpDataResolution.size();
+        final double tmpToYearFactor = (double) CalendarDateUnit.YEAR.toDurationInMillis() / (double) tmpDataResolution.toDurationInMillis();
 
         SampleSet tmpSampleSet;
         final SampleSet[] tmpSampleSets = new SampleSet[tmpSize];
@@ -389,7 +386,7 @@ public abstract class FinanceUtils {
             tmpCovariances = tmpLeft.multiply(tmpMiddle).multiply(tmpRight);
         }
 
-        final Builder<PrimitiveMatrix> retVal = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+        final PrimitiveMatrix.DenseReceiver retVal = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
 
         final double[] tmpVolatilities = new double[tmpSize];
         for (int ij = 0; ij < tmpSize; ij++) {
@@ -418,7 +415,7 @@ public abstract class FinanceUtils {
 
         final int tmpSize = (int) volatilities.count();
 
-        final Builder<PrimitiveMatrix> retVal = PrimitiveMatrix.FACTORY.getBuilder(tmpSize, tmpSize);
+        final PrimitiveMatrix.DenseReceiver retVal = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
 
         for (int j = 0; j < tmpSize; j++) {
             final double tmpColumnVolatility = volatilities.doubleValue(j);
@@ -471,7 +468,7 @@ public abstract class FinanceUtils {
 
         final int tmpSize = (int) Math.min(covariances.countRows(), covariances.countColumns());
 
-        final Builder<PrimitiveMatrix> retVal = PrimitiveMatrix.FACTORY.getBuilder(tmpSize);
+        final PrimitiveMatrix.DenseReceiver retVal = PrimitiveMatrix.FACTORY.makeDense(tmpSize);
 
         if (clean) {
 
