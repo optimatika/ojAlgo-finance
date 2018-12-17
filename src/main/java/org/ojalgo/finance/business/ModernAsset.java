@@ -42,12 +42,12 @@ interface ModernAsset extends ModernPortfolio {
 
         for (final ModernAsset tmpModernAsset : assets) {
 
-            final float tmpWeight = tmpModernAsset.getWeight().floatValue();
-            final Color tmpColour = tmpModernAsset.getAssetColour();
+            final float weight = tmpModernAsset.getWeight().floatValue();
+            final Color colour = tmpModernAsset.getAssetColour();
 
-            tmpR += tmpWeight * tmpColour.getRed();
-            tmpG += tmpWeight * tmpColour.getGreen();
-            tmpB += tmpWeight * tmpColour.getBlue();
+            tmpR += Math.round(weight * colour.getRed());
+            tmpG += Math.round(weight * colour.getGreen());
+            tmpB += Math.round(weight * colour.getBlue());
         }
 
         while (tmpR < 0) {
