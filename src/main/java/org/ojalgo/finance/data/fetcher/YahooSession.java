@@ -55,9 +55,11 @@ public class YahooSession {
 
         public Reader getStreamOfCSV() {
 
-            BasicLogger.debug();
-            BasicLogger.debug("Begin getStreamOfCSV");
-            BasicLogger.debug();
+            if (debug) {
+                BasicLogger.debug();
+                BasicLogger.debug("Begin getStreamOfCSV");
+                BasicLogger.debug();
+            }
 
             String crumb = mySession.getParameterValue(CRUMB);
             if ((crumb == null) || (crumb.length() <= 0)) {
@@ -66,10 +68,12 @@ public class YahooSession {
                 Request challengeRequest = YahooSession.buildChallengeRequest(mySession, mySymbol);
                 Response challengeResponse = challengeRequest.response();
 
-                challengeRequest.print(BasicLogger.DEBUG);
-                challengeResponse.print(BasicLogger.DEBUG);
+                if (debug) {
+                    challengeRequest.print(BasicLogger.DEBUG);
+                    challengeResponse.print(BasicLogger.DEBUG);
+                }
 
-                if (!challengeRequest.equals(challengeResponse.getRequest())) {
+                if ((challengeResponse.toString() != null) && !challengeRequest.equals(challengeResponse.getRequest())) {
                     // Was redirect (to ask for consent)
 
                     YahooSession.scrapeChallengeResponse(mySession, challengeResponse);
@@ -77,23 +81,29 @@ public class YahooSession {
                     Request consentRequest = YahooSession.buildConsentRequest(mySession, challengeRequest);
                     Response consentResponse = consentRequest.response();
 
-                    consentRequest.print(BasicLogger.DEBUG);
-                    consentResponse.print(BasicLogger.DEBUG);
+                    if ((consentResponse.toString() != null) && debug) {
+                        consentRequest.print(BasicLogger.DEBUG);
+                        consentResponse.print(BasicLogger.DEBUG);
+                    }
                 }
 
                 Request crumbRequest = YahooSession.buildCrumbRequest(mySession);
                 Response crumbResponse = crumbRequest.response();
 
-                crumbRequest.print(BasicLogger.DEBUG);
-                crumbResponse.print(BasicLogger.DEBUG);
+                if (debug) {
+                    crumbRequest.print(BasicLogger.DEBUG);
+                    crumbResponse.print(BasicLogger.DEBUG);
+                }
 
                 YahooSession.scrapeCrumbResponse(mySession, crumbResponse);
             }
 
-            BasicLogger.debug();
-            BasicLogger.debug("Should be ok now - crumb and cookie");
-            mySession.print(BasicLogger.DEBUG);
-            BasicLogger.debug();
+            if (debug) {
+                BasicLogger.debug();
+                BasicLogger.debug("Should be ok now - crumb and cookie");
+                mySession.print(BasicLogger.DEBUG);
+                BasicLogger.debug();
+            }
 
             ResourceLocator.Request request = YahooSession.buildDataRequest(mySession, mySymbol, myResolution);
             ResourceLocator.Response response = request.response();
@@ -108,6 +118,7 @@ public class YahooSession {
     }
 
     private static final CalendarDateDuration DURATION_30_YEARS = new CalendarDateDuration(30, CalendarDateUnit.YEAR);
+
     private static final String END = "\">";
     private static final String FINANCE_YAHOO_COM = "finance.yahoo.com";
     private static final String GUCE_OATH_COM = "guce.oath.com";
@@ -119,6 +130,7 @@ public class YahooSession {
     static final String BRAND_BID = "brandBid";
     static final String CRUMB = "crumb";
     static final String CSRF_TOKEN = "csrfToken";
+    static boolean debug = false;
     static final String SESSION_ID = "sessionId";
 
     /**
