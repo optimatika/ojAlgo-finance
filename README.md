@@ -18,7 +18,7 @@ ojAlgo-finance is available at [The Central (Maven) Repository](https://search.m
 
 ### Documentation and Support
 
-User documentation and examples can be found at the [ojAlgo wiki](https://github.com/optimatika/ojAlgo/wiki) or at [oj! Blog](https://ojalgo.blogspot.com).
+User documentation and examples can be found at the [ojAlgo wiki](https://github.com/optimatika/ojAlgo/wiki/Finance) or at [oj! Blog](https://ojalgo.blogspot.com).
 
 Programming questions related to ojAlgo-finance are best asked at [stack overflow](https://stackoverflow.com/search?tab=relevance&q=ojalgo). Just remember to actually mention ojAlgo and tag the question using 'ojalgo' and whatever other tags you find suitable.
 
