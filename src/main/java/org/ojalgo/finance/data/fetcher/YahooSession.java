@@ -130,7 +130,7 @@ public class YahooSession {
     static final String BRAND_BID = "brandBid";
     static final String CRUMB = "crumb";
     static final String CSRF_TOKEN = "csrfToken";
-    static boolean debug = false;
+    static boolean debug = true;
     static final String SESSION_ID = "sessionId";
 
     /**
