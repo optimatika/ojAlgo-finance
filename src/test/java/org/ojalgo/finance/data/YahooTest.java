@@ -22,7 +22,6 @@
  */
 package org.ojalgo.finance.data;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
@@ -35,7 +34,6 @@ import org.ojalgo.type.CalendarDateUnit;
  * @author apete
  */
 @Tag("unstable")
-@Disabled
 public class YahooTest extends FinanceDataTests {
 
     private static YahooSession SESSION = new YahooSession();
