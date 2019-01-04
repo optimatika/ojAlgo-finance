@@ -36,13 +36,13 @@ import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.function.aggregator.AggregatorFunction;
 import org.ojalgo.function.aggregator.PrimitiveAggregator;
+import org.ojalgo.function.special.ErrorFunction;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.decomposition.Eigenvalue;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PhysicalStore;
 import org.ojalgo.random.Deterministic;
 import org.ojalgo.random.RandomNumber;
-import org.ojalgo.random.RandomUtils;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.series.CalendarDateSeries;
@@ -57,7 +57,7 @@ public abstract class FinanceUtils {
 
     public static double calculateValueAtRisk(final double expRet, final double stdDev, final double confidence, final double time) {
 
-        final double tmpConfidenceScale = SQRT_TWO * RandomUtils.erfi(ONE - (TWO * (ONE - confidence)));
+        final double tmpConfidenceScale = SQRT_TWO * ErrorFunction.erfi(ONE - (TWO * (ONE - confidence)));
 
         return PrimitiveFunction.MAX.invoke((PrimitiveFunction.SQRT.invoke(time) * stdDev * tmpConfidenceScale) - (time * expRet), ZERO);
     }
