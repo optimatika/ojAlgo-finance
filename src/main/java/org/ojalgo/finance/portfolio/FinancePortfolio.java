@@ -27,8 +27,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.ojalgo.function.PrimitiveFunction;
-import org.ojalgo.function.special.ErrorFunction;
 import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.random.RandomUtils;
 import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.type.StandardType;
 import org.ojalgo.type.TypeUtils;
@@ -141,7 +141,7 @@ public abstract class FinancePortfolio implements Comparable<FinancePortfolio> {
         final double aReturn = this.getMeanReturn();
         final double aStdDev = this.getVolatility();
 
-        final double tmpConfidenceScale = SQRT_TWO * ErrorFunction.erfi(ONE - (TWO * (ONE - confidenceLevel.doubleValue())));
+        final double tmpConfidenceScale = SQRT_TWO * RandomUtils.erfi(ONE - (TWO * (ONE - confidenceLevel.doubleValue())));
         final double tmpTimePeriod = timePeriod.doubleValue();
 
         return PrimitiveFunction.MAX.invoke((PrimitiveFunction.SQRT.invoke(tmpTimePeriod) * aStdDev * tmpConfidenceScale) - (tmpTimePeriod * aReturn), ZERO);
