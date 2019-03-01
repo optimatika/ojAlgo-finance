@@ -34,8 +34,7 @@ import java.util.Map.Entry;
 import org.ojalgo.array.Array1D;
 import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.function.PrimitiveFunction;
-import org.ojalgo.function.aggregator.AggregatorFunction;
-import org.ojalgo.function.aggregator.PrimitiveAggregator;
+import org.ojalgo.function.aggregator.Aggregator;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.decomposition.Eigenvalue;
 import org.ojalgo.matrix.store.MatrixStore;
@@ -358,24 +357,24 @@ public abstract class FinanceUtils {
      */
     public static PrimitiveMatrix toCorrelations(final Access2D<?> covariances, final boolean clean) {
 
-        final int tmpSize = (int) Math.min(covariances.countRows(), covariances.countColumns());
+        final int size = Math.toIntExact(Math.min(covariances.countRows(), covariances.countColumns()));
 
-        MatrixStore<Double> tmpCovariances = MatrixStore.PRIMITIVE.makeWrapper(covariances).get();
+        MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE.makeWrapper(covariances).get();
 
         if (clean) {
 
-            final Eigenvalue<Double> tmpEvD = Eigenvalue.PRIMITIVE.make(true);
-            tmpEvD.decompose(tmpCovariances);
+            final Eigenvalue<Double> tmpEvD = Eigenvalue.PRIMITIVE.make(covarianceMtrx, true);
+            tmpEvD.decompose(covarianceMtrx);
 
             final MatrixStore<Double> tmpV = tmpEvD.getV();
             final PhysicalStore<Double> tmpD = tmpEvD.getD().copy();
 
-            final double tmpLargest = tmpEvD.getEigenvalues().get(0).norm();
-            final double tmpLimit = tmpLargest * tmpSize * PrimitiveFunction.SQRT.invoke(PrimitiveMath.MACHINE_EPSILON);
+            final double largest = tmpEvD.getEigenvalues().get(0).norm();
+            final double limit = largest * size * PrimitiveFunction.SQRT.invoke(PrimitiveMath.MACHINE_EPSILON);
 
-            for (int ij = 0; ij < tmpSize; ij++) {
-                if (tmpD.doubleValue(ij, ij) < tmpLimit) {
-                    tmpD.set(ij, ij, tmpLimit);
+            for (int ij = 0; ij < size; ij++) {
+                if (tmpD.doubleValue(ij, ij) < limit) {
+                    tmpD.set(ij, ij, limit);
                 }
             }
 
@@ -383,21 +382,21 @@ public abstract class FinanceUtils {
             final MatrixStore<Double> tmpMiddle = tmpD;
             final MatrixStore<Double> tmpRight = tmpLeft.transpose();
 
-            tmpCovariances = tmpLeft.multiply(tmpMiddle).multiply(tmpRight);
+            covarianceMtrx = tmpLeft.multiply(tmpMiddle).multiply(tmpRight);
         }
 
-        final PrimitiveMatrix.DenseReceiver retVal = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
+        final PrimitiveMatrix.DenseReceiver retVal = PrimitiveMatrix.FACTORY.makeDense(size, size);
 
-        final double[] tmpVolatilities = new double[tmpSize];
-        for (int ij = 0; ij < tmpSize; ij++) {
-            tmpVolatilities[ij] = PrimitiveFunction.SQRT.invoke(tmpCovariances.doubleValue(ij, ij));
+        final double[] tmpVolatilities = new double[size];
+        for (int ij = 0; ij < size; ij++) {
+            tmpVolatilities[ij] = PrimitiveFunction.SQRT.invoke(covarianceMtrx.doubleValue(ij, ij));
         }
 
-        for (int j = 0; j < tmpSize; j++) {
+        for (int j = 0; j < size; j++) {
             final double tmpColVol = tmpVolatilities[j];
             retVal.set(j, j, PrimitiveMath.ONE);
-            for (int i = j + 1; i < tmpSize; i++) {
-                final double tmpCovariance = tmpCovariances.doubleValue(i, j);
+            for (int i = j + 1; i < size; i++) {
+                final double tmpCovariance = covarianceMtrx.doubleValue(i, j);
                 final double tmpCorrelation = tmpCovariance / (tmpVolatilities[i] * tmpColVol);
                 retVal.set(i, j, tmpCorrelation);
                 retVal.set(j, i, tmpCorrelation);
@@ -466,28 +465,29 @@ public abstract class FinanceUtils {
      */
     public static PrimitiveMatrix toVolatilities(final Access2D<?> covariances, final boolean clean) {
 
-        final int tmpSize = (int) Math.min(covariances.countRows(), covariances.countColumns());
+        final int size = Math.toIntExact(Math.min(covariances.countRows(), covariances.countColumns()));
 
-        final PrimitiveMatrix.DenseReceiver retVal = PrimitiveMatrix.FACTORY.makeDense(tmpSize);
+        final PrimitiveMatrix.DenseReceiver retVal = PrimitiveMatrix.FACTORY.makeDense(size);
 
         if (clean) {
 
-            final AggregatorFunction<Double> tmpLargest = PrimitiveAggregator.LARGEST.get();
-            MatrixStore.PRIMITIVE.makeWrapper(covariances).get().visitDiagonal(0, 0, tmpLargest);
-            final double tmpLimit = tmpLargest.doubleValue() * tmpSize * PrimitiveFunction.SQRT.invoke(PrimitiveMath.MACHINE_EPSILON);
+            MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE.makeWrapper(covariances).get();
 
-            for (int ij = 0; ij < tmpSize; ij++) {
-                final double tmpVariance = covariances.doubleValue(ij, ij);
-                if (tmpVariance < tmpLimit) {
-                    retVal.set(ij, PrimitiveFunction.SQRT.invoke(tmpLimit));
+            double largest = covarianceMtrx.aggregateDiagonal(Aggregator.LARGEST);
+            double limit = largest * size * PrimitiveFunction.SQRT.invoke(PrimitiveMath.MACHINE_EPSILON);
+
+            for (int ij = 0; ij < size; ij++) {
+                final double variance = covariances.doubleValue(ij, ij);
+                if (variance < limit) {
+                    retVal.set(ij, PrimitiveFunction.SQRT.invoke(limit));
                 } else {
-                    retVal.set(ij, PrimitiveFunction.SQRT.invoke(tmpVariance));
+                    retVal.set(ij, PrimitiveFunction.SQRT.invoke(variance));
                 }
             }
 
         } else {
 
-            for (int ij = 0; ij < tmpSize; ij++) {
+            for (int ij = 0; ij < size; ij++) {
                 retVal.set(ij, PrimitiveFunction.SQRT.invoke(covariances.doubleValue(ij, ij)));
             }
         }
