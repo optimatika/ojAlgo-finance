@@ -28,6 +28,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.ojalgo.array.DenseArray;
 import org.ojalgo.array.Primitive64Array;
@@ -42,10 +43,63 @@ import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.netio.BasicParser;
 import org.ojalgo.series.BasicSeries;
 import org.ojalgo.series.CalendarDateSeries;
+import org.ojalgo.series.primitive.CoordinatedSet;
 import org.ojalgo.type.CalendarDate;
 import org.ojalgo.type.CalendarDateUnit;
 
 public final class DataSource implements FinanceData {
+
+    public static final class Coordinated implements Supplier<CoordinatedSet<LocalDate>> {
+
+        private final CoordinatedSet.Builder<LocalDate> myBuilder = CoordinatedSet.builder();
+        private final SourceCache myCache = new SourceCache(CalendarDateUnit.DAY);
+        private CalendarDateUnit myResolution = CalendarDateUnit.MONTH;
+        private final YahooSession myYahooSession = new YahooSession();
+
+        public DataSource.Coordinated add(FinanceData data) {
+            myBuilder.add(() -> myCache.get(data));
+            return this;
+        }
+
+        public DataSource.Coordinated add(FinanceData primary, FinanceData secondary) {
+            myCache.register(primary, secondary);
+            myBuilder.add(() -> myCache.get(primary));
+            return this;
+        }
+
+        public DataSource.Coordinated addAlphaVantage(String symbol, String apiKey) {
+            myBuilder.add(() -> myCache.get(DataSource.newAlphaVantage(symbol, myResolution, apiKey, true)));
+            return this;
+        }
+
+        public DataSource.Coordinated addIEXTrading(String symbol) {
+            myBuilder.add(() -> myCache.get(DataSource.newIEXTrading(symbol)));
+            return this;
+        }
+
+        public DataSource.Coordinated addYahoo(String symbol) {
+            myBuilder.add(() -> myCache.get(DataSource.newYahoo(myYahooSession, symbol, myResolution)));
+            return this;
+        }
+
+        public CoordinatedSet<LocalDate> get() {
+            return myBuilder.build();
+        }
+
+        public DataSource.Coordinated resolution(CalendarDateUnit resolution) {
+            myResolution = resolution;
+            return this;
+        }
+
+    }
+
+    public static Coordinated coordinated() {
+        return new DataSource.Coordinated();
+    }
+
+    public static Coordinated coordinated(CalendarDateUnit resolution) {
+        return new DataSource.Coordinated().resolution(resolution);
+    }
 
     public static DataSource newAlphaVantage(String symbol, CalendarDateUnit resolution, String apiKey) {
         return DataSource.newAlphaVantage(symbol, resolution, apiKey, false);
@@ -70,6 +124,7 @@ public final class DataSource implements FinanceData {
     }
 
     private final DataFetcher myFetcher;
+
     private final BasicParser<? extends DatePrice> myParser;
 
     DataSource(DataFetcher fetcher, BasicParser<? extends DatePrice> parser) {

@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ojalgo</groupId>
     <artifactId>ojalgo-finance</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>ojAlgo-finance</name>
     <url>http://ojalgo.org</url>
     <description>Domain specific (finance) additions to oj! Algorithms</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ojalgo.version>47.0.0</ojalgo.version>
+        <ojalgo.version>47.1.0-SNAPSHOT</ojalgo.version>
         <junit.jupiter.version>5.3.1</junit.jupiter.version>
     </properties>
     <organization>
