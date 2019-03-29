@@ -488,7 +488,7 @@ public abstract class FinanceUtils {
         } else {
 
             for (int ij = 0; ij < size; ij++) {
-                retVal.set(ij, PrimitiveFunction.SQRT.invoke(covariances.doubleValue(ij, ij)));
+                retVal.set(ij, PrimitiveFunction.SQRT.invoke(Math.abs(covariances.doubleValue(ij, ij))));
             }
         }
 
