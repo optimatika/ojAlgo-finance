@@ -62,7 +62,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
 
         TestEquilibrium tm = new TestEquilibrium();
 
-        PrimitiveMatrix covariances = tm.getACovariances(om);
+        PrimitiveMatrix covariances = tm.getCovariances(om);
 
         System.out.println(covariances);
 
@@ -117,7 +117,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
         super();
     }
 
-    public PrimitiveMatrix getACovariances(double[][] returns) {
+    public PrimitiveMatrix getCovariances(double[][] returns) {
 
         int row = returns.length;
         int col = returns[0].length;
@@ -156,42 +156,41 @@ public class TestEquilibrium extends FinancePortfolioTests {
             covarianceMatrix.modifyColumn(ij, modifier);
         }
 
-        BigDecimal raf = new BigDecimal(PrimitiveFunction.POW.invoke(10.0, uniformRiskAversionExponent.doubleValue()));
+        double raf = PrimitiveFunction.POW.invoke(10.0, uniformRiskAversionExponent.doubleValue());
 
-        MarketEquilibrium tmpEquilibrium = new MarketEquilibrium(PrimitiveMatrix.FACTORY.copy(covarianceMatrix), raf).clean();
+        MarketEquilibrium equilibrium = new MarketEquilibrium(covarianceMatrix, raf).clean();
 
-        double[] tmpRawWeights = PrimitiveMatrix.FACTORY.makeFilled(dim, 1, uniformWeight).toRawCopy1D();
-        List<BigDecimal> tmpNormalisedWeights = new SimplePortfolio(tmpRawWeights).normalise().getWeights();
+        double[] rawWeights = PrimitiveMatrix.FACTORY.makeFilled(dim, 1, uniformWeight).toRawCopy1D();
+        List<BigDecimal> normalisedWeights = new SimplePortfolio(rawWeights).normalise().getWeights();
 
-        @SuppressWarnings("unchecked")
-        PrimitiveMatrix tmpGeneratedWeights = PrimitiveMatrix.FACTORY.columns(tmpNormalisedWeights);
-        PrimitiveMatrix tmpMatchingReturns = tmpEquilibrium.calculateAssetReturns(tmpGeneratedWeights);
-        TestUtils.assertEquals(tmpGeneratedWeights, tmpEquilibrium.calculateAssetWeights(tmpMatchingReturns), weightsContext);
+        PrimitiveMatrix generatedWeights = PrimitiveMatrix.FACTORY.columns(normalisedWeights);
+        PrimitiveMatrix matchingReturns = equilibrium.calculateAssetReturns(generatedWeights);
+        TestUtils.assertEquals(generatedWeights, equilibrium.calculateAssetWeights(matchingReturns), weightsContext);
 
-        FixedWeightsPortfolio tmpFW = new FixedWeightsPortfolio(tmpEquilibrium, tmpGeneratedWeights);
-        TestUtils.assertEquals(tmpMatchingReturns, tmpFW.getAssetReturns(), weightsContext);
+        FixedWeightsPortfolio portfFW = new FixedWeightsPortfolio(equilibrium, generatedWeights);
+        TestUtils.assertEquals(matchingReturns, portfFW.getAssetReturns(), weightsContext);
 
-        FixedReturnsPortfolio tmpFR = new FixedReturnsPortfolio(tmpEquilibrium, tmpMatchingReturns);
-        TestUtils.assertEquals(tmpGeneratedWeights, tmpFR.getAssetWeights(), weightsContext);
+        FixedReturnsPortfolio portfFR = new FixedReturnsPortfolio(equilibrium, matchingReturns);
+        TestUtils.assertEquals(generatedWeights, portfFR.getAssetWeights(), weightsContext);
 
-        BlackLittermanModel tmpBLM = new BlackLittermanModel(tmpEquilibrium, tmpGeneratedWeights);
+        BlackLittermanModel modelBL = new BlackLittermanModel(equilibrium, generatedWeights);
         for (int i = 0; i < dim; i++) {
-            List<BigDecimal> tmpViewAssetWeights = new ArrayList<>();
+            List<BigDecimal> viewAssetWeights = new ArrayList<>();
             for (int j = 0; j < dim; j++) {
                 if (i == j) {
-                    tmpViewAssetWeights.add(BigMath.ONE);
+                    viewAssetWeights.add(BigMath.ONE);
                 } else {
-                    tmpViewAssetWeights.add(BigMath.ZERO);
+                    viewAssetWeights.add(BigMath.ZERO);
                 }
             }
             int row = i;
-            BigDecimal tmpViewReturn = TypeUtils.toBigDecimal(tmpMatchingReturns.get(row, 0));
-            tmpBLM.addViewWithScaledConfidence(tmpViewAssetWeights, tmpViewReturn, BigMath.ONE);
+            BigDecimal viewReturn = TypeUtils.toBigDecimal(matchingReturns.get(row, 0));
+            modelBL.addViewWithScaledConfidence(viewAssetWeights, viewReturn, BigMath.ONE);
         }
-        TestUtils.assertEquals(tmpGeneratedWeights, tmpBLM.getAssetWeights(), weightsContext);
+        TestUtils.assertEquals(generatedWeights, modelBL.getAssetWeights(), weightsContext);
 
-        MarkowitzModel tmpMM = new MarkowitzModel(tmpEquilibrium, tmpMatchingReturns);
-        PrimitiveMatrix tmpActual = tmpMM.getAssetWeights();
-        TestUtils.assertEquals(tmpGeneratedWeights, tmpActual, weightsContext);
+        MarkowitzModel modelM = new MarkowitzModel(equilibrium, matchingReturns);
+        TestUtils.assertEquals(generatedWeights, modelM.getAssetWeights(), weightsContext);
     }
+
 }
