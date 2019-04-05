@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -367,7 +367,7 @@ public abstract class FinanceUtils {
             PhysicalStore<Double> mtrxD = evd.getD().copy();
 
             double largest = evd.getEigenvalues().get(0).norm();
-            double limit = largest * size * PrimitiveFunction.SQRT.invoke(PrimitiveMath.MACHINE_EPSILON);
+            double limit = largest * size * PrimitiveMath.RELATIVELY_SMALL;
 
             for (int ij = 0; ij < size; ij++) {
                 if (mtrxD.doubleValue(ij, ij) < limit) {
@@ -480,7 +480,7 @@ public abstract class FinanceUtils {
             MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE.makeWrapper(covariances).get();
 
             double largest = covarianceMtrx.aggregateDiagonal(Aggregator.LARGEST);
-            double limit = largest * size * PrimitiveFunction.SQRT.invoke(PrimitiveMath.MACHINE_EPSILON);
+            double limit = largest * size * PrimitiveMath.RELATIVELY_SMALL;
             double smallest = PrimitiveFunction.SQRT.invoke(limit);
 
             for (int ij = 0; ij < size; ij++) {
