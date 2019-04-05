@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.scalar.BigScalar;
 import org.ojalgo.scalar.PrimitiveScalar;
 import org.ojalgo.scalar.Scalar;
+import org.ojalgo.structure.Access2D;
 import org.ojalgo.type.TypeUtils;
 
 /**
@@ -88,30 +89,30 @@ public class MarketEquilibrium {
     private final PrimitiveMatrix myCovariances;
     private BigDecimal myRiskAversion;
 
-    public MarketEquilibrium(final PrimitiveMatrix covarianceMatrix) {
+    public MarketEquilibrium(final Access2D<?> covarianceMatrix) {
         this(covarianceMatrix, DEFAULT_RISK_AVERSION);
     }
 
-    public MarketEquilibrium(final PrimitiveMatrix covarianceMatrix, final Number riskAversionFactor) {
+    public MarketEquilibrium(final Access2D<?> covarianceMatrix, final Number riskAversionFactor) {
         this(MarketEquilibrium.makeSymbols((int) covarianceMatrix.countRows()), covarianceMatrix, riskAversionFactor);
     }
 
-    public MarketEquilibrium(final String[] assetNamesOrKeys, final PrimitiveMatrix covarianceMatrix) {
+    public MarketEquilibrium(final String[] assetNamesOrKeys, final Access2D<?> covarianceMatrix, final Number riskAversionFactor) {
 
         super();
 
         myAssetKeys = Raw1D.copyOf(assetNamesOrKeys);
-        myCovariances = covarianceMatrix;
-        myRiskAversion = DEFAULT_RISK_AVERSION;
+        if (covarianceMatrix instanceof PrimitiveMatrix) {
+            myCovariances = (PrimitiveMatrix) covarianceMatrix;
+        } else {
+            myCovariances = PrimitiveMatrix.FACTORY.copy(covarianceMatrix);
+        }
+
+        myRiskAversion = TypeUtils.toBigDecimal(riskAversionFactor);
     }
 
-    public MarketEquilibrium(final String[] assetNamesOrKeys, final PrimitiveMatrix covarianceMatrix, final Number riskAversionFactor) {
-
-        super();
-
-        myAssetKeys = Raw1D.copyOf(assetNamesOrKeys);
-        myCovariances = covarianceMatrix;
-        myRiskAversion = TypeUtils.toBigDecimal(riskAversionFactor);
+    public MarketEquilibrium(final String[] assetNamesOrKeys, final Access2D<?> covarianceMatrix) {
+        this(assetNamesOrKeys, covarianceMatrix, DEFAULT_RISK_AVERSION);
     }
 
     MarketEquilibrium(final MarketEquilibrium marketEquilibrium) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,11 +40,10 @@ import org.ojalgo.type.context.NumberContext;
 
 public class TestEquilibrium extends FinancePortfolioTests {
 
-    public static void main(final String[] args) {
-        final int assetNum = 16;
+    public static void main(String[] args) {
+        int assetNum = 16;
 
-        final double[][] om = {
-                { 0.003330616, 0.003524811, 0.00386567, 0.003656347, 0.004494241, 0.004623772, 0.00458625, 0.004365933, 0, 0, 0, 0, 0, 0, 0, 0 },
+        double[][] om = { { 0.003330616, 0.003524811, 0.00386567, 0.003656347, 0.004494241, 0.004623772, 0.00458625, 0.004365933, 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0.003524811, 0.004274864, 0.004372518, 0.004135748, 0.005144421, 0.005292691, 0.005249742, 0.004997551, 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0.00386567, 0.004372518, 0.005114057, 0.004535687, 0.005641369, 0.005803962, 0.005756863, 0.005480312, 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0.003656347, 0.004135748, 0.004535687, 0.004728464, 0.005511769, 0.005670626, 0.00562461, 0.005354411, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -61,17 +60,17 @@ public class TestEquilibrium extends FinancePortfolioTests {
                 { 0, 0, 0, 0, 0, 0, 0, 0, 6.11874E-05, 5.74986E-05, 7.94514E-05, 8.26835E-05, 7.47961E-05, 4.25652E-05, 7.62351E-05, 1.4937E-06 },
                 { 0, 0, 0, 0, 0, 0, 0, 0, 1.49376E-07, 1.4037E-07, 1.93963E-07, 2.01854E-07, 1.97502E-06, 1.12395E-06, 1.4937E-06, 6.52443E-06 } };
 
-        final TestEquilibrium tm = new TestEquilibrium();
+        TestEquilibrium tm = new TestEquilibrium();
 
-        final PrimitiveMatrix covariances = tm.getACovariances(om);
+        PrimitiveMatrix covariances = tm.getCovariances(om);
 
         System.out.println(covariances);
 
-        final BigDecimal riskAversion = new BigDecimal(1000.0);
+        BigDecimal riskAversion = new BigDecimal(1000.0);
 
-        final MarketEquilibrium marketEquilibrium = new MarketEquilibrium(covariances, riskAversion);
+        MarketEquilibrium marketEquilibrium = new MarketEquilibrium(covariances, riskAversion);
 
-        final PrimitiveMatrix.DenseReceiver expectedExcessReturns1 = PrimitiveMatrix.FACTORY.makeDense(assetNum, 1);
+        PrimitiveMatrix.DenseReceiver expectedExcessReturns1 = PrimitiveMatrix.FACTORY.makeDense(assetNum, 1);
         expectedExcessReturns1.set(0, 0, 0.03360872);
         expectedExcessReturns1.set(1, 0, 0.027322319);
         expectedExcessReturns1.set(2, 0, 0.027668137);
@@ -91,7 +90,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
 
         System.out.println("Return Matrix" + expectedExcessReturns1.build());
 
-        final MarkowitzModel markowitzModel = new MarkowitzModel(marketEquilibrium, expectedExcessReturns1.build());
+        MarkowitzModel markowitzModel = new MarkowitzModel(marketEquilibrium, expectedExcessReturns1.build());
 
         //markowitzModel.setTargetReturn(new BigDecimal("0.01051787"));
         markowitzModel.setTargetReturn(new BigDecimal("0.003081388"));
@@ -101,7 +100,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
             markowitzModel.setUpperLimit(i, new BigDecimal(1.0));
         }
 
-        final List<BigDecimal> re = markowitzModel.getWeights();
+        List<BigDecimal> re = markowitzModel.getWeights();
 
         System.out.println("=======result====================");
         for (int i = 0; i < re.size(); i++) {
@@ -118,12 +117,12 @@ public class TestEquilibrium extends FinancePortfolioTests {
         super();
     }
 
-    public PrimitiveMatrix getACovariances(final double[][] returns) {
+    public PrimitiveMatrix getCovariances(double[][] returns) {
 
-        final int row = returns.length;
-        final int col = returns[0].length;
+        int row = returns.length;
+        int col = returns[0].length;
 
-        final PrimitiveMatrix.DenseReceiver covariances = PrimitiveMatrix.FACTORY.makeDense(row, col);
+        PrimitiveMatrix.DenseReceiver covariances = PrimitiveMatrix.FACTORY.makeDense(row, col);
 
         for (int i = 1; i <= row; i++) {
             for (int j = i; j <= col; j++) {
@@ -138,60 +137,60 @@ public class TestEquilibrium extends FinancePortfolioTests {
     @Test
     public void testRandomProblemsComparedToEquilibrium() {
 
-        final NumberContext tmpWeightsContext = StandardType.PERCENT.newPrecision(5);
+        NumberContext weightsContext = StandardType.PERCENT.withPrecision(5);
 
-        final int tmpDim = 9;
+        int dim = 9;
 
-        final Uniform tmpRndmCorrelation = new Uniform(-0.5, 1.0);
-        final Uniform tmpRndmVolatility = new Uniform(0.01, 0.10);
-        final Uniform tmpRndmRiskAversionExponent = new Uniform(-1.0, 3.0);
-        final Uniform tmpRndmWeight = new Uniform(0.0, 1.0);
+        Uniform uniformCorrelation = new Uniform(-0.5, 1.0);
+        Uniform uniformVolatility = new Uniform(0.01, 0.10);
+        Uniform uniformRiskAversionExponent = new Uniform(-1.0, 3.0);
+        Uniform uniformWeight = new Uniform(0.0, 1.0);
 
-        final PhysicalStore<Double> tmpCovariances = PrimitiveDenseStore.FACTORY.makeFilled(tmpDim, tmpDim, tmpRndmCorrelation);
-        tmpCovariances.fillDiagonal(0, 0, 0.5);
-        tmpCovariances.modifyMatching(PrimitiveFunction.ADD, tmpCovariances.transpose());
-        for (int ij = 0; ij < tmpDim; ij++) {
-            final UnaryFunction<Double> tmpFunc = PrimitiveFunction.MULTIPLY.first(tmpRndmVolatility.doubleValue());
-            tmpCovariances.modifyRow(ij, 0, tmpFunc);
-            tmpCovariances.modifyColumn(0, ij, tmpFunc);
+        PhysicalStore<Double> covarianceMatrix = PrimitiveDenseStore.FACTORY.makeFilled(dim, dim, uniformCorrelation);
+        covarianceMatrix.fillDiagonal(1.0);
+        covarianceMatrix.modifyAll(PrimitiveFunction.DIVIDE.by(2.0));
+        covarianceMatrix.modifyMatching(PrimitiveFunction.ADD, covarianceMatrix.transpose());
+        for (int ij = 0; ij < dim; ij++) {
+            UnaryFunction<Double> modifier = PrimitiveFunction.MULTIPLY.by(uniformVolatility.doubleValue());
+            covarianceMatrix.modifyRow(ij, modifier);
+            covarianceMatrix.modifyColumn(ij, modifier);
         }
 
-        final BigDecimal tmpRAF = new BigDecimal(PrimitiveFunction.POW.invoke(10.0, tmpRndmRiskAversionExponent.doubleValue()));
+        double raf = PrimitiveFunction.POW.invoke(10.0, uniformRiskAversionExponent.doubleValue());
 
-        final MarketEquilibrium tmpEquilibrium = new MarketEquilibrium(PrimitiveMatrix.FACTORY.copy(tmpCovariances), tmpRAF).clean();
+        MarketEquilibrium equilibrium = new MarketEquilibrium(covarianceMatrix, raf).clean();
 
-        final double[] tmpRawWeights = PrimitiveMatrix.FACTORY.makeFilled(tmpDim, 1, tmpRndmWeight).toRawCopy1D();
-        final List<BigDecimal> tmpNormalisedWeights = new SimplePortfolio(tmpRawWeights).normalise().getWeights();
+        double[] rawWeights = PrimitiveMatrix.FACTORY.makeFilled(dim, 1, uniformWeight).toRawCopy1D();
+        List<BigDecimal> normalisedWeights = new SimplePortfolio(rawWeights).normalise().getWeights();
 
-        @SuppressWarnings("unchecked")
-        final PrimitiveMatrix tmpGeneratedWeights = PrimitiveMatrix.FACTORY.columns(tmpNormalisedWeights);
-        final PrimitiveMatrix tmpMatchingReturns = tmpEquilibrium.calculateAssetReturns(tmpGeneratedWeights);
-        TestUtils.assertEquals(tmpGeneratedWeights, tmpEquilibrium.calculateAssetWeights(tmpMatchingReturns), tmpWeightsContext);
+        PrimitiveMatrix generatedWeights = PrimitiveMatrix.FACTORY.columns(normalisedWeights);
+        PrimitiveMatrix matchingReturns = equilibrium.calculateAssetReturns(generatedWeights);
+        TestUtils.assertEquals(generatedWeights, equilibrium.calculateAssetWeights(matchingReturns), weightsContext);
 
-        final FixedWeightsPortfolio tmpFW = new FixedWeightsPortfolio(tmpEquilibrium, tmpGeneratedWeights);
-        TestUtils.assertEquals(tmpMatchingReturns, tmpFW.getAssetReturns(), tmpWeightsContext);
+        FixedWeightsPortfolio portfFW = new FixedWeightsPortfolio(equilibrium, generatedWeights);
+        TestUtils.assertEquals(matchingReturns, portfFW.getAssetReturns(), weightsContext);
 
-        final FixedReturnsPortfolio tmpFR = new FixedReturnsPortfolio(tmpEquilibrium, tmpMatchingReturns);
-        TestUtils.assertEquals(tmpGeneratedWeights, tmpFR.getAssetWeights(), tmpWeightsContext);
+        FixedReturnsPortfolio portfFR = new FixedReturnsPortfolio(equilibrium, matchingReturns);
+        TestUtils.assertEquals(generatedWeights, portfFR.getAssetWeights(), weightsContext);
 
-        final BlackLittermanModel tmpBLM = new BlackLittermanModel(tmpEquilibrium, tmpGeneratedWeights);
-        for (int i = 0; i < tmpDim; i++) {
-            final List<BigDecimal> tmpViewAssetWeights = new ArrayList<>();
-            for (int j = 0; j < tmpDim; j++) {
+        BlackLittermanModel modelBL = new BlackLittermanModel(equilibrium, generatedWeights);
+        for (int i = 0; i < dim; i++) {
+            List<BigDecimal> viewAssetWeights = new ArrayList<>();
+            for (int j = 0; j < dim; j++) {
                 if (i == j) {
-                    tmpViewAssetWeights.add(BigMath.ONE);
+                    viewAssetWeights.add(BigMath.ONE);
                 } else {
-                    tmpViewAssetWeights.add(BigMath.ZERO);
+                    viewAssetWeights.add(BigMath.ZERO);
                 }
             }
-            final int row = i;
-            final BigDecimal tmpViewReturn = TypeUtils.toBigDecimal(tmpMatchingReturns.get(row, 0));
-            tmpBLM.addViewWithScaledConfidence(tmpViewAssetWeights, tmpViewReturn, BigMath.ONE);
+            int row = i;
+            BigDecimal viewReturn = TypeUtils.toBigDecimal(matchingReturns.get(row, 0));
+            modelBL.addViewWithScaledConfidence(viewAssetWeights, viewReturn, BigMath.ONE);
         }
-        TestUtils.assertEquals(tmpGeneratedWeights, tmpBLM.getAssetWeights(), tmpWeightsContext);
+        TestUtils.assertEquals(generatedWeights, modelBL.getAssetWeights(), weightsContext);
 
-        final MarkowitzModel tmpMM = new MarkowitzModel(tmpEquilibrium, tmpMatchingReturns);
-        final PrimitiveMatrix tmpActual = tmpMM.getAssetWeights();
-        TestUtils.assertEquals(tmpGeneratedWeights, tmpActual, tmpWeightsContext);
+        MarkowitzModel modelM = new MarkowitzModel(equilibrium, matchingReturns);
+        TestUtils.assertEquals(generatedWeights, modelM.getAssetWeights(), weightsContext);
     }
+
 }
