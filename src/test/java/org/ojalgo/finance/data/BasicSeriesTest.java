@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
-import org.ojalgo.constant.PrimitiveMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.random.Uniform;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.type.CalendarDateUnit;

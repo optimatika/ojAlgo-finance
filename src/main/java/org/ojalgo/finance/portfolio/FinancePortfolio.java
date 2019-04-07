@@ -21,12 +21,12 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import static org.ojalgo.constant.PrimitiveMath.*;
+import static org.ojalgo.function.constant.PrimitiveMath.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.RandomUtils;
 import org.ojalgo.random.process.GeometricBrownianMotion;
@@ -85,8 +85,8 @@ public abstract class FinancePortfolio implements Comparable<FinancePortfolio> {
         final PrimitiveMatrix tmpRefWeights = MATRIX_FACTORY.columns(reference.getWeights());
 
         final double tmpNumerator = tmpMyWeights.dot(tmpRefWeights);
-        final double tmpDenom1 = PrimitiveFunction.SQRT.invoke(tmpMyWeights.dot(tmpMyWeights));
-        final double tmpDenom2 = PrimitiveFunction.SQRT.invoke(tmpRefWeights.dot(tmpRefWeights));
+        final double tmpDenom1 = PrimitiveMath.SQRT.invoke(tmpMyWeights.dot(tmpMyWeights));
+        final double tmpDenom2 = PrimitiveMath.SQRT.invoke(tmpRefWeights.dot(tmpRefWeights));
 
         return tmpNumerator / (tmpDenom1 * tmpDenom2);
     }
@@ -144,7 +144,7 @@ public abstract class FinancePortfolio implements Comparable<FinancePortfolio> {
         final double tmpConfidenceScale = SQRT_TWO * RandomUtils.erfi(ONE - (TWO * (ONE - confidenceLevel.doubleValue())));
         final double tmpTimePeriod = timePeriod.doubleValue();
 
-        return PrimitiveFunction.MAX.invoke((PrimitiveFunction.SQRT.invoke(tmpTimePeriod) * aStdDev * tmpConfidenceScale) - (tmpTimePeriod * aReturn), ZERO);
+        return PrimitiveMath.MAX.invoke((PrimitiveMath.SQRT.invoke(tmpTimePeriod) * aStdDev * tmpConfidenceScale) - (tmpTimePeriod * aReturn), ZERO);
     }
 
     public final double getValueAtRisk95() {
@@ -157,7 +157,7 @@ public abstract class FinancePortfolio implements Comparable<FinancePortfolio> {
      * override either {@linkplain #getReturnVariance()} or {@linkplain #getVolatility()}.
      */
     public double getVolatility() {
-        return PrimitiveFunction.SQRT.invoke(this.getReturnVariance());
+        return PrimitiveMath.SQRT.invoke(this.getReturnVariance());
     }
 
     /**

@@ -24,8 +24,7 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.function.BigFunction;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.type.BusinessObject;
 
 public interface WorkSetPortfolio extends BusinessObject {
@@ -34,7 +33,7 @@ public interface WorkSetPortfolio extends BusinessObject {
         BigDecimal retVal = WorkSetPortfolio.getCurrentAmount(aWorkSetPortfolio);
         final BigDecimal tmpExcl = aWorkSetPortfolio.getExclusion();
         if (tmpExcl != null) {
-            retVal = BigFunction.SUBTRACT.invoke(retVal, tmpExcl);
+            retVal = BigMath.SUBTRACT.invoke(retVal, tmpExcl);
         }
         return retVal;
     }
@@ -42,7 +41,7 @@ public interface WorkSetPortfolio extends BusinessObject {
     static BigDecimal getCurrentAmount(final WorkSetPortfolio aWorkSetPortfolio) {
         BigDecimal retVal = BigMath.ZERO;
         for (final Change tmpChange : aWorkSetPortfolio.getChanges()) {
-            retVal = BigFunction.ADD.invoke(retVal, tmpChange.getCurrentAmount());
+            retVal = BigMath.ADD.invoke(retVal, tmpChange.getCurrentAmount());
         }
         return retVal;
     }
@@ -50,7 +49,7 @@ public interface WorkSetPortfolio extends BusinessObject {
     static BigDecimal getFutureAmount(final WorkSetPortfolio aWorkSetPortfolio) {
         BigDecimal retVal = BigMath.ZERO;
         for (final Change tmpChange : aWorkSetPortfolio.getChanges()) {
-            retVal = BigFunction.ADD.invoke(retVal, tmpChange.getFutureAmount());
+            retVal = BigMath.ADD.invoke(retVal, tmpChange.getFutureAmount());
         }
         return retVal;
     }
@@ -60,7 +59,7 @@ public interface WorkSetPortfolio extends BusinessObject {
         BigDecimal retVal = BigMath.ZERO;
 
         for (final Change tmpChange : aWorkSetPortfolio.getChanges()) {
-            retVal = BigFunction.ADD.invoke(retVal, tmpChange.getTransactionAmount());
+            retVal = BigMath.ADD.invoke(retVal, tmpChange.getTransactionAmount());
         }
 
         return retVal;

@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.ojalgo.constant.PrimitiveMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.series.CalendarDateSeries;

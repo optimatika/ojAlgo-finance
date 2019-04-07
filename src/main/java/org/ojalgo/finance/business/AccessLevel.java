@@ -21,7 +21,7 @@
  */
 package org.ojalgo.finance.business;
 
-import org.ojalgo.constant.PrimitiveMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 
 public enum AccessLevel {
 

@@ -27,9 +27,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.function.UnaryFunction;
+import org.ojalgo.function.constant.BigMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.store.PhysicalStore;
 import org.ojalgo.matrix.store.PrimitiveDenseStore;
@@ -148,15 +148,15 @@ public class TestEquilibrium extends FinancePortfolioTests {
 
         PhysicalStore<Double> covarianceMatrix = PrimitiveDenseStore.FACTORY.makeFilled(dim, dim, uniformCorrelation);
         covarianceMatrix.fillDiagonal(1.0);
-        covarianceMatrix.modifyAll(PrimitiveFunction.DIVIDE.by(2.0));
-        covarianceMatrix.modifyMatching(PrimitiveFunction.ADD, covarianceMatrix.transpose());
+        covarianceMatrix.modifyAll(PrimitiveMath.DIVIDE.by(2.0));
+        covarianceMatrix.modifyMatching(PrimitiveMath.ADD, covarianceMatrix.transpose());
         for (int ij = 0; ij < dim; ij++) {
-            UnaryFunction<Double> modifier = PrimitiveFunction.MULTIPLY.by(uniformVolatility.doubleValue());
+            UnaryFunction<Double> modifier = PrimitiveMath.MULTIPLY.by(uniformVolatility.doubleValue());
             covarianceMatrix.modifyRow(ij, modifier);
             covarianceMatrix.modifyColumn(ij, modifier);
         }
 
-        double raf = PrimitiveFunction.POW.invoke(10.0, uniformRiskAversionExponent.doubleValue());
+        double raf = PrimitiveMath.POW.invoke(10.0, uniformRiskAversionExponent.doubleValue());
 
         MarketEquilibrium equilibrium = new MarketEquilibrium(covarianceMatrix, raf).clean();
 

@@ -29,8 +29,8 @@ import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
-import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.finance.data.DatePrice;
+import org.ojalgo.function.constant.PrimitiveMath;
 
 public class DataParserTest {
 

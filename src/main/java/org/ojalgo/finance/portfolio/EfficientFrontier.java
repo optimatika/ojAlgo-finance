@@ -24,7 +24,7 @@ package org.ojalgo.finance.portfolio;
 import java.util.Collections;
 import java.util.Map;
 
-import org.ojalgo.constant.BigMath;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
 import org.ojalgo.optimisation.Optimisation.Result;

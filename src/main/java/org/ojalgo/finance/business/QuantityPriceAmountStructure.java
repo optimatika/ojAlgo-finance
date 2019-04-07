@@ -24,8 +24,7 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.Currency;
 
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.function.BigFunction;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.type.StandardType;
 
 public interface QuantityPriceAmountStructure {
@@ -34,7 +33,7 @@ public interface QuantityPriceAmountStructure {
         final BigDecimal quantity = structure.getQuantity();
         final BigDecimal price = structure.getPrice();
         if ((quantity != null) && (price != null)) {
-            return BigFunction.MULTIPLY.invoke(quantity, price);
+            return BigMath.MULTIPLY.invoke(quantity, price);
         } else {
             return BigMath.ZERO;
         }
@@ -44,7 +43,7 @@ public interface QuantityPriceAmountStructure {
         final BigDecimal quantity = structure.getQuantity();
         final BigDecimal amount = structure.getAmount();
         if ((amount != null) && (quantity != null) && (quantity.signum() != 0)) {
-            return BigFunction.DIVIDE.invoke(amount, quantity);
+            return BigMath.DIVIDE.invoke(amount, quantity);
         } else {
             return BigMath.ONE;
         }
@@ -54,7 +53,7 @@ public interface QuantityPriceAmountStructure {
         final BigDecimal price = structure.getPrice();
         final BigDecimal amount = structure.getAmount();
         if ((amount != null) && (price != null) && (price.signum() != 0)) {
-            return BigFunction.DIVIDE.invoke(amount, price);
+            return BigMath.DIVIDE.invoke(amount, price);
         } else {
             return BigMath.ZERO;
         }

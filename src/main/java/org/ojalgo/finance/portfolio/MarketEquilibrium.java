@@ -24,9 +24,9 @@ package org.ojalgo.finance.portfolio;
 import java.math.BigDecimal;
 
 import org.ojalgo.array.Raw1D;
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.finance.FinanceUtils;
+import org.ojalgo.function.constant.BigMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.scalar.BigScalar;
 import org.ojalgo.scalar.PrimitiveScalar;

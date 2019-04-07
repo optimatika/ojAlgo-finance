@@ -22,7 +22,7 @@
 package org.ojalgo.finance.portfolio;
 
 import org.ojalgo.ProgrammingError;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.PrimitiveMath;
 
 public final class CharacteristicLine {
 
@@ -55,7 +55,7 @@ public final class CharacteristicLine {
 
         final double tmpVal = myMarketPortfolio.getReturnVariance() * anyAsset.getReturnVariance();
 
-        return tmpCovar / PrimitiveFunction.SQRT.invoke(tmpVal);
+        return tmpCovar / PrimitiveMath.SQRT.invoke(tmpVal);
     }
 
     public double calculateCovariance(final FinancePortfolio anyAsset) {

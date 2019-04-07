@@ -25,8 +25,8 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.constant.PrimitiveMath;
+import org.ojalgo.function.constant.BigMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.type.TypeUtils;
 
 /**

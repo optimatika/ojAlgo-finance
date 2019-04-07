@@ -21,13 +21,12 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import static org.ojalgo.constant.BigMath.*;
+import static org.ojalgo.function.constant.BigMath.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-import org.ojalgo.constant.PrimitiveMath;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
@@ -93,7 +92,7 @@ import org.ojalgo.type.context.NumberContext;
 public final class MarkowitzModel extends OptimisedPortfolio {
 
     private static final double _0_0 = ZERO.doubleValue();
-    private static final double INIT = PrimitiveFunction.SQRT.invoke(PrimitiveMath.TEN);
+    private static final double INIT = PrimitiveMath.SQRT.invoke(PrimitiveMath.TEN);
     private static final double MAX = PrimitiveMath.HUNDRED * PrimitiveMath.HUNDRED;
     private static final double MIN = PrimitiveMath.HUNDREDTH;
     private static final NumberContext TARGET_CONTEXT = NumberContext.getGeneral(5, 4);
@@ -296,7 +295,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
                     } else if (tmpTargetDiff > _0_0) {
                         tmpHigh = tmpCurrent;
                     }
-                    tmpCurrent = PrimitiveFunction.SQRT.invoke(tmpLow * tmpHigh);
+                    tmpCurrent = PrimitiveMath.SQRT.invoke(tmpLow * tmpHigh);
 
                 } while (!TARGET_CONTEXT.isSmall(tmpTargetValue, tmpTargetDiff) && TARGET_CONTEXT.isDifferent(tmpHigh, tmpLow));
             }

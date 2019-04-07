@@ -24,7 +24,7 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.ojalgo.constant.BigMath;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.type.BusinessObject;
 
 public interface InstrumentCategory extends BusinessObject, ValueStructure.Item {

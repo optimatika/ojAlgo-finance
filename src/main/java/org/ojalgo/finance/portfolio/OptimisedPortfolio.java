@@ -21,7 +21,7 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import static org.ojalgo.constant.BigMath.*;
+import static org.ojalgo.function.constant.BigMath.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

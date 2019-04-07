@@ -24,8 +24,7 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.function.BigFunction;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.type.BusinessObject;
 
 public interface Custodian extends BusinessObject {
@@ -33,7 +32,7 @@ public interface Custodian extends BusinessObject {
     static BigDecimal getCurrentValue(final Custodian aPortfolioCustodian) {
         BigDecimal retVal = BigMath.ZERO;
         for (final Portfolio tmpPortfolio : aPortfolioCustodian.getPortfolios()) {
-            retVal = BigFunction.ADD.invoke(retVal, tmpPortfolio.getAggregatedAmount());
+            retVal = BigMath.ADD.invoke(retVal, tmpPortfolio.getAggregatedAmount());
         }
         return retVal;
     }

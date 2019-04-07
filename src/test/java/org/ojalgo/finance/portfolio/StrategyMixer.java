@@ -21,7 +21,7 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import static org.ojalgo.constant.BigMath.*;
+import static org.ojalgo.function.constant.BigMath.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
-import org.ojalgo.constant.PrimitiveMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.optimisation.Expression;
 import org.ojalgo.optimisation.ExpressionsBasedModel;

@@ -28,8 +28,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.finance.FinanceUtils;
 import org.ojalgo.finance.portfolio.BlackLittermanModel;
 import org.ojalgo.finance.portfolio.FinancePortfolio;
@@ -38,7 +36,8 @@ import org.ojalgo.finance.portfolio.FixedWeightsPortfolio;
 import org.ojalgo.finance.portfolio.MarketEquilibrium;
 import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
-import org.ojalgo.function.BigFunction;
+import org.ojalgo.function.constant.BigMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.random.process.GeometricBrownianMotion;
@@ -368,7 +367,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
         if (market.isHistoricalRiskFreeReturn()) {
             final CalendarDateSeries<Double> tmpRiskFreeSeries = market.getRiskFreeSeries();
             final Double tmpLastValue = tmpRiskFreeSeries.lastValue();
-            retVal = BigFunction.DIVIDE.invoke(new BigDecimal(tmpLastValue), BigMath.HUNDRED);
+            retVal = BigMath.DIVIDE.invoke(new BigDecimal(tmpLastValue), BigMath.HUNDRED);
         }
 
         final BigDecimal tmpAdjustment = market.getRiskFreeReturnAdjustment();

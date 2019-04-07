@@ -26,9 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ojalgo.ProgrammingError;
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.constant.PrimitiveMath;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.BigMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.scalar.BigScalar;
 import org.ojalgo.scalar.Scalar;
@@ -292,7 +291,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
 
             tmpRet = myViews.get(i).getMeanReturn();
 
-            retVal.set(i, 0, PrimitiveFunction.DIVIDE.invoke(tmpRet, tmpRAF));
+            retVal.set(i, 0, PrimitiveMath.DIVIDE.invoke(tmpRet, tmpRAF));
         }
 
         return retVal.build();
@@ -326,7 +325,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
 
                 tmpVar = myViews.get(ij).getReturnVariance();
 
-                retVal.set(ij, ij, PrimitiveFunction.DIVIDE.invoke(tmpVar, tmpScale));
+                retVal.set(ij, ij, PrimitiveMath.DIVIDE.invoke(tmpVar, tmpScale));
             }
         }
 

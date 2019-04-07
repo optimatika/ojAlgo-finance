@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ojalgo.array.Array1D;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.scalar.Scalar;
 import org.ojalgo.type.TypeUtils;
@@ -164,7 +164,7 @@ abstract class EquilibriumModel extends FinancePortfolio implements FinancePortf
 
         for (int i = 0; i < tmpWeights.size(); i++) {
             final double tmpMeanReturn = tmpReturns.doubleValue(i, 0);
-            final double tmpVolatility = PrimitiveFunction.SQRT.invoke(tmpCovariances.doubleValue(i, i));
+            final double tmpVolatility = PrimitiveMath.SQRT.invoke(tmpCovariances.doubleValue(i, i));
             final BigDecimal tmpWeight = tmpWeights.get(i);
             retVal.add(new SimpleAsset(tmpMeanReturn, tmpVolatility, tmpWeight));
         }

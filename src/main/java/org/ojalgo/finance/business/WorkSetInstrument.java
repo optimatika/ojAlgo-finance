@@ -23,7 +23,7 @@ package org.ojalgo.finance.business;
 
 import java.math.BigDecimal;
 
-import org.ojalgo.constant.BigMath;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.type.BusinessObject;
 
 public interface WorkSetInstrument extends BusinessObject {

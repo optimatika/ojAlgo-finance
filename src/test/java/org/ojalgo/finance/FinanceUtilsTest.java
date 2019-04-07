@@ -23,8 +23,7 @@ package org.ojalgo.finance;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
-import org.ojalgo.constant.PrimitiveMath;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.decomposition.SingularValue;
 import org.ojalgo.netio.BasicLogger;
@@ -144,8 +143,8 @@ public class FinanceUtilsTest extends FinanceTests {
             tmpActReturn = FinanceUtils.toAnnualReturnFromGrowthRate(tmpExpRate, CalendarDateUnit.MONTH);
             TestUtils.assertEquals(tmpExpReturn, tmpActReturn, 1E-14 / PrimitiveMath.THREE);
 
-            TestUtils.assertEquals(tmpExpFactor, PrimitiveFunction.EXP.invoke(tmpExpRate), 1E-14 / PrimitiveMath.THREE);
-            TestUtils.assertEquals(tmpExpRate, PrimitiveFunction.LOG.invoke(tmpExpFactor), 1E-14 / PrimitiveMath.THREE);
+            TestUtils.assertEquals(tmpExpFactor, PrimitiveMath.EXP.invoke(tmpExpRate), 1E-14 / PrimitiveMath.THREE);
+            TestUtils.assertEquals(tmpExpRate, PrimitiveMath.LOG.invoke(tmpExpFactor), 1E-14 / PrimitiveMath.THREE);
         }
 
     }

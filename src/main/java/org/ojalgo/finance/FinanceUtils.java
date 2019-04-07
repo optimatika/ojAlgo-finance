@@ -21,7 +21,7 @@
  */
 package org.ojalgo.finance;
 
-import static org.ojalgo.constant.PrimitiveMath.*;
+import static org.ojalgo.function.constant.PrimitiveMath.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,9 +32,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.ojalgo.array.Array1D;
-import org.ojalgo.constant.PrimitiveMath;
-import org.ojalgo.function.PrimitiveFunction;
 import org.ojalgo.function.aggregator.Aggregator;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.decomposition.Eigenvalue;
 import org.ojalgo.matrix.store.MatrixStore;
@@ -58,7 +57,7 @@ public abstract class FinanceUtils {
 
         double tmpConfidenceScale = SQRT_TWO * RandomUtils.erfi(ONE - (TWO * (ONE - confidence)));
 
-        return PrimitiveFunction.MAX.invoke((PrimitiveFunction.SQRT.invoke(time) * stdDev * tmpConfidenceScale) - (time * expRet), ZERO);
+        return PrimitiveMath.MAX.invoke((PrimitiveMath.SQRT.invoke(time) * stdDev * tmpConfidenceScale) - (time * expRet), ZERO);
     }
 
     public static GeometricBrownianMotion estimateExcessDiffusionProcess(CalendarDateSeries<?> priceSeries, CalendarDateSeries<?> riskFreeInterestRateSeries,
@@ -74,7 +73,7 @@ public abstract class FinanceUtils {
         double tmpExp = tmpSampleSet.getMean();
         double tmpVar = tmpSampleSet.getVariance();
 
-        double tmpDiff = PrimitiveFunction.SQRT.invoke(tmpVar / tmpStepSize);
+        double tmpDiff = PrimitiveMath.SQRT.invoke(tmpVar / tmpStepSize);
         double tmpDrift = (tmpExp / tmpStepSize) + ((tmpDiff * tmpDiff) / TWO);
 
         GeometricBrownianMotion retVal = new GeometricBrownianMotion(tmpDrift, tmpDiff);
@@ -133,7 +132,7 @@ public abstract class FinanceUtils {
             double[] retVal = new double[tmpSize1];
 
             for (int i = 0; i < tmpSize1; i++) {
-                retVal[i] = PrimitiveFunction.LOG.invoke(values[i + 1] / values[i]);
+                retVal[i] = PrimitiveMath.LOG.invoke(values[i + 1] / values[i]);
             }
             SampleSet tmpMakeUsingLogarithmicChanges = SampleSet.wrap(Access1D.wrap(retVal));
             tmpSampleSets.add(tmpMakeUsingLogarithmicChanges);
@@ -256,7 +255,7 @@ public abstract class FinanceUtils {
             tmpThisPrice = tmpPrices[i];
             tmpNextPrice = tmpPrices[i + 1];
             tmpPriceGrowthFactor = tmpNextPrice / tmpThisPrice;
-            tmpPriceGrowthRate = PrimitiveFunction.LOG.invoke(tmpPriceGrowthFactor);
+            tmpPriceGrowthRate = PrimitiveMath.LOG.invoke(tmpPriceGrowthFactor);
 
             tmpAdjustedPriceGrowthRate = tmpPriceGrowthRate - tmpRiskFreeGrowthRate;
 
@@ -329,7 +328,7 @@ public abstract class FinanceUtils {
      */
     public static double toAnnualReturnFromGrowthFactor(double growthFactor, CalendarDateUnit growthFactorUnit) {
         double tmpGrowthFactorUnitsPerYear = growthFactorUnit.convert(CalendarDateUnit.YEAR);
-        return PrimitiveFunction.POW.invoke(growthFactor, tmpGrowthFactorUnitsPerYear) - PrimitiveMath.ONE;
+        return PrimitiveMath.POW.invoke(growthFactor, tmpGrowthFactorUnitsPerYear) - PrimitiveMath.ONE;
     }
 
     /**
@@ -341,7 +340,7 @@ public abstract class FinanceUtils {
      */
     public static double toAnnualReturnFromGrowthRate(double growthRate, CalendarDateUnit growthRateUnit) {
         double tmpGrowthRateUnitsPerYear = growthRateUnit.convert(CalendarDateUnit.YEAR);
-        return PrimitiveFunction.EXPM1.invoke(growthRate * tmpGrowthRateUnitsPerYear);
+        return PrimitiveMath.EXPM1.invoke(growthRate * tmpGrowthRateUnitsPerYear);
     }
 
     public static PrimitiveMatrix toCorrelations(Access2D<?> covariances) {
@@ -382,7 +381,7 @@ public abstract class FinanceUtils {
 
         double[] volatilities = new double[size];
         for (int ij = 0; ij < size; ij++) {
-            volatilities[ij] = PrimitiveFunction.SQRT.invoke(covarianceMtrx.doubleValue(ij, ij));
+            volatilities[ij] = PrimitiveMath.SQRT.invoke(covarianceMtrx.doubleValue(ij, ij));
         }
 
         for (int j = 0; j < size; j++) {
@@ -445,7 +444,7 @@ public abstract class FinanceUtils {
     public static double toGrowthFactorFromAnnualReturn(double annualReturn, CalendarDateUnit growthFactorUnit) {
         double tmpAnnualGrowthFactor = PrimitiveMath.ONE + annualReturn;
         double tmpYearsPerGrowthFactorUnit = CalendarDateUnit.YEAR.convert(growthFactorUnit);
-        return PrimitiveFunction.POW.invoke(tmpAnnualGrowthFactor, tmpYearsPerGrowthFactorUnit);
+        return PrimitiveMath.POW.invoke(tmpAnnualGrowthFactor, tmpYearsPerGrowthFactorUnit);
     }
 
     /**
@@ -456,7 +455,7 @@ public abstract class FinanceUtils {
      * @return A growth rate per unit (day, week, month, year...)
      */
     public static double toGrowthRateFromAnnualReturn(double annualReturn, CalendarDateUnit growthRateUnit) {
-        double tmpAnnualGrowthRate = PrimitiveFunction.LOG1P.invoke(annualReturn);
+        double tmpAnnualGrowthRate = PrimitiveMath.LOG1P.invoke(annualReturn);
         double tmpYearsPerGrowthRateUnit = CalendarDateUnit.YEAR.convert(growthRateUnit);
         return tmpAnnualGrowthRate * tmpYearsPerGrowthRateUnit;
     }
@@ -481,7 +480,7 @@ public abstract class FinanceUtils {
 
             double largest = covarianceMtrx.aggregateDiagonal(Aggregator.LARGEST);
             double limit = largest * size * PrimitiveMath.RELATIVELY_SMALL;
-            double smallest = PrimitiveFunction.SQRT.invoke(limit);
+            double smallest = PrimitiveMath.SQRT.invoke(limit);
 
             for (int ij = 0; ij < size; ij++) {
                 double variance = covariances.doubleValue(ij, ij);
@@ -489,7 +488,7 @@ public abstract class FinanceUtils {
                 if (variance < limit) {
                     retVal.set(ij, smallest);
                 } else {
-                    retVal.set(ij, PrimitiveFunction.SQRT.invoke(variance));
+                    retVal.set(ij, PrimitiveMath.SQRT.invoke(variance));
                 }
             }
 
@@ -501,7 +500,7 @@ public abstract class FinanceUtils {
                 if (variance <= PrimitiveMath.ZERO) {
                     retVal.set(ij, PrimitiveMath.ZERO);
                 } else {
-                    retVal.set(ij, PrimitiveFunction.SQRT.invoke(variance));
+                    retVal.set(ij, PrimitiveMath.SQRT.invoke(variance));
                 }
             }
         }

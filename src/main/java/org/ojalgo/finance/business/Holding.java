@@ -27,8 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.function.BigFunction;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.type.BusinessObject;
 
 /**
@@ -39,7 +38,7 @@ public interface Holding<C extends ValueStructure.Container, I extends ValueStru
     static BigDecimal aggregateAmount(final List<? extends Holding<?, ?>> aListOfHoldings) {
         BigDecimal retVal = BigMath.ZERO;
         for (final Holding<?, ?> tmpHolding : aListOfHoldings) {
-            retVal = BigFunction.ADD.invoke(retVal, tmpHolding.getAmount());
+            retVal = BigMath.ADD.invoke(retVal, tmpHolding.getAmount());
         }
         return retVal;
     }
@@ -47,7 +46,7 @@ public interface Holding<C extends ValueStructure.Container, I extends ValueStru
     static BigDecimal aggregateQuantity(final List<? extends Holding<?, ?>> aListOfHoldings) {
         BigDecimal retVal = BigMath.ZERO;
         for (final Holding<?, ?> tmpHolding : aListOfHoldings) {
-            retVal = BigFunction.ADD.invoke(retVal, tmpHolding.getQuantity());
+            retVal = BigMath.ADD.invoke(retVal, tmpHolding.getQuantity());
         }
         return retVal;
     }
@@ -73,7 +72,7 @@ public interface Holding<C extends ValueStructure.Container, I extends ValueStru
     }
 
     static BigDecimal getWeight(final Holding<?, ?> aHolding) {
-        return BigFunction.DIVIDE.invoke(aHolding.getAmount(), aHolding.getContentContainer().getAggregatedAmount());
+        return BigMath.DIVIDE.invoke(aHolding.getAmount(), aHolding.getContentContainer().getAggregatedAmount());
     }
 
     static String toDisplayString(final Holding<?, ?> aHolding) {

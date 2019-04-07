@@ -24,8 +24,7 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.function.BigFunction;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.type.BusinessObject;
 
 public interface Change extends BusinessObject, QuantityPriceAmountStructure {
@@ -50,7 +49,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
         BigDecimal retVal = BigMath.ZERO;
 
         for (final Change tmpChange : aChange.getMatchingChanges()) {
-            retVal = BigFunction.ADD.invoke(retVal, Change.getTransactionAmount(tmpChange));
+            retVal = BigMath.ADD.invoke(retVal, Change.getTransactionAmount(tmpChange));
         }
 
         return retVal;
@@ -66,7 +65,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
 
             if (tmpPrice != null) {
 
-                return BigFunction.MULTIPLY.invoke(Change.getCurrentQuantity(aChange), tmpPrice);
+                return BigMath.MULTIPLY.invoke(Change.getCurrentQuantity(aChange), tmpPrice);
 
             } else {
 
@@ -96,7 +95,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
         final BigDecimal tmpCurrentPortfolioAmount = aChange.getWorkSetPortfolio().getCurrentAmount();
 
         if (tmpCurrentPortfolioAmount.signum() != 0) {
-            retVal = BigFunction.DIVIDE.invoke(Change.getCurrentAmount(aChange), tmpCurrentPortfolioAmount);
+            retVal = BigMath.DIVIDE.invoke(Change.getCurrentAmount(aChange), tmpCurrentPortfolioAmount);
         }
 
         return retVal;
@@ -107,11 +106,11 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
     }
 
     static BigDecimal getFutureAmount(final Change aChange) {
-        return BigFunction.ADD.invoke(Change.getCurrentAmount(aChange), Change.getTransactionAmount(aChange));
+        return BigMath.ADD.invoke(Change.getCurrentAmount(aChange), Change.getTransactionAmount(aChange));
     }
 
     static BigDecimal getFutureQuantity(final Change aChange) {
-        return BigFunction.ADD.invoke(Change.getCurrentQuantity(aChange), Change.getTransactionQuantity(aChange));
+        return BigMath.ADD.invoke(Change.getCurrentQuantity(aChange), Change.getTransactionQuantity(aChange));
     }
 
     static BigDecimal getFutureWeight(final Change aChange) {
@@ -121,7 +120,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
         final BigDecimal tmpFuturePortfolioAmount = aChange.getWorkSetPortfolio().getFutureAmount();
 
         if (tmpFuturePortfolioAmount.signum() != 0) {
-            retVal = BigFunction.DIVIDE.invoke(Change.getFutureAmount(aChange), tmpFuturePortfolioAmount);
+            retVal = BigMath.DIVIDE.invoke(Change.getFutureAmount(aChange), tmpFuturePortfolioAmount);
         }
 
         return retVal;
@@ -168,8 +167,8 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
                 retVal = tmpCurWeight;
             } else if (Change.isForcedToSell(aChange)) {
                 if (tmpWorkSetPortfolio.getWorkSet().getSellShare() != null) {
-                    retVal = BigFunction.DIVIDE.invoke(BigFunction.MULTIPLY.invoke(aChange.getHolding().getAmount(),
-                            BigFunction.SUBTRACT.invoke(BigMath.ONE, tmpWorkSetPortfolio.getWorkSet().getSellShare())), tmpNewPortfVal);
+                    retVal = BigMath.DIVIDE.invoke(BigMath.MULTIPLY.invoke(aChange.getHolding().getAmount(),
+                            BigMath.SUBTRACT.invoke(BigMath.ONE, tmpWorkSetPortfolio.getWorkSet().getSellShare())), tmpNewPortfVal);
                 } else {
                     // It's not specified how much you have to sell
                     if ((Change.isDefault(aChange))) {
@@ -205,7 +204,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
     static BigDecimal getPortfolioCurrentAmount(final Change aChange) {
         BigDecimal retVal = BigMath.ZERO;
         for (final Change tmpChange : Change.getPortfolioChanges(aChange)) {
-            retVal = BigFunction.ADD.invoke(retVal, Change.getCurrentAmount(tmpChange));
+            retVal = BigMath.ADD.invoke(retVal, Change.getCurrentAmount(tmpChange));
         }
         return retVal;
     }
@@ -213,7 +212,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
     static BigDecimal getPortfolioFutureAmount(final Change aChange) {
         BigDecimal retVal = BigMath.ZERO;
         for (final Change tmpChange : Change.getPortfolioChanges(aChange)) {
-            retVal = BigFunction.ADD.invoke(retVal, Change.getFutureAmount(tmpChange));
+            retVal = BigMath.ADD.invoke(retVal, Change.getFutureAmount(tmpChange));
         }
         return retVal;
     }
@@ -235,7 +234,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
         for (final Change tmpChange : tmpPortfolioChanges) {
             if (Change.getEffectiveCategory(tmpChange).equals(tmpThisCatgeory)) {
                 if (tmpChange.getWorkSetInstrument().isLocked()) {
-                    tmpLockedWeight = BigFunction.ADD.invoke(tmpLockedWeight, Change.getCurrentWeight(tmpChange));
+                    tmpLockedWeight = BigMath.ADD.invoke(tmpLockedWeight, Change.getCurrentWeight(tmpChange));
                     tmpLockedCount++;
                 } else {
                     tmpFreeCount++;
@@ -243,16 +242,16 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
             }
         }
         if (tmpLockedWeight.signum() != 0) {
-            tmpFreeWeight = BigFunction.SUBTRACT.invoke(tmpFreeWeight, tmpLockedWeight);
+            tmpFreeWeight = BigMath.SUBTRACT.invoke(tmpFreeWeight, tmpLockedWeight);
         }
 
         if ((tmpFreeCount == 0) || (tmpLockedCount == 0)) {
-            return BigFunction.DIVIDE.invoke(tmpTargetWeight, new BigDecimal(tmpFreeCount + tmpLockedCount));
+            return BigMath.DIVIDE.invoke(tmpTargetWeight, new BigDecimal(tmpFreeCount + tmpLockedCount));
         } else {
             if (aChange.getWorkSetInstrument().isLocked()) {
                 return Change.getCurrentWeight(aChange);
             } else {
-                return BigFunction.DIVIDE.invoke(tmpFreeWeight, new BigDecimal(tmpFreeCount));
+                return BigMath.DIVIDE.invoke(tmpFreeWeight, new BigDecimal(tmpFreeCount));
             }
         }
     }
@@ -265,14 +264,14 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
 
         if ((retVal == null) && (tmpSuggestedWeight != null)) {
             final BigDecimal tmpAdjustedFutureAmount = aChange.getWorkSetPortfolio().getAdjustedFutureAmount();
-            retVal = BigFunction.SUBTRACT.invoke(BigFunction.MULTIPLY.invoke(tmpAdjustedFutureAmount, tmpSuggestedWeight), Change.getCurrentAmount(aChange));
+            retVal = BigMath.SUBTRACT.invoke(BigMath.MULTIPLY.invoke(tmpAdjustedFutureAmount, tmpSuggestedWeight), Change.getCurrentAmount(aChange));
         }
 
         if (retVal == null) {
             if (aChange.getQuantity() != null) {
-                retVal = BigFunction.MULTIPLY.invoke(aChange.getQuantity(), Change.getTransactionPrice(aChange));
+                retVal = BigMath.MULTIPLY.invoke(aChange.getQuantity(), Change.getTransactionPrice(aChange));
             } else if (aChange.getSellShare() != null) {
-                retVal = BigFunction.MULTIPLY.invoke(Change.getTransactionQuantity(aChange), Change.getTransactionPrice(aChange));
+                retVal = BigMath.MULTIPLY.invoke(Change.getTransactionQuantity(aChange), Change.getTransactionPrice(aChange));
             } else {
                 retVal = BigMath.ZERO;
             }
@@ -321,14 +320,14 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
         BigDecimal retVal = aChange.getQuantity();
 
         if ((retVal == null) && (aChange.getSellShare() != null)) {
-            retVal = BigFunction.MULTIPLY.invoke(Change.getCurrentQuantity(aChange), aChange.getSellShare());
+            retVal = BigMath.MULTIPLY.invoke(Change.getCurrentQuantity(aChange), aChange.getSellShare());
         }
 
         if (retVal == null) {
             if (aChange.getAmount() != null) {
-                retVal = BigFunction.DIVIDE.invoke(aChange.getAmount(), Change.getTransactionPrice(aChange));
+                retVal = BigMath.DIVIDE.invoke(aChange.getAmount(), Change.getTransactionPrice(aChange));
             } else if (aChange.getSuggestedWeight() != null) {
-                retVal = BigFunction.DIVIDE.invoke(Change.getTransactionAmount(aChange), Change.getTransactionPrice(aChange));
+                retVal = BigMath.DIVIDE.invoke(Change.getTransactionAmount(aChange), Change.getTransactionPrice(aChange));
             } else {
                 retVal = BigMath.ZERO;
             }
@@ -343,7 +342,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
         BigDecimal retVal = aChange.getSellShare();
 
         if ((retVal == null) && (Change.getTransactionQuantity(aChange).signum() < 0) && (Change.getCurrentQuantity(aChange).signum() != 0)) {
-            retVal = BigFunction.DIVIDE.invoke(Change.getTransactionQuantity(aChange), Change.getCurrentQuantity(aChange));
+            retVal = BigMath.DIVIDE.invoke(Change.getTransactionQuantity(aChange), Change.getCurrentQuantity(aChange));
         }
 
         return retVal;
@@ -369,7 +368,7 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
      * How large is the transaction in relation to the portfolio current/market value.
      */
     static BigDecimal getTransactionWeight(final Change aChange) {
-        return BigFunction.DIVIDE.invoke(Change.getTransactionAmount(aChange), aChange.getWorkSetPortfolio().getCurrentAmount());
+        return BigMath.DIVIDE.invoke(Change.getTransactionAmount(aChange), aChange.getWorkSetPortfolio().getCurrentAmount());
     }
 
     static BigDecimal getUpperLimit(final Change aChange) {
@@ -387,8 +386,8 @@ public interface Change extends BusinessObject, QuantityPriceAmountStructure {
                 retVal = tmpCurWeight;
             } else if (Change.isForcedToSell(aChange)) {
                 if (tmpWorkSetPortfolio.getWorkSet().getSellShare() != null) {
-                    retVal = BigFunction.DIVIDE.invoke(BigFunction.MULTIPLY.invoke(aChange.getHolding().getAmount(),
-                            BigFunction.SUBTRACT.invoke(BigMath.ONE, tmpWorkSetPortfolio.getWorkSet().getSellShare())), tmpNewPortfVal);
+                    retVal = BigMath.DIVIDE.invoke(BigMath.MULTIPLY.invoke(aChange.getHolding().getAmount(),
+                            BigMath.SUBTRACT.invoke(BigMath.ONE, tmpWorkSetPortfolio.getWorkSet().getSellShare())), tmpNewPortfVal);
                 } else {
                     retVal = tmpCurWeight;
                 }
