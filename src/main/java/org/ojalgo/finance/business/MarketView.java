@@ -56,7 +56,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
         HIGH(1), LOW(4), NO(9), SOME(2), TOP(0), WHATEVER(3);
 
-        private static final double BASE = PrimitiveMath.SQRT.invoke(PrimitiveMath.TEN);
+        private double BASE = PrimitiveMath.SQRT.invoke(PrimitiveMath.TEN);
 
         public static Confidence getInstance(final int exponent) {
 
@@ -76,7 +76,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
             }
         }
 
-        private final int myExponent;
+        private int myExponent;
 
         Confidence(final int exponent) {
             myExponent = exponent;
@@ -200,7 +200,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
             @Override
             protected void reset() {
-                ;
+
             }
 
         };
@@ -255,7 +255,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
             @Override
             protected void reset() {
-                ;
+
             }
 
         };
@@ -292,7 +292,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
             @Override
             protected void reset() {
-                ;
+
             }
 
         };

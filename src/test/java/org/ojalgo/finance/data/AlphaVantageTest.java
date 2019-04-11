@@ -39,25 +39,25 @@ public class AlphaVantageTest extends FinanceDataTests {
 
     @Test
     public void testAlphaVantageDailyMSFT() {
-    
+
         final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.DAY, "demo");
-    
+
         FinanceDataTests.assertAtLeastExpectedItems(dataSource, 100);
     }
 
     @Test
     public void testAlphaVantageMonthlyMSFT() {
-    
+
         final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.MONTH, "demo");
-    
+
         FinanceDataTests.assertAtLeastExpectedItems(dataSource, 250);
     }
 
     @Test
     public void testAlphaVantageWeeklyMSFT() {
-    
+
         final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.WEEK, "demo");
-    
+
         FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1089);
     }
 

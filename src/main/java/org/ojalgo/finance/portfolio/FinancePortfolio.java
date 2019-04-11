@@ -41,7 +41,7 @@ import org.ojalgo.type.context.NumberContext;
  */
 public abstract class FinancePortfolio implements Comparable<FinancePortfolio> {
 
-    public static interface Context {
+    public interface Context {
 
         double calculatePortfolioReturn(final FinancePortfolio weightsPortfolio);
 

@@ -97,6 +97,10 @@ public class MarketEquilibrium {
         this(MarketEquilibrium.makeSymbols((int) covarianceMatrix.countRows()), covarianceMatrix, riskAversionFactor);
     }
 
+    public MarketEquilibrium(final String[] assetNamesOrKeys, final Access2D<?> covarianceMatrix) {
+        this(assetNamesOrKeys, covarianceMatrix, DEFAULT_RISK_AVERSION);
+    }
+
     public MarketEquilibrium(final String[] assetNamesOrKeys, final Access2D<?> covarianceMatrix, final Number riskAversionFactor) {
 
         super();
@@ -109,10 +113,6 @@ public class MarketEquilibrium {
         }
 
         myRiskAversion = TypeUtils.toBigDecimal(riskAversionFactor);
-    }
-
-    public MarketEquilibrium(final String[] assetNamesOrKeys, final Access2D<?> covarianceMatrix) {
-        this(assetNamesOrKeys, covarianceMatrix, DEFAULT_RISK_AVERSION);
     }
 
     MarketEquilibrium(final MarketEquilibrium marketEquilibrium) {

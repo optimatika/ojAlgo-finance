@@ -58,9 +58,9 @@ public abstract class FinanceDataTests extends FunctionalityTest {
     }
 
     static void assertAtLeastExpectedItems(final FinanceData dataSource, int expected) {
-    
+
         final List<DatePrice> rows = dataSource.getHistoricalPrices();
-    
+
         if (rows.size() <= 0) {
             TestUtils.fail("No data!");
         } else {

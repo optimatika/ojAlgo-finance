@@ -68,9 +68,9 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
             }
         }
 
-        private final FinancialMarket.EvaluationContext myEvaluationContext;
+        private FinancialMarket.EvaluationContext myEvaluationContext;
 
-        private final boolean myRestricted;
+        private boolean myRestricted;
 
         WeightsContext(final FinancialMarket.EvaluationContext context, final boolean restricted) {
             myEvaluationContext = context;

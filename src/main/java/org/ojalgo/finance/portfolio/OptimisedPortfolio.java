@@ -89,10 +89,6 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
     private boolean myShortingAllowed = false;
     private final Variable[] myVariables;
 
-    OptimisedPortfolio(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
-        this(new MarketEquilibrium(covarianceMatrix), expectedExcessReturns);
-    }
-
     OptimisedPortfolio(final FinancePortfolio.Context portfolioContext) {
 
         super(portfolioContext);
@@ -127,6 +123,10 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
         }
 
         myOptimisationOptions.solution = myOptimisationOptions.solution.newPrecision(8).newScale(10);
+    }
+
+    OptimisedPortfolio(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
+        this(new MarketEquilibrium(covarianceMatrix), expectedExcessReturns);
     }
 
     public final boolean isShortingAllowed() {

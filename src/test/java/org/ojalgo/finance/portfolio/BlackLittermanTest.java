@@ -74,7 +74,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
                 { 0.021511 } };
 
         return BlackLittermanTest.make(tmpArr);
-    };
+    }
 
     public static PrimitiveMatrix getCovariances() {
 

@@ -21,8 +21,6 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import static org.ojalgo.function.BigFunction.*;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +102,7 @@ final class NormalisedPortfolio extends FinancePortfolio {
         return retVal;
     }
 
-    private final BigDecimal getTotalWeight() {
+    private BigDecimal getTotalWeight() {
 
         if (myTotalWeight == null) {
             myTotalWeight = BigMath.ZERO;

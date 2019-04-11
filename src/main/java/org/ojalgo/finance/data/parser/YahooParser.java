@@ -43,16 +43,16 @@ public class YahooParser implements BasicParser<YahooParser.Data> {
         public double open;
         public double volume;
 
+        public Data(LocalDate date) {
+            super(date);
+        }
+
         Data(CharSequence text) {
             super(text);
         }
 
         Data(CharSequence text, DateTimeFormatter formatter) {
             super(text, formatter);
-        }
-
-        public Data(LocalDate date) {
-            super(date);
         }
 
         @Override

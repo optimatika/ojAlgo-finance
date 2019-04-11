@@ -102,16 +102,16 @@ public final class MarkowitzModel extends OptimisedPortfolio {
     private BigDecimal myTargetReturn;
     private BigDecimal myTargetVariance;
 
-    public MarkowitzModel(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
-        super(covarianceMatrix, expectedExcessReturns);
-    }
-
     public MarkowitzModel(final FinancePortfolio.Context portfolioContext) {
         super(portfolioContext);
     }
 
     public MarkowitzModel(final MarketEquilibrium marketEquilibrium, final PrimitiveMatrix expectedExcessReturns) {
         super(marketEquilibrium, expectedExcessReturns);
+    }
+
+    public MarkowitzModel(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
+        super(covarianceMatrix, expectedExcessReturns);
     }
 
     /**
@@ -122,12 +122,12 @@ public final class MarkowitzModel extends OptimisedPortfolio {
         return myConstraints.put(assetIndeces, new LowerUpper(lowerLimit, upperLimit));
     }
 
-    public final void clearAllConstraints() {
+    public void clearAllConstraints() {
         myConstraints.clear();
         this.reset();
     }
 
-    public final void setLowerLimit(final int assetIndex, final BigDecimal lowerLimit) {
+    public void setLowerLimit(final int assetIndex, final BigDecimal lowerLimit) {
         this.getVariable(assetIndex).lower(lowerLimit);
         this.reset();
     }
@@ -151,7 +151,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
      *
      * @see #setTargetVariance(BigDecimal)
      */
-    public final void setTargetReturn(final BigDecimal targetReturn) {
+    public void setTargetReturn(final BigDecimal targetReturn) {
         myTargetReturn = targetReturn;
         myTargetVariance = null;
         this.reset();
@@ -175,13 +175,13 @@ public final class MarkowitzModel extends OptimisedPortfolio {
      *
      * @see #setTargetReturn(BigDecimal)
      */
-    public final void setTargetVariance(final BigDecimal targetVariance) {
+    public void setTargetVariance(final BigDecimal targetVariance) {
         myTargetVariance = targetVariance;
         myTargetReturn = null;
         this.reset();
     }
 
-    public final void setUpperLimit(final int assetIndex, final BigDecimal upperLimit) {
+    public void setUpperLimit(final int assetIndex, final BigDecimal upperLimit) {
         this.getVariable(assetIndex).upper(upperLimit);
         this.reset();
     }
@@ -318,11 +318,11 @@ public final class MarkowitzModel extends OptimisedPortfolio {
 
     }
 
-    final Scalar<?> calculatePortfolioReturn(final Access1D<?> weightsVctr, final PrimitiveMatrix returnsVctr) {
+    Scalar<?> calculatePortfolioReturn(final Access1D<?> weightsVctr, final PrimitiveMatrix returnsVctr) {
         return super.calculatePortfolioReturn(MATRIX_FACTORY.columns(weightsVctr), returnsVctr);
     }
 
-    final Scalar<?> calculatePortfolioVariance(final Access1D<?> weightsVctr) {
+    Scalar<?> calculatePortfolioVariance(final Access1D<?> weightsVctr) {
         return super.calculatePortfolioVariance(MATRIX_FACTORY.columns(weightsVctr));
     }
 

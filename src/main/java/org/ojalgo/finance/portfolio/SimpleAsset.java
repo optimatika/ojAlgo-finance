@@ -94,7 +94,7 @@ public final class SimpleAsset extends FinancePortfolio {
 
     @Override
     protected void reset() {
-        ;
+
     }
 
 }
