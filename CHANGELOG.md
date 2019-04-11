@@ -2,6 +2,16 @@
 
 > corresponds to changes in the `develop` branch since the last release
 
+# v2.1.0: 2019-04-11
+
+### Added
+
+* A coordinated data source builder DataSource.coordinated();
+
+### Changed
+
+* Adjustements to ojAlgo v47.1
+
 # v2.0.0: 2018-12-17
 
 ### Added
