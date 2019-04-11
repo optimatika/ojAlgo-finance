@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,11 @@ package org.ojalgo.finance;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
-import org.ojalgo.constant.PrimitiveMath;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.decomposition.SingularValue;
-import org.ojalgo.matrix.store.PrimitiveDenseStore;
 import org.ojalgo.netio.BasicLogger;
+import org.ojalgo.optimisation.integer.NextGenSysModTest;
 import org.ojalgo.type.CalendarDateUnit;
 import org.ojalgo.type.context.NumberContext;
 
@@ -39,43 +38,89 @@ import org.ojalgo.type.context.NumberContext;
  */
 public class FinanceUtilsTest extends FinanceTests {
 
-    private static void doTestCleaning(final double[][] original) {
+    private static final NumberContext ACCEPTABLE_ACCURACY = NumberContext.getGeneral(14, 14);
+    private static final NumberContext IDENTICAL_ACCURACY = NumberContext.getGeneral(16, 16);
 
-        final NumberContext tmpEvalCntx = NumberContext.getGeneral(6, 12);
+    private static void doTestCleaning(final double[][] rawOriginal) {
 
-        final PrimitiveDenseStore tmpOriginal = PrimitiveDenseStore.FACTORY.rows(original);
+        PrimitiveMatrix original = PrimitiveMatrix.FACTORY.rows(rawOriginal);
 
-        final SingularValue<Double> tmpSVD = SingularValue.make(tmpOriginal);
+        SingularValue<Double> svd = SingularValue.make(original);
+        svd.decompose(original);
+        double refCondition = svd.getCondition();
+        int refRank = svd.getRank();
 
-        tmpSVD.decompose(tmpOriginal);
-        final double tmpRefCond = tmpSVD.getCondition();
-        final int tmpRefRank = tmpSVD.getRank();
-        final double tmpRefNorm = tmpSVD.getFrobeniusNorm();
-
-        final PrimitiveMatrix tmpCorrelations = FinanceUtils.toCorrelations(tmpOriginal, true);
-        final PrimitiveMatrix tmpVolatilities = FinanceUtils.toVolatilities(tmpOriginal, true);
-        final PrimitiveMatrix tmpCovariances = FinanceUtils.toCovariances(tmpVolatilities, tmpCorrelations);
-
-        tmpSVD.decompose(PrimitiveDenseStore.FACTORY.copy(tmpCovariances));
-        final double tmpNewCond = tmpSVD.getCondition();
-        final int tmpNewRank = tmpSVD.getRank();
-        final double tmpNewNorm = tmpSVD.getFrobeniusNorm();
-
-        TestUtils.assertTrue("Improved the condition", tmpNewCond <= tmpRefCond);
-        TestUtils.assertTrue("Improved the rank", tmpNewRank >= tmpRefRank);
-        TestUtils.assertEquals("Full rank", original.length, tmpNewRank);
-        TestUtils.assertEquals("Roughly the same frob norm", tmpRefNorm, tmpNewNorm, tmpEvalCntx);
+        PrimitiveMatrix plainCorrelations = FinanceUtils.toCorrelations(original, false);
+        PrimitiveMatrix plainVolatilities = FinanceUtils.toVolatilities(original, false);
+        PrimitiveMatrix reconstructedPlain = FinanceUtils.toCovariances(plainVolatilities, plainCorrelations);
 
         if (DEBUG) {
-            BasicLogger.debug("Original", tmpOriginal);
-            BasicLogger.debug("Cleaned", tmpCovariances);
-            BasicLogger.debug("Difference", tmpOriginal.subtract(PrimitiveDenseStore.FACTORY.copy(tmpCovariances)), tmpEvalCntx);
+            BasicLogger.debug("Original", original);
+            BasicLogger.debug("Plain Correlations", plainCorrelations);
+            BasicLogger.debug("Plain Volatilities", plainVolatilities);
+            BasicLogger.debug("Reconstructed Plain", reconstructedPlain);
+            BasicLogger.debug("Difference", original.subtract(reconstructedPlain), IDENTICAL_ACCURACY);
         }
 
+        TestUtils.assertEquals(original, reconstructedPlain, IDENTICAL_ACCURACY);
+
+        PrimitiveMatrix cleanedCorrelations = FinanceUtils.toCorrelations(original, true);
+        PrimitiveMatrix cleanedVolatilities = FinanceUtils.toVolatilities(original, true);
+        PrimitiveMatrix reconstructedCleaned = FinanceUtils.toCovariances(cleanedVolatilities, cleanedCorrelations);
+
+        if (DEBUG) {
+            BasicLogger.debug("Original", original);
+            BasicLogger.debug("Plain Correlations", cleanedCorrelations);
+            BasicLogger.debug("Plain Volatilities", cleanedVolatilities);
+            BasicLogger.debug("Reconstructed Plain", reconstructedCleaned);
+            BasicLogger.debug("Difference", original.subtract(reconstructedCleaned), ACCEPTABLE_ACCURACY);
+        }
+
+        svd.decompose(reconstructedCleaned);
+        double newCondition = svd.getCondition();
+        int newRank = svd.getRank();
+
+        TestUtils.assertTrue("Made the condition worse! " + refCondition + " => " + newCondition,
+                (newCondition <= refCondition) || !ACCEPTABLE_ACCURACY.isDifferent(refCondition, newCondition));
+        TestUtils.assertTrue("Made the rank worse!", newRank >= refRank);
+        TestUtils.assertEquals("Not full rank!", rawOriginal.length, newRank);
+
+        TestUtils.assertEquals(original, reconstructedPlain, ACCEPTABLE_ACCURACY);
+
+        if (DEBUG) {
+            BasicLogger.debug("Original", original);
+            BasicLogger.debug("Cleaned", reconstructedCleaned);
+            BasicLogger.debug("Difference", original.subtract(reconstructedCleaned), ACCEPTABLE_ACCURACY);
+        }
     }
 
     public FinanceUtilsTest() {
         super();
+    }
+
+    @Test
+    public void testCleaningCase010A() {
+        FinanceUtilsTest.doTestCleaning(NextGenSysModTest.CASE_010A.getCovarianceMtrx());
+    }
+
+    @Test
+    public void testCleaningCase020A() {
+        FinanceUtilsTest.doTestCleaning(NextGenSysModTest.CASE_020A.getCovarianceMtrx());
+    }
+
+    @Test
+    public void testCleaningCase030B() {
+        FinanceUtilsTest.doTestCleaning(NextGenSysModTest.CASE_030B.getCovarianceMtrx());
+    }
+
+    @Test
+    public void testCleaningCase040B() {
+        FinanceUtilsTest.doTestCleaning(NextGenSysModTest.CASE_040B.getCovarianceMtrx());
+    }
+
+    @Test
+    public void testCleaningCase050B() {
+        FinanceUtilsTest.doTestCleaning(NextGenSysModTest.CASE_050B.getCovarianceMtrx());
     }
 
     @Test
@@ -98,8 +143,8 @@ public class FinanceUtilsTest extends FinanceTests {
             tmpActReturn = FinanceUtils.toAnnualReturnFromGrowthRate(tmpExpRate, CalendarDateUnit.MONTH);
             TestUtils.assertEquals(tmpExpReturn, tmpActReturn, 1E-14 / PrimitiveMath.THREE);
 
-            TestUtils.assertEquals(tmpExpFactor, PrimitiveFunction.EXP.invoke(tmpExpRate), 1E-14 / PrimitiveMath.THREE);
-            TestUtils.assertEquals(tmpExpRate, PrimitiveFunction.LOG.invoke(tmpExpFactor), 1E-14 / PrimitiveMath.THREE);
+            TestUtils.assertEquals(tmpExpFactor, PrimitiveMath.EXP.invoke(tmpExpRate), 1E-14 / PrimitiveMath.THREE);
+            TestUtils.assertEquals(tmpExpRate, PrimitiveMath.LOG.invoke(tmpExpFactor), 1E-14 / PrimitiveMath.THREE);
         }
 
     }

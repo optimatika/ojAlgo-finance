@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,16 +43,16 @@ public class YahooParser implements BasicParser<YahooParser.Data> {
         public double open;
         public double volume;
 
+        public Data(LocalDate date) {
+            super(date);
+        }
+
         Data(CharSequence text) {
             super(text);
         }
 
         Data(CharSequence text, DateTimeFormatter formatter) {
             super(text, formatter);
-        }
-
-        public Data(LocalDate date) {
-            super(date);
         }
 
         @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.function.BigFunction;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.matrix.PrimitiveMatrix.DenseReceiver;
 import org.ojalgo.matrix.store.MatrixStore;
@@ -215,7 +214,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
 
         for (int t = 8; t <= 14; t++) {
 
-            final BigDecimal tmpTargetReturn = BigFunction.DIVIDE.invoke(new BigDecimal(t), BigMath.HUNDRED);
+            final BigDecimal tmpTargetReturn = BigMath.DIVIDE.invoke(new BigDecimal(t), BigMath.HUNDRED);
             tmpMarkowitzModel.setTargetReturn(tmpTargetReturn);
 
             final List<BigDecimal> tmpWeights = tmpMarkowitzModel.getWeights();

@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,14 +28,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.ojalgo.array.Array1D;
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.constant.PrimitiveMath;
 import org.ojalgo.finance.portfolio.BlackLittermanModel;
 import org.ojalgo.finance.portfolio.FinancePortfolio;
 import org.ojalgo.finance.portfolio.FixedWeightsPortfolio;
 import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.BigMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.scalar.PrimitiveScalar;
 import org.ojalgo.scalar.Scalar;
@@ -57,7 +56,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
         HIGH(1), LOW(4), NO(9), SOME(2), TOP(0), WHATEVER(3);
 
-        private static final double BASE = PrimitiveFunction.SQRT.invoke(PrimitiveMath.TEN);
+        private double BASE = PrimitiveMath.SQRT.invoke(PrimitiveMath.TEN);
 
         public static Confidence getInstance(final int exponent) {
 
@@ -77,14 +76,14 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
             }
         }
 
-        private final int myExponent;
+        private int myExponent;
 
         Confidence(final int exponent) {
             myExponent = exponent;
         }
 
         public double getScale(final double base, final double factor) {
-            return base * PrimitiveFunction.POWER.invoke(factor, myExponent);
+            return base * PrimitiveMath.POWER.invoke(factor, myExponent);
         }
 
         public final Scalar<?> getVarianceScale() {
@@ -201,7 +200,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
             @Override
             protected void reset() {
-                ;
+
             }
 
         };
@@ -256,7 +255,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
             @Override
             protected void reset() {
-                ;
+
             }
 
         };
@@ -293,7 +292,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
             @Override
             protected void reset() {
-                ;
+
             }
 
         };

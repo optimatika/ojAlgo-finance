@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -68,9 +68,9 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
             }
         }
 
-        private final FinancialMarket.EvaluationContext myEvaluationContext;
+        private FinancialMarket.EvaluationContext myEvaluationContext;
 
-        private final boolean myRestricted;
+        private boolean myRestricted;
 
         WeightsContext(final FinancialMarket.EvaluationContext context, final boolean restricted) {
             myEvaluationContext = context;

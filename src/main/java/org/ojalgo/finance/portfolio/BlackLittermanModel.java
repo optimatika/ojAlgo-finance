@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ojalgo.ProgrammingError;
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.constant.PrimitiveMath;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.BigMath;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.scalar.BigScalar;
 import org.ojalgo.scalar.Scalar;
@@ -112,15 +111,15 @@ public final class BlackLittermanModel extends EquilibriumModel {
         protected void reset() {
         }
 
-        protected final void setMeanReturn(final BigDecimal aMeanReturn) {
+        protected void setMeanReturn(final BigDecimal aMeanReturn) {
             myMeanReturn = aMeanReturn;
         }
 
-        protected final void setReturnVariance(final BigDecimal aReturnVariance) {
+        protected void setReturnVariance(final BigDecimal aReturnVariance) {
             myReturnVariance = aReturnVariance;
         }
 
-        protected final void setScale(final BigDecimal aScale) {
+        protected void setScale(final BigDecimal aScale) {
             myScale = aScale;
         }
 
@@ -160,11 +159,11 @@ public final class BlackLittermanModel extends EquilibriumModel {
         ProgrammingError.throwForIllegalInvocation();
     }
 
-    public final void addView(final FinancePortfolio aView) {
+    public void addView(final FinancePortfolio aView) {
         myViews.add(aView);
     }
 
-    public final void addViewWithBalancedConfidence(final List<BigDecimal> someWeights, final Number aReturn) {
+    public void addViewWithBalancedConfidence(final List<BigDecimal> someWeights, final Number aReturn) {
 
         final View tmpView = new View(this, someWeights);
 
@@ -175,7 +174,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
         myViews.add(tmpView);
     }
 
-    public final void addViewWithScaledConfidence(final List<BigDecimal> someWeights, final Number aReturn, final Number aScale) {
+    public void addViewWithScaledConfidence(final List<BigDecimal> someWeights, final Number aReturn, final Number aScale) {
 
         final View tmpView = new View(this, someWeights);
 
@@ -190,7 +189,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
      * @deprecated v30
      */
     @Deprecated
-    public final void addViewWithStandardDeviation(final List<BigDecimal> someWeights, final BigDecimal aReturn, final BigDecimal aStdDev) {
+    public void addViewWithStandardDeviation(final List<BigDecimal> someWeights, final BigDecimal aReturn, final BigDecimal aStdDev) {
 
         final View tmpView = new View(this, someWeights);
 
@@ -206,14 +205,14 @@ public final class BlackLittermanModel extends EquilibriumModel {
      * set to sometghing between 0.0 and 1.0. 0.0 = "No confidence!" Why bother... 1.0 = As confident as the
      * market. This is highly unlikely.
      */
-    public final Scalar<?> getConfidence() {
+    public Scalar<?> getConfidence() {
         return BigScalar.of(myConfidence);
     }
 
     /**
      * @see #getConfidence()
      */
-    public final void setConfidence(final Number aWeight) {
+    public void setConfidence(final Number aWeight) {
         myConfidence = TypeUtils.toBigDecimal(aWeight);
     }
 
@@ -240,7 +239,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
         return myOriginalWeights.add(tmpViewsTransposed.multiply(tmpLeftParenthesis.solve(tmpRightParenthesis)));
     }
 
-    protected final PrimitiveMatrix getOriginalReturns() {
+    protected PrimitiveMatrix getOriginalReturns() {
         return this.calculateAssetReturns(myOriginalWeights);
     }
 
@@ -248,11 +247,11 @@ public final class BlackLittermanModel extends EquilibriumModel {
      * @see org.ojalgo.finance.portfolio.BlackLittermanModel#getOriginalWeights()
      * @see org.ojalgo.finance.portfolio.BlackLittermanModel#getAssetWeights()
      */
-    protected final PrimitiveMatrix getOriginalWeights() {
+    protected PrimitiveMatrix getOriginalWeights() {
         return myOriginalWeights;
     }
 
-    protected final PrimitiveMatrix getViewPortfolios() {
+    protected PrimitiveMatrix getViewPortfolios() {
 
         final int tmpRowDim = myViews.size();
         final int tmpColDim = (int) myOriginalWeights.count();
@@ -278,7 +277,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
     /**
      * Scaled by risk aversion factor.
      */
-    protected final PrimitiveMatrix getViewReturns() {
+    protected PrimitiveMatrix getViewReturns() {
 
         final int tmpRowDim = myViews.size();
         final int tmpColDim = 1;
@@ -292,20 +291,20 @@ public final class BlackLittermanModel extends EquilibriumModel {
 
             tmpRet = myViews.get(i).getMeanReturn();
 
-            retVal.set(i, 0, PrimitiveFunction.DIVIDE.invoke(tmpRet, tmpRAF));
+            retVal.set(i, 0, PrimitiveMath.DIVIDE.invoke(tmpRet, tmpRAF));
         }
 
         return retVal.build();
     }
 
-    protected final List<FinancePortfolio> getViews() {
+    protected List<FinancePortfolio> getViews() {
         return myViews;
     }
 
     /**
      * Scaled by tau / weight on views
      */
-    protected final PrimitiveMatrix getViewVariances() {
+    protected PrimitiveMatrix getViewVariances() {
 
         final int tmpDim = myViews.size();
 
@@ -326,7 +325,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
 
                 tmpVar = myViews.get(ij).getReturnVariance();
 
-                retVal.set(ij, ij, PrimitiveFunction.DIVIDE.invoke(tmpVar, tmpScale));
+                retVal.set(ij, ij, PrimitiveMath.DIVIDE.invoke(tmpVar, tmpScale));
             }
         }
 

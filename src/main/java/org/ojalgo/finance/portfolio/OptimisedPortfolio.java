@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import static org.ojalgo.constant.BigMath.*;
+import static org.ojalgo.function.constant.BigMath.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -89,10 +89,6 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
     private boolean myShortingAllowed = false;
     private final Variable[] myVariables;
 
-    OptimisedPortfolio(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
-        this(new MarketEquilibrium(covarianceMatrix), expectedExcessReturns);
-    }
-
     OptimisedPortfolio(final FinancePortfolio.Context portfolioContext) {
 
         super(portfolioContext);
@@ -127,6 +123,10 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
         }
 
         myOptimisationOptions.solution = myOptimisationOptions.solution.newPrecision(8).newScale(10);
+    }
+
+    OptimisedPortfolio(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
+        this(new MarketEquilibrium(covarianceMatrix), expectedExcessReturns);
     }
 
     public final boolean isShortingAllowed() {

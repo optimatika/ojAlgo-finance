@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.ojalgo.finance.portfolio.FinancePortfolio.Context;
 import org.ojalgo.finance.portfolio.simulator.PortfolioSimulator;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.structure.Access2D;
@@ -97,7 +97,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         myComponents = new ArrayList<>(tmpWeights.size());
         for (int i = 0; i < tmpWeights.size(); i++) {
             final double tmpMeanReturn = tmpAssetReturns.doubleValue(i, 0);
-            final double tmpVolatilty = PrimitiveFunction.SQRT.invoke(tmpCovariances.doubleValue(i, i));
+            final double tmpVolatilty = PrimitiveMath.SQRT.invoke(tmpCovariances.doubleValue(i, i));
             final BigDecimal tmpWeight = tmpWeights.get(i);
             myComponents.add(new SimpleAsset(tmpMeanReturn, tmpVolatilty, tmpWeight));
         }

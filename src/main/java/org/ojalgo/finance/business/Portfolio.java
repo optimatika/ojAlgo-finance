@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.ojalgo.function.BigFunction;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.type.BusinessObject;
 
 /**
@@ -46,9 +46,9 @@ public interface Portfolio extends BusinessObject, ValueStructure.Container {
         final BigDecimal tmpOffsetUnder = CategoryHolding.aggregateOffsetUnder(tmpHoldings);
 
         if (reduced) {
-            return BigFunction.MIN.invoke(tmpOffsetUnder, tmpOffsetOver);
+            return BigMath.MIN.invoke(tmpOffsetUnder, tmpOffsetOver);
         } else {
-            return BigFunction.MAX.invoke(tmpOffsetUnder, tmpOffsetOver);
+            return BigMath.MAX.invoke(tmpOffsetUnder, tmpOffsetOver);
         }
     }
 
@@ -79,7 +79,7 @@ public interface Portfolio extends BusinessObject, ValueStructure.Container {
         final List<BigDecimal> retVal = new ArrayList<>();
 
         for (final Holding<?, ?> tmpHolding : aPortfolio.getHoldings()) {
-            retVal.add(BigFunction.DIVIDE.invoke(tmpHolding.getAmount(), aPortfolio.getAggregatedAmount()));
+            retVal.add(BigMath.DIVIDE.invoke(tmpHolding.getAmount(), aPortfolio.getAggregatedAmount()));
         }
 
         return retVal;

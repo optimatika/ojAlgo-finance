@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,7 @@ import java.util.logging.Logger;
 
 import org.ojalgo.FunctionalityTest;
 import org.ojalgo.TestUtils;
-import org.ojalgo.constant.PrimitiveMath;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.random.LogNormal;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.random.process.GeometricBrownianMotion;
@@ -59,9 +58,9 @@ public abstract class FinanceDataTests extends FunctionalityTest {
     }
 
     static void assertAtLeastExpectedItems(final FinanceData dataSource, int expected) {
-    
+
         final List<DatePrice> rows = dataSource.getHistoricalPrices();
-    
+
         if (rows.size() <= 0) {
             TestUtils.fail("No data!");
         } else {
@@ -96,7 +95,7 @@ public abstract class FinanceDataTests extends FunctionalityTest {
         TestUtils.assertEquals("Yearly Var", expDistr.getVariance(), actDistr.getVariance(), delta);
         TestUtils.assertEquals("Yearly StdDev", expDistr.getStandardDeviation(), actDistr.getStandardDeviation(), delta);
 
-        expDistr = new LogNormal(sampleSetM.getMean() * 12.0, sampleSetM.getStandardDeviation() * PrimitiveFunction.SQRT.invoke(12.0));
+        expDistr = new LogNormal(sampleSetM.getMean() * 12.0, sampleSetM.getStandardDeviation() * PrimitiveMath.SQRT.invoke(12.0));
         actDistr = procM.getDistribution(1.0);
 
         TestUtils.assertEquals("Monthly Expected", expDistr.getExpected(), actDistr.getExpected(), delta);

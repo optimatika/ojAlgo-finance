@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -214,22 +214,21 @@ public class YahooSession {
         session.parameter(SESSION_ID, sessionId);
 
         int begin = challengeResponseBody.indexOf(INPUT_TYPE_HIDDEN_NAME_CSRF_TOKEN_VALUE);
+        int end = 0;
         if (begin >= 0) {
             begin += INPUT_TYPE_HIDDEN_NAME_CSRF_TOKEN_VALUE.length();
+            end = challengeResponseBody.indexOf(END, begin);
+            String csrfToken = challengeResponseBody.substring(begin, end);
+            session.parameter(CSRF_TOKEN, csrfToken);
         }
-        int end = challengeResponseBody.indexOf(END, begin);
-
-        String csrfToken = challengeResponseBody.substring(begin, end);
-        session.parameter(CSRF_TOKEN, csrfToken);
 
         begin = challengeResponseBody.indexOf(INPUT_TYPE_HIDDEN_NAME_BRAND_BID_VALUE);
         if (begin >= 0) {
             begin += INPUT_TYPE_HIDDEN_NAME_BRAND_BID_VALUE.length();
+            end = challengeResponseBody.indexOf(END, begin);
+            String brandBid = challengeResponseBody.substring(begin, end);
+            session.parameter(BRAND_BID, brandBid);
         }
-        end = challengeResponseBody.indexOf(END, begin);
-
-        String brandBid = challengeResponseBody.substring(begin, end);
-        session.parameter(BRAND_BID, brandBid);
     }
 
     static void scrapeCrumbResponse(ResourceLocator.Session session, ResourceLocator.Response crumbResponse) {

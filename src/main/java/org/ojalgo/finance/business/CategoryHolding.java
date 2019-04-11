@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,7 @@ package org.ojalgo.finance.business;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.ojalgo.constant.BigMath;
-import org.ojalgo.function.BigFunction;
+import org.ojalgo.function.constant.BigMath;
 
 /**
  * A {@linkplain CategoryHolding} has its "item" limited to being an {@linkplain InstrumentCategory}. Since
@@ -41,7 +40,7 @@ public interface CategoryHolding<C extends ValueStructure.Container, I extends I
         BigDecimal tmpOffset;
         for (final CategoryHolding<?, ?> tmpHolding : aListOfHoldings) {
             tmpOffset = tmpHolding.getOffsetOver(reduced);
-            retVal = BigFunction.ADD.invoke(retVal, tmpOffset);
+            retVal = BigMath.ADD.invoke(retVal, tmpOffset);
         }
         return retVal;
     }
@@ -51,13 +50,13 @@ public interface CategoryHolding<C extends ValueStructure.Container, I extends I
         BigDecimal tmpOffset;
         for (final CategoryHolding<?, ?> tmpHolding : aListOfHoldings) {
             tmpOffset = tmpHolding.getOffsetUnder();
-            retVal = BigFunction.ADD.invoke(retVal, tmpOffset);
+            retVal = BigMath.ADD.invoke(retVal, tmpOffset);
         }
         return retVal;
     }
 
     static BigDecimal getAmount(final CategoryHolding<?, ?> aHolding) {
-        return BigFunction.ADD.invoke(aHolding.getLockedAmount(), aHolding.getFreeAmount());
+        return BigMath.ADD.invoke(aHolding.getLockedAmount(), aHolding.getFreeAmount());
     }
 
     static BigDecimal getFreeAdjustmentAmount(final CategoryHolding<?, ?> aHolding) {
@@ -68,7 +67,7 @@ public interface CategoryHolding<C extends ValueStructure.Container, I extends I
 
             final BigDecimal tmpFreeAmount = aHolding.getFreeAmount();
 
-            return BigFunction.MIN.invoke(tmpTotalAdjustementAmount.abs(), tmpFreeAmount).negate();
+            return BigMath.MIN.invoke(tmpTotalAdjustementAmount.abs(), tmpFreeAmount).negate();
 
         } else {
 
@@ -77,11 +76,11 @@ public interface CategoryHolding<C extends ValueStructure.Container, I extends I
     }
 
     static BigDecimal getFreeWeight(final CategoryHolding<?, ?> aHolding) {
-        return BigFunction.DIVIDE.invoke(aHolding.getFreeAmount(), aHolding.getContentContainer().getAggregatedAmount());
+        return BigMath.DIVIDE.invoke(aHolding.getFreeAmount(), aHolding.getContentContainer().getAggregatedAmount());
     }
 
     static BigDecimal getLockedWeight(final CategoryHolding<?, ?> aHolding) {
-        return BigFunction.DIVIDE.invoke(aHolding.getLockedAmount(), aHolding.getContentContainer().getAggregatedAmount());
+        return BigMath.DIVIDE.invoke(aHolding.getLockedAmount(), aHolding.getContentContainer().getAggregatedAmount());
     }
 
     static BigDecimal getOffsetOver(final CategoryHolding<?, ?> aHolding, final boolean reduced) {
@@ -91,16 +90,16 @@ public interface CategoryHolding<C extends ValueStructure.Container, I extends I
         final Limit tmpLimit = aHolding.getLimit();
         final BigDecimal tmpTarget = tmpLimit.getTarget();
         final BigDecimal tmpPrecision = tmpLimit.getPrecision();
-        final BigDecimal tmpUpper = BigFunction.ADD.invoke(tmpTarget, tmpPrecision);
+        final BigDecimal tmpUpper = BigMath.ADD.invoke(tmpTarget, tmpPrecision);
 
         final BigDecimal tmpWeight = aHolding.getWeight();
 
         if (tmpWeight.compareTo(tmpUpper) == 1) {
-            retVal = BigFunction.SUBTRACT.invoke(tmpWeight, tmpUpper);
+            retVal = BigMath.SUBTRACT.invoke(tmpWeight, tmpUpper);
         }
 
         if (reduced) {
-            return BigFunction.MIN.invoke(retVal, aHolding.getFreeWeight());
+            return BigMath.MIN.invoke(retVal, aHolding.getFreeWeight());
         } else {
             return retVal;
         }
@@ -113,23 +112,23 @@ public interface CategoryHolding<C extends ValueStructure.Container, I extends I
         final Limit tmpLimit = aHolding.getLimit();
         final BigDecimal tmpTarget = tmpLimit.getTarget();
         final BigDecimal tmpPrecision = tmpLimit.getPrecision();
-        final BigDecimal tmpLower = BigFunction.SUBTRACT.invoke(tmpTarget, tmpPrecision);
+        final BigDecimal tmpLower = BigMath.SUBTRACT.invoke(tmpTarget, tmpPrecision);
 
         final BigDecimal tmpWeight = aHolding.getWeight();
 
         if (tmpWeight.compareTo(tmpLower) == -1) {
-            retVal = BigFunction.SUBTRACT.invoke(tmpLower, tmpWeight);
+            retVal = BigMath.SUBTRACT.invoke(tmpLower, tmpWeight);
         }
 
         return retVal;
     }
 
     static BigDecimal getTargetAmount(final CategoryHolding<?, ?> aHolding) {
-        return BigFunction.MULTIPLY.invoke(aHolding.getContentContainer().getAggregatedAmount(), aHolding.getLimit().getTarget());
+        return BigMath.MULTIPLY.invoke(aHolding.getContentContainer().getAggregatedAmount(), aHolding.getLimit().getTarget());
     }
 
     static BigDecimal getTotalAdjustmentAmount(final CategoryHolding<?, ?> aHolding) {
-        return BigFunction.SUBTRACT.invoke(aHolding.getTargetAmount(), aHolding.getAmount());
+        return BigMath.SUBTRACT.invoke(aHolding.getTargetAmount(), aHolding.getAmount());
     }
 
     BigDecimal getFreeAmount();

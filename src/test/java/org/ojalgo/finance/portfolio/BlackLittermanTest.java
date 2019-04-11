@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.array.Array1D;
-import org.ojalgo.function.BigFunction;
+import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.type.TypeUtils;
 import org.ojalgo.type.context.NumberContext;
@@ -74,7 +74,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
                 { 0.021511 } };
 
         return BlackLittermanTest.make(tmpArr);
-    };
+    }
 
     public static PrimitiveMatrix getCovariances() {
 
@@ -361,7 +361,7 @@ public class BlackLittermanTest extends FinancePortfolioTests {
             final int col = i;
             tmpBLM.addViewWithStandardDeviation(Array1D.BIG.copy(tmpViewPortfolios.logical().row(new int[] { i }).get()),
                     TypeUtils.toBigDecimal(tmpViewPortfolioReturns.get(row, 0)),
-                    BigFunction.SQRT.invoke(TypeUtils.toBigDecimal(tmpConfidenceMatrix.get(row1, col))));
+                    BigMath.SQRT.invoke(TypeUtils.toBigDecimal(tmpConfidenceMatrix.get(row1, col))));
         }
 
         this.testBLM(tmpBLM);

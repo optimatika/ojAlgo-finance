@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2018 Optimatika
+ * Copyright 1997-2019 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,12 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import static org.ojalgo.constant.BigMath.*;
+import static org.ojalgo.function.constant.BigMath.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-import org.ojalgo.constant.PrimitiveMath;
-import org.ojalgo.function.PrimitiveFunction;
+import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
@@ -93,7 +92,7 @@ import org.ojalgo.type.context.NumberContext;
 public final class MarkowitzModel extends OptimisedPortfolio {
 
     private static final double _0_0 = ZERO.doubleValue();
-    private static final double INIT = PrimitiveFunction.SQRT.invoke(PrimitiveMath.TEN);
+    private static final double INIT = PrimitiveMath.SQRT.invoke(PrimitiveMath.TEN);
     private static final double MAX = PrimitiveMath.HUNDRED * PrimitiveMath.HUNDRED;
     private static final double MIN = PrimitiveMath.HUNDREDTH;
     private static final NumberContext TARGET_CONTEXT = NumberContext.getGeneral(5, 4);
@@ -103,16 +102,16 @@ public final class MarkowitzModel extends OptimisedPortfolio {
     private BigDecimal myTargetReturn;
     private BigDecimal myTargetVariance;
 
-    public MarkowitzModel(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
-        super(covarianceMatrix, expectedExcessReturns);
-    }
-
     public MarkowitzModel(final FinancePortfolio.Context portfolioContext) {
         super(portfolioContext);
     }
 
     public MarkowitzModel(final MarketEquilibrium marketEquilibrium, final PrimitiveMatrix expectedExcessReturns) {
         super(marketEquilibrium, expectedExcessReturns);
+    }
+
+    public MarkowitzModel(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
+        super(covarianceMatrix, expectedExcessReturns);
     }
 
     /**
@@ -123,12 +122,12 @@ public final class MarkowitzModel extends OptimisedPortfolio {
         return myConstraints.put(assetIndeces, new LowerUpper(lowerLimit, upperLimit));
     }
 
-    public final void clearAllConstraints() {
+    public void clearAllConstraints() {
         myConstraints.clear();
         this.reset();
     }
 
-    public final void setLowerLimit(final int assetIndex, final BigDecimal lowerLimit) {
+    public void setLowerLimit(final int assetIndex, final BigDecimal lowerLimit) {
         this.getVariable(assetIndex).lower(lowerLimit);
         this.reset();
     }
@@ -152,7 +151,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
      *
      * @see #setTargetVariance(BigDecimal)
      */
-    public final void setTargetReturn(final BigDecimal targetReturn) {
+    public void setTargetReturn(final BigDecimal targetReturn) {
         myTargetReturn = targetReturn;
         myTargetVariance = null;
         this.reset();
@@ -176,13 +175,13 @@ public final class MarkowitzModel extends OptimisedPortfolio {
      *
      * @see #setTargetReturn(BigDecimal)
      */
-    public final void setTargetVariance(final BigDecimal targetVariance) {
+    public void setTargetVariance(final BigDecimal targetVariance) {
         myTargetVariance = targetVariance;
         myTargetReturn = null;
         this.reset();
     }
 
-    public final void setUpperLimit(final int assetIndex, final BigDecimal upperLimit) {
+    public void setUpperLimit(final int assetIndex, final BigDecimal upperLimit) {
         this.getVariable(assetIndex).upper(upperLimit);
         this.reset();
     }
@@ -296,7 +295,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
                     } else if (tmpTargetDiff > _0_0) {
                         tmpHigh = tmpCurrent;
                     }
-                    tmpCurrent = PrimitiveFunction.SQRT.invoke(tmpLow * tmpHigh);
+                    tmpCurrent = PrimitiveMath.SQRT.invoke(tmpLow * tmpHigh);
 
                 } while (!TARGET_CONTEXT.isSmall(tmpTargetValue, tmpTargetDiff) && TARGET_CONTEXT.isDifferent(tmpHigh, tmpLow));
             }
@@ -319,11 +318,11 @@ public final class MarkowitzModel extends OptimisedPortfolio {
 
     }
 
-    final Scalar<?> calculatePortfolioReturn(final Access1D<?> weightsVctr, final PrimitiveMatrix returnsVctr) {
+    Scalar<?> calculatePortfolioReturn(final Access1D<?> weightsVctr, final PrimitiveMatrix returnsVctr) {
         return super.calculatePortfolioReturn(MATRIX_FACTORY.columns(weightsVctr), returnsVctr);
     }
 
-    final Scalar<?> calculatePortfolioVariance(final Access1D<?> weightsVctr) {
+    Scalar<?> calculatePortfolioVariance(final Access1D<?> weightsVctr) {
         return super.calculatePortfolioVariance(MATRIX_FACTORY.columns(weightsVctr));
     }
 
