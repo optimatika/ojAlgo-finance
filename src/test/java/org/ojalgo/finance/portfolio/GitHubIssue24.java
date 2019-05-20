@@ -22,11 +22,11 @@ public class GitHubIssue24 extends FinancePortfolioTests {
     static MarkowitzModel buildMarkowitzModel(final double targetVariance, final boolean cleanCovariances, final boolean validateOptimisationModel,
             final boolean debugOptimisationSolver) {
 
-        final double[] expectedReturns = { 0.055, 0.02, 0.17300000000000001, 0.094, 0.106, 0.10400000000000001, 0.263, 0.052000000000000005, 0.049, 0.18, 0.139,
+        double[] expectedReturns = { 0.055, 0.02, 0.17300000000000001, 0.094, 0.106, 0.10400000000000001, 0.263, 0.052000000000000005, 0.049, 0.18, 0.139,
                 0.121, 0.212, 0.08, 0.1, 0.0, 0.1847, 0.1, 0.098, 0.21300000000000002, 0.203, 0.053, 0.13699999999999998, 0.09699999999999999, 0.087,
                 0.054000000000000006, 0.18100000000000002, 0.196, 0.077, 0.21300000000000002, 0.068, 0.034, 0.22100000000000003, 0.20500000000000002, 0.0 };
 
-        final double[][] covariance = {
+        double[][] covariance = {
                 { 0.002025, 6.949048807368E-4, 2.585792530439999E-4, -1.3919235237E-4, 3.696502341132E-4, 5.708783504934E-4, -2.089910573019E-4,
                         4.7472860499119993E-4, 4.111014323592E-4, -4.276964148282E-4, 4.3828991136E-5, -4.790804086746E-4, -2.31799821336E-5,
                         4.085659242787501E-4, -2.4085515777165002E-4, -8.536531494262498E-4, -2.7910971811980005E-4, 2.91356400519E-4, 4.62907923651E-4,
@@ -236,7 +236,7 @@ public class GitHubIssue24 extends FinancePortfolioTests {
             marketEquilibrium = marketEquilibrium.clean();
         }
 
-        final MarkowitzModel retVal = new MarkowitzModel(marketEquilibrium, PrimitiveMatrix.FACTORY.rows(expectedReturns));
+        MarkowitzModel retVal = new MarkowitzModel(marketEquilibrium, PrimitiveMatrix.FACTORY.rows(expectedReturns));
 
         retVal.optimiser().debug(debugOptimisationSolver).validate(validateOptimisationModel);
 
@@ -254,9 +254,9 @@ public class GitHubIssue24 extends FinancePortfolioTests {
     @Disabled("Google Finance stopped working")
     public void testHanging() throws Exception {
 
-        final MarkowitzModel markowitzModel = GitHubIssue24.buildMarkowitzModel(2.5E-5, false, false, false);
+        MarkowitzModel markowitzModel = GitHubIssue24.buildMarkowitzModel(2.5E-5, false, false, false);
 
-        final double tmpMeanReturn = markowitzModel.getMeanReturn();
+        double tmpMeanReturn = markowitzModel.getMeanReturn();
         if (DEBUG) {
             BasicLogger.debug(tmpMeanReturn);
         }
@@ -267,9 +267,9 @@ public class GitHubIssue24 extends FinancePortfolioTests {
     @Test
     public void testOriginallyHangingButNowCleaned() throws Exception {
 
-        final MarkowitzModel markowitzModel = GitHubIssue24.buildMarkowitzModel(2.5E-5, true, false, false);
+        MarkowitzModel markowitzModel = GitHubIssue24.buildMarkowitzModel(2.5E-5, true, false, false);
 
-        final double tmpMeanReturn = markowitzModel.getMeanReturn();
+        double tmpMeanReturn = markowitzModel.getMeanReturn();
         if (DEBUG) {
             BasicLogger.debug(tmpMeanReturn);
         }
@@ -280,7 +280,7 @@ public class GitHubIssue24 extends FinancePortfolioTests {
     @Test
     public void testP20160705() {
 
-        final MarkowitzModel tmpModel = GitHubIssue24.buildProblematicMarkowitzModel(true, true, DEBUG);
+        MarkowitzModel tmpModel = GitHubIssue24.buildProblematicMarkowitzModel(true, true, DEBUG);
 
         tmpModel.getWeights();
 
@@ -290,15 +290,15 @@ public class GitHubIssue24 extends FinancePortfolioTests {
     @Test
     public void testSuccess() throws Exception {
 
-        final MarkowitzModel markowitzModel = GitHubIssue24.buildMarkowitzModel(0.015, false, false, false);
+        MarkowitzModel markowitzModel = GitHubIssue24.buildMarkowitzModel(0.015, false, false, false);
 
-        final double tmpMeanReturn = markowitzModel.getMeanReturn();
+        double meanReturn = markowitzModel.getMeanReturn();
         if (DEBUG) {
-            BasicLogger.debug(tmpMeanReturn);
+            BasicLogger.debug(meanReturn);
         }
 
-        final State tmpOptimisationState = markowitzModel.optimiser().getState();
-        TestUtils.assertTrue(tmpOptimisationState.isOptimal());
+        State optimisationState = markowitzModel.optimiser().getState();
+        TestUtils.assertTrue(optimisationState.isOptimal());
     }
 
 }
