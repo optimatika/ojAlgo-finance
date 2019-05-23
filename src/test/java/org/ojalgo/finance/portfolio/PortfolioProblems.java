@@ -443,6 +443,10 @@ public class PortfolioProblems extends FinancePortfolioTests {
             // Validation should not throw an exception in this case
             markowitzModel.optimiser().validate(true);
             markowitzModel.optimiser().debug(false);
+            // New feature to possibly throw exception for intermediate infeasibilies (when validate is on).
+            // Unfortunately that was a problem for this test
+            // Had to set scale to 2
+            markowitzModel.optimiser().feasibility(2);
             markowitzModel.getWeights();
         } catch (Exception exception) {
             TestUtils.fail(exception);

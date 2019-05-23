@@ -280,7 +280,7 @@ public class GitHubIssue24 extends FinancePortfolioTests {
     @Test
     public void testP20160705() {
 
-        MarkowitzModel tmpModel = GitHubIssue24.buildProblematicMarkowitzModel(true, true, DEBUG);
+        MarkowitzModel tmpModel = GitHubIssue24.buildProblematicMarkowitzModel(true, false, DEBUG);
 
         tmpModel.getWeights();
 

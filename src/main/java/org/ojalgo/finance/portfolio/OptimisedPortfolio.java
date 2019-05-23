@@ -78,6 +78,11 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
             return this;
         }
 
+        public Optimiser feasibility(final int scale) {
+            myOptimisationOptions.feasibility = myOptimisationOptions.feasibility.withScale(scale);
+            return this;
+        }
+
     }
 
     static final String BALANCE = "Balance";
@@ -102,7 +107,7 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
             myVariables[i].weight(TypeUtils.toBigDecimal(myExpectedExcessReturns.get(i)).negate());
         }
 
-        myOptimisationOptions.solution = myOptimisationOptions.solution.newPrecision(8).newScale(10);
+        myOptimisationOptions.solution = myOptimisationOptions.solution.withPrecision(7).withScale(6);
     }
 
     OptimisedPortfolio(final MarketEquilibrium marketEquilibrium, final PrimitiveMatrix expectedExcessReturns) {
@@ -122,7 +127,7 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
             myVariables[i].weight(TypeUtils.toBigDecimal(expectedExcessReturns.get(i)).negate());
         }
 
-        myOptimisationOptions.solution = myOptimisationOptions.solution.newPrecision(8).newScale(10);
+        myOptimisationOptions.solution = myOptimisationOptions.solution.withPrecision(7).withScale(6);
     }
 
     OptimisedPortfolio(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
