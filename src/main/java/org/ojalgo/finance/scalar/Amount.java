@@ -33,7 +33,7 @@ final class Amount extends ExactDecimal<Amount> {
 
     public static final Descriptor DESCRIPTOR = new Descriptor(2);
 
-    public static final Scalar.Factory<Amount> FACTORY = new Scalar.Factory<Amount>() {
+    public static final Scalar.Factory<Amount> FACTORY = new ExactDecimal.Factory<Amount>() {
 
         public Amount cast(final double value) {
             return Amount.valueOf(value);
@@ -49,6 +49,10 @@ final class Amount extends ExactDecimal<Amount> {
 
         public Amount convert(final Number number) {
             return Amount.valueOf(number);
+        }
+
+        public Descriptor descriptor() {
+            return DESCRIPTOR;
         }
 
         public Amount one() {
@@ -96,19 +100,19 @@ final class Amount extends ExactDecimal<Amount> {
         super(0L);
     }
 
-    Amount(long numerator) {
+    Amount(final long numerator) {
         super(numerator);
     }
 
-    public Quantity divide(Price price) {
+    public Quantity divide(final Price price) {
         return new Quantity(Quantity.DESCRIPTOR.multiply(this, price));
     }
 
-    public Price divide(Quantity quanntity) {
+    public Price divide(final Quantity quanntity) {
         return new Price(Price.DESCRIPTOR.multiply(this, quanntity));
     }
 
-    public Amount multiply(Price rate) {
+    public Amount multiply(final Price rate) {
         return new Amount(Amount.DESCRIPTOR.multiply(this, rate));
     }
 
@@ -118,7 +122,7 @@ final class Amount extends ExactDecimal<Amount> {
     }
 
     @Override
-    protected Amount wrap(long numerator) {
+    protected Amount wrap(final long numerator) {
         return new Amount(numerator);
     }
 

@@ -33,7 +33,7 @@ final class Quantity extends ExactDecimal<Quantity> {
 
     public static final Descriptor DESCRIPTOR = new Descriptor(6);
 
-    public static final Scalar.Factory<Quantity> FACTORY = new Scalar.Factory<Quantity>() {
+    public static final Scalar.Factory<Quantity> FACTORY = new ExactDecimal.Factory<Quantity>() {
 
         public Quantity cast(final double value) {
             return Quantity.valueOf(value);
@@ -49,6 +49,10 @@ final class Quantity extends ExactDecimal<Quantity> {
 
         public Quantity convert(final Number number) {
             return Quantity.valueOf(number);
+        }
+
+        public Descriptor descriptor() {
+            return DESCRIPTOR;
         }
 
         public Quantity one() {
@@ -96,11 +100,11 @@ final class Quantity extends ExactDecimal<Quantity> {
         super(0L);
     }
 
-    Quantity(long numerator) {
+    Quantity(final long numerator) {
         super(numerator);
     }
 
-    public Amount multiply(Price price) {
+    public Amount multiply(final Price price) {
         return new Amount(Amount.DESCRIPTOR.multiply(this, price));
     }
 
@@ -110,7 +114,7 @@ final class Quantity extends ExactDecimal<Quantity> {
     }
 
     @Override
-    protected Quantity wrap(long numerator) {
+    protected Quantity wrap(final long numerator) {
         return new Quantity(numerator);
     }
 
