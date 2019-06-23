@@ -49,9 +49,8 @@ class P20090115 {
     PrimitiveMatrix getCovariances(final double[][] returns) {
 
         int numbAssets = returns.length;
-        int numbSamples = returns[0].length;
 
-        PrimitiveMatrix.DenseReceiver builder = PrimitiveMatrix.FACTORY.makeDense(numbAssets, numbSamples);
+        PrimitiveMatrix.DenseReceiver builder = PrimitiveMatrix.FACTORY.makeDense(numbAssets, numbAssets);
 
         for (int i = 0; i < numbAssets; i++) {
             for (int j = i; j < numbAssets; j++) {
