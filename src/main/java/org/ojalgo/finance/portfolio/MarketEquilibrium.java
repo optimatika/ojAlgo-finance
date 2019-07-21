@@ -23,7 +23,7 @@ package org.ojalgo.finance.portfolio;
 
 import java.math.BigDecimal;
 
-import org.ojalgo.array.Raw1D;
+import org.ojalgo.array.operation.COPY;
 import org.ojalgo.finance.FinanceUtils;
 import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.function.constant.PrimitiveMath;
@@ -105,7 +105,7 @@ public class MarketEquilibrium {
 
         super();
 
-        myAssetKeys = Raw1D.copyOf(assetNamesOrKeys);
+        myAssetKeys = COPY.copyOf(assetNamesOrKeys);
         if (covarianceMatrix instanceof PrimitiveMatrix) {
             myCovariances = (PrimitiveMatrix) covarianceMatrix;
         } else {
@@ -195,7 +195,7 @@ public class MarketEquilibrium {
     }
 
     public String[] getAssetKeys() {
-        return Raw1D.copyOf(myAssetKeys);
+        return COPY.copyOf(myAssetKeys);
     }
 
     public PrimitiveMatrix getCovariances() {
