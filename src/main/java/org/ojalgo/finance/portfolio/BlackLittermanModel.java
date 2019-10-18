@@ -163,7 +163,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
         myViews.add(aView);
     }
 
-    public void addViewWithBalancedConfidence(final List<BigDecimal> someWeights, final Number aReturn) {
+    public void addViewWithBalancedConfidence(final List<BigDecimal> someWeights, final Comparable<?> aReturn) {
 
         final View tmpView = new View(this, someWeights);
 
@@ -174,7 +174,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
         myViews.add(tmpView);
     }
 
-    public void addViewWithScaledConfidence(final List<BigDecimal> someWeights, final Number aReturn, final Number aScale) {
+    public void addViewWithScaledConfidence(final List<BigDecimal> someWeights, final Comparable<?> aReturn, final Comparable<?> aScale) {
 
         final View tmpView = new View(this, someWeights);
 
@@ -212,7 +212,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
     /**
      * @see #getConfidence()
      */
-    public void setConfidence(final Number aWeight) {
+    public void setConfidence(final Comparable<?> aWeight) {
         myConfidence = TypeUtils.toBigDecimal(aWeight);
     }
 

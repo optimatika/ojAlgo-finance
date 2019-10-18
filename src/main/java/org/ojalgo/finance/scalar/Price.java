@@ -39,7 +39,7 @@ final class Price extends ExactDecimal<Price> {
             return Price.valueOf(value);
         }
 
-        public Price cast(final Number number) {
+        public Price cast(final Comparable<?> number) {
             return Price.valueOf(number);
         }
 
@@ -47,7 +47,7 @@ final class Price extends ExactDecimal<Price> {
             return Price.valueOf(value);
         }
 
-        public Price convert(final Number number) {
+        public Price convert(final Comparable<?> number) {
             return Price.valueOf(number);
         }
 
@@ -77,7 +77,7 @@ final class Price extends ExactDecimal<Price> {
         return new Price(Math.round(value * DOUBLE_DENOMINATOR));
     }
 
-    public static Price valueOf(final Number number) {
+    public static Price valueOf(final Comparable<?> number) {
 
         if (number != null) {
 
@@ -87,7 +87,7 @@ final class Price extends ExactDecimal<Price> {
 
             } else {
 
-                return Price.valueOf(number.doubleValue());
+                return Price.valueOf(Scalar.doubleValue(number));
             }
 
         } else {

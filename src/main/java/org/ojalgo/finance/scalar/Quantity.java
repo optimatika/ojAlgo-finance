@@ -39,7 +39,7 @@ final class Quantity extends ExactDecimal<Quantity> {
             return Quantity.valueOf(value);
         }
 
-        public Quantity cast(final Number number) {
+        public Quantity cast(final Comparable<?> number) {
             return Quantity.valueOf(number);
         }
 
@@ -47,7 +47,7 @@ final class Quantity extends ExactDecimal<Quantity> {
             return Quantity.valueOf(value);
         }
 
-        public Quantity convert(final Number number) {
+        public Quantity convert(final Comparable<?> number) {
             return Quantity.valueOf(number);
         }
 
@@ -77,7 +77,7 @@ final class Quantity extends ExactDecimal<Quantity> {
         return new Quantity(Math.round(value * DOUBLE_DENOMINATOR));
     }
 
-    public static Quantity valueOf(final Number number) {
+    public static Quantity valueOf(final Comparable<?> number) {
 
         if (number != null) {
 
@@ -87,7 +87,7 @@ final class Quantity extends ExactDecimal<Quantity> {
 
             } else {
 
-                return Quantity.valueOf(number.doubleValue());
+                return Quantity.valueOf(Scalar.doubleValue(number));
             }
 
         } else {

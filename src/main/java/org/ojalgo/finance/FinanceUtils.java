@@ -43,6 +43,7 @@ import org.ojalgo.random.RandomNumber;
 import org.ojalgo.random.RandomUtils;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.random.process.GeometricBrownianMotion;
+import org.ojalgo.scalar.Scalar;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.series.CoordinationSet;
 import org.ojalgo.series.primitive.PrimitiveSeries;
@@ -81,7 +82,7 @@ public abstract class FinanceUtils {
         return retVal;
     }
 
-    public static CalendarDateSeries<RandomNumber> forecast(CalendarDateSeries<? extends Number> series, int pointCount, CalendarDateUnit timeUnit,
+    public static CalendarDateSeries<RandomNumber> forecast(CalendarDateSeries<? extends Comparable<?>> series, int pointCount, CalendarDateUnit timeUnit,
             boolean includeOriginalSeries) {
 
         CalendarDateSeries<RandomNumber> retVal = new CalendarDateSeries<>(timeUnit);
@@ -91,13 +92,13 @@ public abstract class FinanceUtils {
         GeometricBrownianMotion tmpProcess = GeometricBrownianMotion.estimate(series.asPrimitive(), tmpSamplePeriod);
 
         if (includeOriginalSeries) {
-            for (Entry<CalendarDate, ? extends Number> tmpEntry : series.entrySet()) {
+            for (Entry<CalendarDate, ? extends Comparable<?>> tmpEntry : series.entrySet()) {
                 retVal.put(tmpEntry.getKey(), new Deterministic(tmpEntry.getValue()));
             }
         }
 
         CalendarDate tmpLastKey = series.lastKey();
-        double tmpLastValue = series.lastValue().doubleValue();
+        double tmpLastValue = Scalar.doubleValue(series.lastValue());
 
         tmpProcess.setValue(tmpLastValue);
 
@@ -120,7 +121,7 @@ public abstract class FinanceUtils {
     /**
      * @return Annualised covariances
      */
-    public static <V extends Number> PrimitiveMatrix makeCovarianceMatrix(Collection<CalendarDateSeries<V>> timeSeriesCollection) {
+    public static <V extends Comparable<V>> PrimitiveMatrix makeCovarianceMatrix(Collection<CalendarDateSeries<V>> timeSeriesCollection) {
 
         CoordinationSet<V> tmpCoordinator = new CoordinationSet<>(timeSeriesCollection).prune();
 
@@ -167,7 +168,7 @@ public abstract class FinanceUtils {
      * @param mayBeMissingValues Individual series may be missing some values - try to fix this or not
      * @return Annualised covariances
      */
-    public static <N extends Number> PrimitiveMatrix makeCovarianceMatrix(List<CalendarDateSeries<N>> listOfTimeSeries, boolean mayBeMissingValues) {
+    public static <N extends Comparable<N>> PrimitiveMatrix makeCovarianceMatrix(List<CalendarDateSeries<N>> listOfTimeSeries, boolean mayBeMissingValues) {
 
         int tmpSize = listOfTimeSeries.size();
 

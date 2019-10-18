@@ -50,7 +50,7 @@ public class AlphaVantageTest extends FinanceDataTests {
 
         final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.MONTH, "demo");
 
-        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 250);
+        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 240);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class AlphaVantageTest extends FinanceDataTests {
 
         final DataSource dataSource = DataSource.newAlphaVantage("MSFT", CalendarDateUnit.WEEK, "demo");
 
-        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1089);
+        FinanceDataTests.assertAtLeastExpectedItems(dataSource, 1044);
     }
 
     @Test

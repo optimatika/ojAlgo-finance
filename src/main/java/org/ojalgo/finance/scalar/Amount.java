@@ -39,7 +39,7 @@ final class Amount extends ExactDecimal<Amount> {
             return Amount.valueOf(value);
         }
 
-        public Amount cast(final Number number) {
+        public Amount cast(final Comparable<?> number) {
             return Amount.valueOf(number);
         }
 
@@ -47,7 +47,7 @@ final class Amount extends ExactDecimal<Amount> {
             return Amount.valueOf(value);
         }
 
-        public Amount convert(final Number number) {
+        public Amount convert(final Comparable<?> number) {
             return Amount.valueOf(number);
         }
 
@@ -77,7 +77,7 @@ final class Amount extends ExactDecimal<Amount> {
         return new Amount(Math.round(value * DOUBLE_DENOMINATOR));
     }
 
-    public static Amount valueOf(final Number number) {
+    public static Amount valueOf(final Comparable<?> number) {
 
         if (number != null) {
 
@@ -87,7 +87,7 @@ final class Amount extends ExactDecimal<Amount> {
 
             } else {
 
-                return Amount.valueOf(number.doubleValue());
+                return Amount.valueOf(Scalar.doubleValue(number));
             }
 
         } else {

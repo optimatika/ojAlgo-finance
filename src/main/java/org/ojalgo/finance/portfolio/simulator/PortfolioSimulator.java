@@ -75,7 +75,7 @@ public class PortfolioSimulator {
         final int tmpProcDim = myProcess.size();
 
         final Primitive64Array tmpInitialValues = myProcess.getValues();
-        final Number[] tmpValues = new Number[tmpProcDim];
+        final Comparable<?>[] tmpValues = new Comparable<?>[tmpProcDim];
         for (int p = 0; p < tmpProcDim; p++) {
             tmpValues[p] = tmpInitialValues.get(p);
         }

@@ -143,7 +143,7 @@ abstract class EquilibriumModel extends FinancePortfolio implements FinancePortf
         }
     }
 
-    public final void setRiskAversion(final Number factor) {
+    public final void setRiskAversion(final Comparable<?> factor) {
 
         myMarketEquilibrium.setRiskAversion(factor);
 

@@ -58,7 +58,7 @@ public final class FixedWeightsPortfolio extends EquilibriumModel {
         this.calibrate(myWeights, targetReturns.getAssetReturns());
     }
 
-    public void calibrate(final List<? extends Number> targetReturns) {
+    public void calibrate(final List<? extends Comparable<?>> targetReturns) {
         this.calibrate(myWeights, FinancePortfolio.MATRIX_FACTORY.columns(targetReturns));
     }
 

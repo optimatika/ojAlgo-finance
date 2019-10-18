@@ -30,6 +30,7 @@ import org.ojalgo.finance.portfolio.simulator.PortfolioSimulator;
 import org.ojalgo.function.constant.PrimitiveMath;
 import org.ojalgo.matrix.PrimitiveMatrix;
 import org.ojalgo.random.process.GeometricBrownianMotion;
+import org.ojalgo.scalar.Scalar;
 import org.ojalgo.structure.Access2D;
 
 public final class SimplePortfolio extends FinancePortfolio implements Context {
@@ -45,7 +46,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         return retVal;
     }
 
-    static List<SimpleAsset> toSimpleAssets(final Number[] someWeights) {
+    static List<SimpleAsset> toSimpleAssets(final Comparable<?>[] someWeights) {
 
         final ArrayList<SimpleAsset> retVal = new ArrayList<>(someWeights.length);
 
@@ -62,8 +63,8 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
     private final List<SimpleAsset> myComponents;
     private final PrimitiveMatrix myCorrelations;
     private transient PrimitiveMatrix myCovariances = null;
-    private transient Number myMeanReturn;
-    private transient Number myReturnVariance;
+    private transient Comparable<?> myMeanReturn;
+    private transient Comparable<?> myReturnVariance;
 
     private transient List<BigDecimal> myWeights;
 
@@ -111,7 +112,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         this(MATRIX_FACTORY.makeEye(someAssets.size(), someAssets.size()), someAssets);
     }
 
-    public SimplePortfolio(final Number... someWeights) {
+    public SimplePortfolio(final Comparable<?>... someWeights) {
         this(SimplePortfolio.toSimpleAssets(someWeights));
     }
 
@@ -220,7 +221,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
             myMeanReturn = MarketEquilibrium.calculatePortfolioReturn(tmpWeightsVector, tmpReturnsVector).get();
         }
 
-        return myMeanReturn.doubleValue();
+        return Scalar.doubleValue(myMeanReturn);
     }
 
     public double getMeanReturn(final int index) {
@@ -236,7 +237,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
             myReturnVariance = tmpMarketEquilibrium.calculatePortfolioVariance(tmpWeightsVector).get();
         }
 
-        return myReturnVariance.doubleValue();
+        return Scalar.doubleValue(myReturnVariance);
     }
 
     public double getReturnVariance(final int index) {

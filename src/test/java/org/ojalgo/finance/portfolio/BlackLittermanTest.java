@@ -379,13 +379,13 @@ public class BlackLittermanTest extends FinancePortfolioTests {
 
         tmpExp = BlackLittermanTest.getInvestorReturnsMatrix();
         //tmpAct = aBLM.getViewReturns();
-        tmpAct = aBLM.getViewReturns().multiply(aBLM.getRiskAversion().get());
+        tmpAct = aBLM.getViewReturns().multiply(aBLM.getRiskAversion().doubleValue());
 
         TestUtils.assertEquals(tmpExp, tmpAct, EVAL_CNTXT);
 
         tmpExp = BlackLittermanTest.getInvestorConfidencesMatrix();
         //tmpAct = aBLM.getViewConfidences();
-        tmpAct = aBLM.getViewVariances().multiply(aBLM.getConfidence().get());
+        tmpAct = aBLM.getViewVariances().multiply(aBLM.getConfidence().doubleValue());
 
         TestUtils.assertEquals(tmpExp, tmpAct, EVAL_CNTXT);
 

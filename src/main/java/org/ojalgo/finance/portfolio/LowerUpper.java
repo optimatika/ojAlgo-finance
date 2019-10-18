@@ -30,7 +30,7 @@ final class LowerUpper {
     final BigDecimal lower;
     final BigDecimal upper;
 
-    LowerUpper(final Number someLower, final Number someUpper) {
+    LowerUpper(final Comparable<?> someLower, final Comparable<?> someUpper) {
 
         super();
 

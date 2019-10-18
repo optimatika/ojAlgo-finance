@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.function.constant.PrimitiveMath;
+import org.ojalgo.scalar.Scalar;
 import org.ojalgo.type.TypeUtils;
 
 /**
@@ -44,24 +45,24 @@ public final class SimpleAsset extends FinancePortfolio {
         this(portfolio.getMeanReturn(), portfolio.getVolatility(), BigMath.ONE);
     }
 
-    public SimpleAsset(final FinancePortfolio portfolio, final Number weight) {
+    public SimpleAsset(final FinancePortfolio portfolio, final Comparable<?> weight) {
         this(portfolio.getMeanReturn(), portfolio.getVolatility(), weight);
     }
 
-    public SimpleAsset(final Number weight) {
+    public SimpleAsset(final Comparable<?> weight) {
         this(PrimitiveMath.ZERO, PrimitiveMath.ZERO, weight);
     }
 
-    public SimpleAsset(final Number meanReturn, final Number volatility) {
+    public SimpleAsset(final Comparable<?> meanReturn, final Comparable<?> volatility) {
         this(meanReturn, volatility, BigMath.ONE);
     }
 
-    public SimpleAsset(final Number meanReturn, final Number volatility, final Number weight) {
+    public SimpleAsset(final Comparable<?> meanReturn, final Comparable<?> volatility, final Comparable<?> weight) {
 
         super();
 
-        myMeanReturn = meanReturn != null ? meanReturn.doubleValue() : PrimitiveMath.ZERO;
-        myVolatility = volatility != null ? volatility.doubleValue() : PrimitiveMath.ZERO;
+        myMeanReturn = meanReturn != null ? Scalar.doubleValue(meanReturn) : PrimitiveMath.ZERO;
+        myVolatility = volatility != null ? Scalar.doubleValue(volatility) : PrimitiveMath.ZERO;
         myWeight = TypeUtils.toBigDecimal(weight);
     }
 

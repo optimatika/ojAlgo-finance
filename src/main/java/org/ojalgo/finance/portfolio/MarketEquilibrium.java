@@ -93,7 +93,7 @@ public class MarketEquilibrium {
         this(covarianceMatrix, DEFAULT_RISK_AVERSION);
     }
 
-    public MarketEquilibrium(final Access2D<?> covarianceMatrix, final Number riskAversionFactor) {
+    public MarketEquilibrium(final Access2D<?> covarianceMatrix, final Comparable<?> riskAversionFactor) {
         this(MarketEquilibrium.makeSymbols((int) covarianceMatrix.countRows()), covarianceMatrix, riskAversionFactor);
     }
 
@@ -101,7 +101,7 @@ public class MarketEquilibrium {
         this(assetNamesOrKeys, covarianceMatrix, DEFAULT_RISK_AVERSION);
     }
 
-    public MarketEquilibrium(final String[] assetNamesOrKeys, final Access2D<?> covarianceMatrix, final Number riskAversionFactor) {
+    public MarketEquilibrium(final String[] assetNamesOrKeys, final Access2D<?> covarianceMatrix, final Comparable<?> riskAversionFactor) {
 
         super();
 
@@ -124,7 +124,8 @@ public class MarketEquilibrium {
      * equilibrium excess returns.
      */
     public PrimitiveMatrix calculateAssetReturns(final PrimitiveMatrix assetWeights) {
-        final PrimitiveMatrix tmpAssetWeights = myRiskAversion.compareTo(DEFAULT_RISK_AVERSION) == 0 ? assetWeights : assetWeights.multiply(myRiskAversion);
+        final PrimitiveMatrix tmpAssetWeights = myRiskAversion.compareTo(DEFAULT_RISK_AVERSION) == 0 ? assetWeights
+                : assetWeights.multiply(myRiskAversion.doubleValue());
         return myCovariances.multiply(tmpAssetWeights);
     }
 
@@ -138,7 +139,7 @@ public class MarketEquilibrium {
         if (myRiskAversion.compareTo(DEFAULT_RISK_AVERSION) == 0) {
             return tmpAssetWeights;
         } else {
-            return tmpAssetWeights.divide(myRiskAversion);
+            return tmpAssetWeights.divide(myRiskAversion.doubleValue());
         }
     }
 
@@ -206,7 +207,7 @@ public class MarketEquilibrium {
         return BigScalar.of(myRiskAversion);
     }
 
-    public void setRiskAversion(final Number factor) {
+    public void setRiskAversion(final Comparable<?> factor) {
 
         final BigDecimal tmpFactor = TypeUtils.toBigDecimal(factor);
 
