@@ -35,7 +35,7 @@ import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
 import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.function.constant.PrimitiveMath;
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.scalar.PrimitiveScalar;
 import org.ojalgo.scalar.Scalar;
 import org.ojalgo.type.BusinessObject;
@@ -216,7 +216,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
     static FinancePortfolio makeDefinitionPortfolio(final List<? extends Asset> assets, final FinancialMarket market) {
 
-        final PrimitiveMatrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
+        final Primitive64Matrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
 
         final List<SimpleAsset> tmpAssets = new ArrayList<>();
         for (final Asset tmpAsset : assets) {

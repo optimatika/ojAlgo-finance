@@ -30,9 +30,9 @@ import org.ojalgo.TestUtils;
 import org.ojalgo.function.UnaryFunction;
 import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.function.constant.PrimitiveMath;
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.matrix.store.PhysicalStore;
-import org.ojalgo.matrix.store.PrimitiveDenseStore;
+import org.ojalgo.matrix.store.Primitive64Store;
 import org.ojalgo.random.Uniform;
 import org.ojalgo.type.StandardType;
 import org.ojalgo.type.TypeUtils;
@@ -62,7 +62,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
 
         TestEquilibrium tm = new TestEquilibrium();
 
-        PrimitiveMatrix covariances = tm.getCovariances(om);
+        Primitive64Matrix covariances = tm.getCovariances(om);
 
         System.out.println(covariances);
 
@@ -70,7 +70,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
 
         MarketEquilibrium marketEquilibrium = new MarketEquilibrium(covariances, riskAversion);
 
-        PrimitiveMatrix.DenseReceiver expectedExcessReturns1 = PrimitiveMatrix.FACTORY.makeDense(assetNum, 1);
+        Primitive64Matrix.DenseReceiver expectedExcessReturns1 = Primitive64Matrix.FACTORY.makeDense(assetNum, 1);
         expectedExcessReturns1.set(0, 0, 0.03360872);
         expectedExcessReturns1.set(1, 0, 0.027322319);
         expectedExcessReturns1.set(2, 0, 0.027668137);
@@ -117,12 +117,12 @@ public class TestEquilibrium extends FinancePortfolioTests {
         super();
     }
 
-    public PrimitiveMatrix getCovariances(double[][] returns) {
+    public Primitive64Matrix getCovariances(double[][] returns) {
 
         int row = returns.length;
         int col = returns[0].length;
 
-        PrimitiveMatrix.DenseReceiver covariances = PrimitiveMatrix.FACTORY.makeDense(row, col);
+        Primitive64Matrix.DenseReceiver covariances = Primitive64Matrix.FACTORY.makeDense(row, col);
 
         for (int i = 1; i <= row; i++) {
             for (int j = i; j <= col; j++) {
@@ -146,7 +146,7 @@ public class TestEquilibrium extends FinancePortfolioTests {
         Uniform uniformRiskAversionExponent = new Uniform(-1.0, 3.0);
         Uniform uniformWeight = new Uniform(0.0, 1.0);
 
-        PhysicalStore<Double> covarianceMatrix = PrimitiveDenseStore.FACTORY.makeFilled(dim, dim, uniformCorrelation);
+        PhysicalStore<Double> covarianceMatrix = Primitive64Store.FACTORY.makeFilled(dim, dim, uniformCorrelation);
         covarianceMatrix.fillDiagonal(1.0);
         covarianceMatrix.modifyAll(PrimitiveMath.DIVIDE.by(2.0));
         covarianceMatrix.modifyMatching(PrimitiveMath.ADD, covarianceMatrix.transpose());
@@ -160,11 +160,11 @@ public class TestEquilibrium extends FinancePortfolioTests {
 
         MarketEquilibrium equilibrium = new MarketEquilibrium(covarianceMatrix, raf).clean();
 
-        double[] rawWeights = PrimitiveMatrix.FACTORY.makeFilled(dim, 1, uniformWeight).toRawCopy1D();
+        double[] rawWeights = Primitive64Matrix.FACTORY.makeFilled(dim, 1, uniformWeight).toRawCopy1D();
         List<BigDecimal> normalisedWeights = new SimplePortfolio(rawWeights).normalise().getWeights();
 
-        PrimitiveMatrix generatedWeights = PrimitiveMatrix.FACTORY.columns(normalisedWeights);
-        PrimitiveMatrix matchingReturns = equilibrium.calculateAssetReturns(generatedWeights);
+        Primitive64Matrix generatedWeights = Primitive64Matrix.FACTORY.columns(normalisedWeights);
+        Primitive64Matrix matchingReturns = equilibrium.calculateAssetReturns(generatedWeights);
         TestUtils.assertEquals(generatedWeights, equilibrium.calculateAssetWeights(matchingReturns), weightsContext);
 
         FixedWeightsPortfolio portfFW = new FixedWeightsPortfolio(equilibrium, generatedWeights);

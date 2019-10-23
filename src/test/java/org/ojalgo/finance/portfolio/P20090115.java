@@ -21,7 +21,7 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 
 class P20090115 {
 
@@ -46,11 +46,11 @@ class P20090115 {
         return sum / (numbSamples - 1);
     }
 
-    PrimitiveMatrix getCovariances(final double[][] returns) {
+    Primitive64Matrix getCovariances(final double[][] returns) {
 
         int numbAssets = returns.length;
 
-        PrimitiveMatrix.DenseReceiver builder = PrimitiveMatrix.FACTORY.makeDense(numbAssets, numbAssets);
+        Primitive64Matrix.DenseReceiver builder = Primitive64Matrix.FACTORY.makeDense(numbAssets, numbAssets);
 
         for (int i = 0; i < numbAssets; i++) {
             for (int j = i; j < numbAssets; j++) {
@@ -63,12 +63,12 @@ class P20090115 {
         return builder.build();
     }
 
-    PrimitiveMatrix getExpectedExcessReturns(final double[][] returns) {
+    Primitive64Matrix getExpectedExcessReturns(final double[][] returns) {
 
         int numbAssets = returns.length;
         int numbSamples = returns[0].length;
 
-        PrimitiveMatrix.DenseReceiver builder = PrimitiveMatrix.FACTORY.makeDense(numbAssets);
+        Primitive64Matrix.DenseReceiver builder = Primitive64Matrix.FACTORY.makeDense(numbAssets);
 
         double riskFreeReturn = 0;
         for (int j = 0; j < numbSamples; j++) {

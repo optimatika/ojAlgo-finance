@@ -38,7 +38,7 @@ import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
 import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.function.constant.PrimitiveMath;
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.series.CalendarDateSeries;
@@ -217,11 +217,11 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
             tmpAssets.add(assets.get(i).toDefinitionPortfolio());
         }
 
-        PrimitiveMatrix tmpCorrelations = null;
+        Primitive64Matrix tmpCorrelations = null;
 
         if (market.isCorrelationsCorrected()) {
 
-            final PrimitiveMatrix.DenseReceiver tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
+            final Primitive64Matrix.DenseReceiver tmpBuilder = Primitive64Matrix.FACTORY.makeDense(tmpSize, tmpSize);
 
             SampleSet tmpRowSet;
             SampleSet tmpColSet;
@@ -241,7 +241,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
                 }
             }
 
-            final PrimitiveMatrix tmpCovariances = tmpBuilder.build();
+            final Primitive64Matrix tmpCovariances = tmpBuilder.build();
             //BasicLogger.logDebug("Org COVA", tmpCovariances);
 
             MarketEquilibrium tmpME = new MarketEquilibrium(tmpCovariances);
@@ -255,7 +255,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         } else {
 
-            final PrimitiveMatrix.DenseReceiver tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
+            final Primitive64Matrix.DenseReceiver tmpBuilder = Primitive64Matrix.FACTORY.makeDense(tmpSize, tmpSize);
 
             SampleSet tmpRowSet;
             SampleSet tmpColSet;
@@ -314,7 +314,7 @@ public interface FinancialMarket extends BusinessObject, EquilibriumPortfolio {
 
         final Map<String, ? extends Access1D<?>> tmpForecast = forecaster.forecast(market, assets);
 
-        final PrimitiveMatrix.DenseReceiver tmpReturnsMatrix = PrimitiveMatrix.FACTORY.makeDense(assets.size());
+        final Primitive64Matrix.DenseReceiver tmpReturnsMatrix = Primitive64Matrix.FACTORY.makeDense(assets.size());
 
         for (final Asset tmpAsset : assets) {
             final String tmpKey = tmpAsset.getAssetKey();

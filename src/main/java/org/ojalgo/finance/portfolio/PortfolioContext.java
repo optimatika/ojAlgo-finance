@@ -22,16 +22,16 @@
 package org.ojalgo.finance.portfolio;
 
 import org.ojalgo.finance.FinanceUtils;
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.structure.Access1D;
 import org.ojalgo.structure.Access2D;
 
 public class PortfolioContext implements FinancePortfolio.Context {
 
-    private final PrimitiveMatrix myAssetReturns;
-    private PrimitiveMatrix myAssetVolatilities = null;
-    private PrimitiveMatrix myCorrelations = null;
-    private PrimitiveMatrix myCovariances = null;
+    private final Primitive64Matrix myAssetReturns;
+    private Primitive64Matrix myAssetVolatilities = null;
+    private Primitive64Matrix myCorrelations = null;
+    private Primitive64Matrix myCovariances = null;
 
     public PortfolioContext(final Access1D<?> assetReturns, final Access1D<?> assetVolatilities, final Access2D<?> correlations) {
 
@@ -67,29 +67,29 @@ public class PortfolioContext implements FinancePortfolio.Context {
 
     @SuppressWarnings("unchecked")
     public double calculatePortfolioVariance(final FinancePortfolio weightsPortfolio) {
-        final PrimitiveMatrix tmpWeights = FinancePortfolio.MATRIX_FACTORY.columns(weightsPortfolio.getWeights());
+        final Primitive64Matrix tmpWeights = FinancePortfolio.MATRIX_FACTORY.columns(weightsPortfolio.getWeights());
         return tmpWeights.transpose().multiply(this.getCovariances().multiply(tmpWeights)).doubleValue(0);
     }
 
-    public PrimitiveMatrix getAssetReturns() {
+    public Primitive64Matrix getAssetReturns() {
         return myAssetReturns;
     }
 
-    public PrimitiveMatrix getAssetVolatilities() {
+    public Primitive64Matrix getAssetVolatilities() {
         if (myAssetVolatilities == null) {
             myAssetVolatilities = FinanceUtils.toVolatilities(myCovariances);
         }
         return myAssetVolatilities;
     }
 
-    public PrimitiveMatrix getCorrelations() {
+    public Primitive64Matrix getCorrelations() {
         if (myCorrelations == null) {
             myCorrelations = FinanceUtils.toCorrelations(myCovariances, false);
         }
         return myCorrelations;
     }
 
-    public PrimitiveMatrix getCovariances() {
+    public Primitive64Matrix getCovariances() {
         if (myCovariances == null) {
             myCovariances = FinanceUtils.toCovariances(myAssetVolatilities, myCorrelations);
         }

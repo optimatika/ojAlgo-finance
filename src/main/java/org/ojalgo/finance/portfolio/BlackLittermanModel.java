@@ -28,7 +28,7 @@ import java.util.List;
 import org.ojalgo.ProgrammingError;
 import org.ojalgo.function.constant.BigMath;
 import org.ojalgo.function.constant.PrimitiveMath;
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.scalar.BigScalar;
 import org.ojalgo.scalar.Scalar;
 import org.ojalgo.type.TypeUtils;
@@ -85,7 +85,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
 
             } else {
 
-                final PrimitiveMatrix tmpWeights = MATRIX_FACTORY.columns(myWeights);
+                final Primitive64Matrix tmpWeights = MATRIX_FACTORY.columns(myWeights);
 
                 BigDecimal retVal = myModel.calculateVariance(tmpWeights);
 
@@ -126,7 +126,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
     }
 
     private BigDecimal myConfidence = BigMath.ONE;
-    private final PrimitiveMatrix myOriginalWeights;
+    private final Primitive64Matrix myOriginalWeights;
     private final List<FinancePortfolio> myViews;
 
     public BlackLittermanModel(final Context context, final FinancePortfolio originalWeights) {
@@ -141,7 +141,7 @@ public final class BlackLittermanModel extends EquilibriumModel {
      * @param marketEquilibrium The covariance matrix, and market risk aversion
      * @param originalWeights The market portfolio
      */
-    public BlackLittermanModel(final MarketEquilibrium marketEquilibrium, final PrimitiveMatrix originalWeights) {
+    public BlackLittermanModel(final MarketEquilibrium marketEquilibrium, final Primitive64Matrix originalWeights) {
 
         super(marketEquilibrium);
 
@@ -217,29 +217,29 @@ public final class BlackLittermanModel extends EquilibriumModel {
     }
 
     @Override
-    protected PrimitiveMatrix calculateAssetReturns() {
+    protected Primitive64Matrix calculateAssetReturns() {
         return this.calculateAssetReturns(this.calculateAssetWeights());
     }
 
     @Override
-    protected PrimitiveMatrix calculateAssetWeights() {
+    protected Primitive64Matrix calculateAssetWeights() {
 
-        final PrimitiveMatrix tmpViewPortfolios = this.getViewPortfolios();
-        final PrimitiveMatrix tmpViewReturns = this.getViewReturns();
-        final PrimitiveMatrix tmpViewVariances = this.getViewVariances();
+        final Primitive64Matrix tmpViewPortfolios = this.getViewPortfolios();
+        final Primitive64Matrix tmpViewReturns = this.getViewReturns();
+        final Primitive64Matrix tmpViewVariances = this.getViewVariances();
 
-        final PrimitiveMatrix tmpCovariances = this.getCovariances();
+        final Primitive64Matrix tmpCovariances = this.getCovariances();
 
-        final PrimitiveMatrix tmpRightParenthesis = tmpViewReturns.subtract(tmpViewPortfolios.multiply(tmpCovariances).multiply(myOriginalWeights));
+        final Primitive64Matrix tmpRightParenthesis = tmpViewReturns.subtract(tmpViewPortfolios.multiply(tmpCovariances).multiply(myOriginalWeights));
 
-        final PrimitiveMatrix tmpViewsTransposed = tmpViewPortfolios.transpose();
+        final Primitive64Matrix tmpViewsTransposed = tmpViewPortfolios.transpose();
 
-        final PrimitiveMatrix tmpLeftParenthesis = tmpViewVariances.add(tmpViewPortfolios.multiply(tmpCovariances).multiply(tmpViewsTransposed));
+        final Primitive64Matrix tmpLeftParenthesis = tmpViewVariances.add(tmpViewPortfolios.multiply(tmpCovariances).multiply(tmpViewsTransposed));
 
         return myOriginalWeights.add(tmpViewsTransposed.multiply(tmpLeftParenthesis.solve(tmpRightParenthesis)));
     }
 
-    protected PrimitiveMatrix getOriginalReturns() {
+    protected Primitive64Matrix getOriginalReturns() {
         return this.calculateAssetReturns(myOriginalWeights);
     }
 
@@ -247,16 +247,16 @@ public final class BlackLittermanModel extends EquilibriumModel {
      * @see org.ojalgo.finance.portfolio.BlackLittermanModel#getOriginalWeights()
      * @see org.ojalgo.finance.portfolio.BlackLittermanModel#getAssetWeights()
      */
-    protected PrimitiveMatrix getOriginalWeights() {
+    protected Primitive64Matrix getOriginalWeights() {
         return myOriginalWeights;
     }
 
-    protected PrimitiveMatrix getViewPortfolios() {
+    protected Primitive64Matrix getViewPortfolios() {
 
         final int tmpRowDim = myViews.size();
         final int tmpColDim = (int) myOriginalWeights.count();
 
-        final PrimitiveMatrix.DenseReceiver retVal = MATRIX_FACTORY.makeDense(tmpRowDim, tmpColDim);
+        final Primitive64Matrix.DenseReceiver retVal = MATRIX_FACTORY.makeDense(tmpRowDim, tmpColDim);
 
         FinancePortfolio tmpView;
         List<BigDecimal> tmpWeights;
@@ -277,12 +277,12 @@ public final class BlackLittermanModel extends EquilibriumModel {
     /**
      * Scaled by risk aversion factor.
      */
-    protected PrimitiveMatrix getViewReturns() {
+    protected Primitive64Matrix getViewReturns() {
 
         final int tmpRowDim = myViews.size();
         final int tmpColDim = 1;
 
-        final PrimitiveMatrix.DenseReceiver retVal = MATRIX_FACTORY.makeDense(tmpRowDim, tmpColDim);
+        final Primitive64Matrix.DenseReceiver retVal = MATRIX_FACTORY.makeDense(tmpRowDim, tmpColDim);
 
         double tmpRet;
         final double tmpRAF = this.getRiskAversion().doubleValue();
@@ -304,11 +304,11 @@ public final class BlackLittermanModel extends EquilibriumModel {
     /**
      * Scaled by tau / weight on views
      */
-    protected PrimitiveMatrix getViewVariances() {
+    protected Primitive64Matrix getViewVariances() {
 
         final int tmpDim = myViews.size();
 
-        final PrimitiveMatrix.DenseReceiver retVal = MATRIX_FACTORY.makeDense(tmpDim, tmpDim);
+        final Primitive64Matrix.DenseReceiver retVal = MATRIX_FACTORY.makeDense(tmpDim, tmpDim);
 
         if (myConfidence.compareTo(BigMath.ONE) == 0) {
 
@@ -332,9 +332,9 @@ public final class BlackLittermanModel extends EquilibriumModel {
         return retVal.build();
     }
 
-    BigDecimal calculateVariance(final PrimitiveMatrix weights) {
+    BigDecimal calculateVariance(final Primitive64Matrix weights) {
 
-        PrimitiveMatrix tmpVal = this.getCovariances();
+        Primitive64Matrix tmpVal = this.getCovariances();
 
         tmpVal = tmpVal.multiply(weights);
 
