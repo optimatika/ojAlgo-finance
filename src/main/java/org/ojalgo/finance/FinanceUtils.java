@@ -356,7 +356,7 @@ public abstract class FinanceUtils {
 
         int size = Math.toIntExact(Math.min(covariances.countRows(), covariances.countColumns()));
 
-        MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE.makeWrapper(covariances).get();
+        MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE64.makeWrapper(covariances).get();
 
         if (clean) {
 
@@ -477,7 +477,7 @@ public abstract class FinanceUtils {
 
         if (clean) {
 
-            MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE.makeWrapper(covariances).get();
+            MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE64.makeWrapper(covariances).get();
 
             double largest = covarianceMtrx.aggregateDiagonal(Aggregator.LARGEST);
             double limit = largest * size * PrimitiveMath.RELATIVELY_SMALL;
