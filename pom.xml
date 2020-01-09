@@ -11,7 +11,7 @@
     <description>Domain specific (finance) additions to oj! Algorithms</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ojalgo.version>48.0.0-SNAPSHOT</ojalgo.version>
+        <ojalgo.version>48.1.0-SNAPSHOT</ojalgo.version>
         <junit.jupiter.version>5.5.1</junit.jupiter.version>
     </properties>
     <organization>
