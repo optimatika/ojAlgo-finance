@@ -14,7 +14,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=ojAlgo-finance"/>
 <stringAttribute key="org.eclipse.jdt.junit.EXCLUDE_TAGS" value="slow,unstable"/>
-<booleanAttribute key="org.eclipse.jdt.junit.HAS_EXCLUDE_TAGS" value="true"/>
+<booleanAttribute key="org.eclipse.jdt.junit.HAS_EXCLUDE_TAGS" value="false"/>
 <booleanAttribute key="org.eclipse.jdt.junit.HAS_INCLUDE_TAGS" value="false"/>
 <stringAttribute key="org.eclipse.jdt.junit.INCLUDE_TAGS" value=""/>
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
