@@ -37,6 +37,8 @@ import org.ojalgo.optimisation.Optimisation;
 import org.ojalgo.optimisation.Optimisation.State;
 import org.ojalgo.optimisation.convex.ConvexSolver;
 import org.ojalgo.structure.Access1D;
+import org.ojalgo.type.CalendarDateDuration;
+import org.ojalgo.type.CalendarDateUnit;
 import org.ojalgo.type.StandardType;
 import org.ojalgo.type.context.NumberContext;
 
@@ -192,7 +194,8 @@ public class PortfolioProblems extends FinancePortfolioTests {
     @Test
     public void testP20130329() {
 
-        final Primitive64Matrix tmpCovariances = Primitive64Matrix.FACTORY.rows(new double[][] { { 0.00360000, 0.001800000000 }, { 0.001800000000, 0.00090000 } });
+        final Primitive64Matrix tmpCovariances = Primitive64Matrix.FACTORY
+                .rows(new double[][] { { 0.00360000, 0.001800000000 }, { 0.001800000000, 0.00090000 } });
 
         //        final Eigenvalue<Double> tmpEvD = Eigenvalue.makePrimitive(true);
         //        tmpEvD.compute(tmpCovariances, true);
@@ -451,6 +454,60 @@ public class PortfolioProblems extends FinancePortfolioTests {
         } catch (Exception exception) {
             TestUtils.fail(exception);
         }
+    }
+
+    /**
+     * https://github.com/optimatika/ojAlgo-finance/issues/23 <br>
+     * <br>
+     * The solver never converged to a solution with this model. The problem is bad data:
+     *
+     * <pre>
+     * Q not positive semidefinite!
+     * The eigenvalues are: { (43.12350103807128 + 0.0i), (20.084991767170866 + 0.0i), (-4.2462987329436865 + 0.0i), (0.3478453733737204 + 0.0i) }
+     * </pre>
+     *
+     * The user asked to be able to set timeout / iteration limit on solver. Added support for time limit.
+     * <br>
+     * <br>
+     * This test verifies that the solver terminates with a time limit set, and that cleaning the covariance
+     * matrix solves the data problem (in terms of solver capability).
+     */
+    @Test
+    public void testP20200821() {
+
+        Primitive64Matrix.Factory matrixFactory = Primitive64Matrix.FACTORY;
+        Primitive64Matrix cov = matrixFactory.rows(new double[][] { { 0.19828575384387814, 0.19939590712485014, 0.04848819110209297, 0.001060547131952715 },
+                { 0.19939590712485014, 0.17420946085220315, 0.05503998250848539, 0.09756310857237219 },
+                { 0.04848819110209297, 0.05503998250848539, 0.03544331442632964, 0.08244505440089961 },
+                { 0.001060547131952715, 0.09756310857237219, 0.08244505440089961, 0.18516185344938874 } });
+        Primitive64Matrix ret = matrixFactory
+                .rows(new double[][] { { 0.16373354541629026 }, { 0.007304578002244022 }, { 0.05247478842401128 }, { 0.12286070470561875 } });
+
+        MarketEquilibrium marketEquilibrium = new MarketEquilibrium(cov);
+
+        final MarkowitzModel markowitzWithTimeLimit = new MarkowitzModel(marketEquilibrium, ret);
+        markowitzWithTimeLimit.optimiser().time(new CalendarDateDuration(5, CalendarDateUnit.SECOND));
+
+        List<BigDecimal> tmpWeights1 = markowitzWithTimeLimit.getWeights();
+        TestUtils.assertTrue(markowitzWithTimeLimit.optimiser().getState().isFeasible());
+
+        final MarkowitzModel cleanedMarkowitz = new MarkowitzModel(marketEquilibrium.clean(), ret);
+
+        List<BigDecimal> tmpWeights2 = cleanedMarkowitz.getWeights();
+        TestUtils.assertTrue(cleanedMarkowitz.optimiser().getState().isFeasible());
+
+        if (DEBUG) {
+            BasicLogger.debug("Terminated: {}", tmpWeights1);
+            BasicLogger.debug("Cleaned: {}", tmpWeights2);
+        }
+
+        // This is not "the" solution to the original problem.
+        // If the covariance cleaning functionality is altered in anyway
+        // we'll most likely get a different solution (then this test needs an update)
+        TestUtils.assertEquals(new BigDecimal("0.594483"), tmpWeights2.get(0), StandardType.PERCENT);
+        TestUtils.assertEquals(new BigDecimal("0.0"), tmpWeights2.get(1), StandardType.PERCENT);
+        TestUtils.assertEquals(new BigDecimal("0.0"), tmpWeights2.get(2), StandardType.PERCENT);
+        TestUtils.assertEquals(new BigDecimal("0.405517"), tmpWeights2.get(3), StandardType.PERCENT);
     }
 
 }

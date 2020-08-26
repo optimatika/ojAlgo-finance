@@ -33,6 +33,7 @@ import org.ojalgo.optimisation.ExpressionsBasedModel;
 import org.ojalgo.optimisation.Optimisation;
 import org.ojalgo.optimisation.Optimisation.State;
 import org.ojalgo.optimisation.Variable;
+import org.ojalgo.type.CalendarDateDuration;
 import org.ojalgo.type.TypeUtils;
 
 abstract class OptimisedPortfolio extends EquilibriumModel {
@@ -57,6 +58,11 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
             return this;
         }
 
+        public Optimiser feasibility(final int scale) {
+            myOptimisationOptions.feasibility = myOptimisationOptions.feasibility.withScale(scale);
+            return this;
+        }
+
         /**
          * You have to call some method that will trigger the calculation (any method that requires the
          * calculation results) before you check the optimisation state. Otherwise you'll simply get
@@ -70,16 +76,21 @@ abstract class OptimisedPortfolio extends EquilibriumModel {
         }
 
         /**
+         * @param max The maximum amount of time for the optimisation solver
+         */
+        public Optimiser time(final CalendarDateDuration max) {
+            long maxDurationInMillis = max.toDurationInMillis();
+            myOptimisationOptions.time_abort = maxDurationInMillis;
+            myOptimisationOptions.time_suffice = maxDurationInMillis;
+            return this;
+        }
+
+        /**
          * Will validate the generated optimisation problem and throws an excption if it's not ok. This should
          * typically not be enabled in a production environment.
          */
         public Optimiser validate(final boolean validate) {
             myOptimisationOptions.validate = validate;
-            return this;
-        }
-
-        public Optimiser feasibility(final int scale) {
-            myOptimisationOptions.feasibility = myOptimisationOptions.feasibility.withScale(scale);
             return this;
         }
 
