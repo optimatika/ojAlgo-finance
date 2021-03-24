@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  */
 package org.ojalgo.finance.data;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 
@@ -29,6 +30,7 @@ import org.ojalgo.TestUtils;
  *
  * @author stefanvanegmond
  */
+@Disabled
 public class IEXTradingTest extends FinanceDataTests {
 
     public IEXTradingTest() {

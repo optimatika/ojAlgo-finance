@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,72 +21,73 @@
  */
 package org.ojalgo.finance.portfolio;
 
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 
 class P20090115 {
 
-    public double getCovarance(final double[] value1, final double[] value2) {
+    double getCovarance(final double[] seriesA, final double[] seriesB) {
 
-        final int n = value1.length;
-        double averOne = 0;
-        double averTwo = 0;
-        for (int i = 0; i < n; i++) {
-            averOne += value1[i];
-            averTwo += value2[i];
+        int numbSamples = seriesA.length;
+
+        double averA = 0;
+        double averB = 0;
+        for (int i = 0; i < numbSamples; i++) {
+            averA += seriesA[i];
+            averB += seriesB[i];
         }
-        averOne /= n;
-        averTwo /= n;
+        averA /= numbSamples;
+        averB /= numbSamples;
 
         double sum = 0;
-        for (int i = 0; i < n; i++) {
-            sum += (value1[i] - averOne) * (value2[i] - averTwo);
+        for (int i = 0; i < numbSamples; i++) {
+            sum += (seriesA[i] - averA) * (seriesB[i] - averB);
         }
 
-        return sum / (n - 1);
+        return sum / (numbSamples - 1);
     }
 
-    public PrimitiveMatrix getCovariances(final double[][] returns) {
+    Primitive64Matrix getCovariances(final double[][] returns) {
 
-        final int row = returns.length;
-        final int col = returns[0].length;
+        int numbAssets = returns.length;
 
-        final PrimitiveMatrix.DenseReceiver tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(row, col);
+        Primitive64Matrix.DenseReceiver builder = Primitive64Matrix.FACTORY.makeDense(numbAssets, numbAssets);
 
-        for (int i = 0; i < row; i++) {
-            for (int j = i; j < col; j++) {
-                final double tmp = this.getCovarance(returns[i], returns[j]);
-                tmpBuilder.set(i, j, tmp);
-                tmpBuilder.set(j, i, tmp);
+        for (int i = 0; i < numbAssets; i++) {
+            for (int j = i; j < numbAssets; j++) {
+                double tmp = this.getCovarance(returns[i], returns[j]);
+                builder.set(i, j, tmp);
+                builder.set(j, i, tmp);
             }
         }
-        return tmpBuilder.build();
+
+        return builder.build();
     }
 
-    public PrimitiveMatrix getExpectedExcessReturns(final double[][] returns) {
+    Primitive64Matrix getExpectedExcessReturns(final double[][] returns) {
 
-        final int row = returns.length;
-        final int col = returns[0].length;
+        int numbAssets = returns.length;
+        int numbSamples = returns[0].length;
 
-        final PrimitiveMatrix.DenseReceiver tmpBuilder = PrimitiveMatrix.FACTORY.makeDense(row);
+        Primitive64Matrix.DenseReceiver builder = Primitive64Matrix.FACTORY.makeDense(numbAssets);
 
         double riskFreeReturn = 0;
-        for (int j = 0; j < col; j++) {
-            riskFreeReturn += returns[row - 1][j];
+        for (int j = 0; j < numbSamples; j++) {
+            riskFreeReturn += returns[numbAssets - 1][j];
         }
-        riskFreeReturn /= row;
+        riskFreeReturn /= numbSamples;
 
-        for (int i = 0; i < row; i++) {
+        for (int i = 0; i < numbAssets; i++) {
 
             double tmp = 0;
-            for (int j = 0; j < col; j++) {
+            for (int j = 0; j < numbSamples; j++) {
                 tmp += returns[i][j];
             }
-            tmp /= col;
+            tmp /= numbSamples;
 
-            tmpBuilder.set(i, tmp - riskFreeReturn);
+            builder.set(i, tmp - riskFreeReturn);
         }
 
-        return tmpBuilder.build();
+        return builder.build();
     }
 
 }

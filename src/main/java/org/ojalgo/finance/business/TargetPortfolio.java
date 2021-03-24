@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import org.ojalgo.finance.portfolio.FixedWeightsPortfolio;
 import org.ojalgo.finance.portfolio.MarkowitzModel;
 import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.type.BusinessObject;
 
 /**
@@ -68,9 +68,9 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
             }
         }
 
-        private FinancialMarket.EvaluationContext myEvaluationContext;
+        private final FinancialMarket.EvaluationContext myEvaluationContext;
 
-        private boolean myRestricted;
+        private final boolean myRestricted;
 
         WeightsContext(final FinancialMarket.EvaluationContext context, final boolean restricted) {
             myEvaluationContext = context;
@@ -101,7 +101,7 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
     static FinancePortfolio makeComparableEqulibriumPortfolio(final TargetPortfolio targetPortfolio, final FinancialMarket market) {
 
         final Context tmpWeightsContext = market.getEquilibriumContext();
-        final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
+        final Comparable<?> tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
 
         final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
         tmpWeightsModel.setRiskAversion(tmpRiskAversion);
@@ -113,7 +113,7 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
     static FinancePortfolio makeComparableOpinionatedPortfolio(final TargetPortfolio targetPortfolio, final FinancialMarket market) {
 
         final Context tmpWeightsContext = market.getOpinionatedContext();
-        final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
+        final Comparable<?> tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
 
         final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
         tmpWeightsModel.setRiskAversion(tmpRiskAversion);
@@ -126,7 +126,7 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
             final FinancialMarket market) {
 
         final Context tmpWeightsContext = market.getOpinionatedContext();
-        final Number tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
+        final Comparable<?> tmpRiskAversion = targetPortfolio.toEquilibriumModel().getRiskAversion().get();
 
         final MarkowitzModel tmpWeightsModel = new MarkowitzModel(tmpWeightsContext);
         tmpWeightsModel.setRiskAversion(tmpRiskAversion);
@@ -147,7 +147,7 @@ public interface TargetPortfolio extends BusinessObject, EquilibriumPortfolio {
 
     static SimplePortfolio makeDefinitionPortfolio(final List<? extends Asset> assets, final FinancialMarket market) {
 
-        final PrimitiveMatrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
+        final Primitive64Matrix tmpCorrelations = market.toEquilibriumModel().getCorrelations();
 
         final List<SimpleAsset> tmpAssets = new ArrayList<>();
         for (final Asset tmpAsset : assets) {

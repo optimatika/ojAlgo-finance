@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -75,7 +75,7 @@ public class PortfolioSimulator {
         final int tmpProcDim = myProcess.size();
 
         final Primitive64Array tmpInitialValues = myProcess.getValues();
-        final Number[] tmpValues = new Number[tmpProcDim];
+        final Comparable<?>[] tmpValues = new Comparable<?>[tmpProcDim];
         for (int p = 0; p < tmpProcDim; p++) {
             tmpValues[p] = tmpInitialValues.get(p);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@ package org.ojalgo.finance.portfolio;
 import java.util.List;
 
 import org.ojalgo.ProgrammingError;
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 
 public final class FixedWeightsPortfolio extends EquilibriumModel {
 
-    private final PrimitiveMatrix myWeights;
+    private final Primitive64Matrix myWeights;
 
     public FixedWeightsPortfolio(final Context aContext, final FinancePortfolio weightsPortfolio) {
 
@@ -37,7 +37,7 @@ public final class FixedWeightsPortfolio extends EquilibriumModel {
         myWeights = FinancePortfolio.MATRIX_FACTORY.columns(weightsPortfolio.getWeights());
     }
 
-    public FixedWeightsPortfolio(final MarketEquilibrium aMarketEquilibrium, final PrimitiveMatrix assetWeightsInColumn) {
+    public FixedWeightsPortfolio(final MarketEquilibrium aMarketEquilibrium, final Primitive64Matrix assetWeightsInColumn) {
 
         super(aMarketEquilibrium);
 
@@ -58,17 +58,17 @@ public final class FixedWeightsPortfolio extends EquilibriumModel {
         this.calibrate(myWeights, targetReturns.getAssetReturns());
     }
 
-    public void calibrate(final List<? extends Number> targetReturns) {
+    public void calibrate(final List<? extends Comparable<?>> targetReturns) {
         this.calibrate(myWeights, FinancePortfolio.MATRIX_FACTORY.columns(targetReturns));
     }
 
     @Override
-    protected PrimitiveMatrix calculateAssetReturns() {
+    protected Primitive64Matrix calculateAssetReturns() {
         return this.calculateAssetReturns(myWeights);
     }
 
     @Override
-    protected PrimitiveMatrix calculateAssetWeights() {
+    protected Primitive64Matrix calculateAssetWeights() {
         return myWeights;
     }
 

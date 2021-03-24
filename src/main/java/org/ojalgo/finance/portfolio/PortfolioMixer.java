@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -73,11 +73,11 @@ public final class PortfolioMixer {
         }
     }
 
-    public LowerUpper addAssetConstraint(final Number lowerLimit, final Number upperLimit, final int... assetIndeces) {
+    public LowerUpper addAssetConstraint(final Comparable<?> lowerLimit, final Comparable<?> upperLimit, final int... assetIndeces) {
         return myAssetConstraints.put(assetIndeces, new LowerUpper(lowerLimit, upperLimit));
     }
 
-    public LowerUpper addComponentConstraint(final Number lowerLimit, final Number upperLimit, final int... assetIndeces) {
+    public LowerUpper addComponentConstraint(final Comparable<?> lowerLimit, final Comparable<?> upperLimit, final int... assetIndeces) {
         return myComponentConstraints.put(assetIndeces, new LowerUpper(lowerLimit, upperLimit));
     }
 

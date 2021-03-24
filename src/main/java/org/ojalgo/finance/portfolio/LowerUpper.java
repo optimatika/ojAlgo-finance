@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ final class LowerUpper {
     final BigDecimal lower;
     final BigDecimal upper;
 
-    LowerUpper(final Number someLower, final Number someUpper) {
+    LowerUpper(final Comparable<?> someLower, final Comparable<?> someUpper) {
 
         super();
 

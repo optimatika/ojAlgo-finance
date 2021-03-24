@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 
 import org.ojalgo.function.constant.PrimitiveMath;
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
 import org.ojalgo.optimisation.Optimisation;
@@ -106,11 +106,11 @@ public final class MarkowitzModel extends OptimisedPortfolio {
         super(portfolioContext);
     }
 
-    public MarkowitzModel(final MarketEquilibrium marketEquilibrium, final PrimitiveMatrix expectedExcessReturns) {
+    public MarkowitzModel(final MarketEquilibrium marketEquilibrium, final Primitive64Matrix expectedExcessReturns) {
         super(marketEquilibrium, expectedExcessReturns);
     }
 
-    public MarkowitzModel(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
+    public MarkowitzModel(final Primitive64Matrix covarianceMatrix, final Primitive64Matrix expectedExcessReturns) {
         super(covarianceMatrix, expectedExcessReturns);
     }
 
@@ -220,7 +220,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
      * Constrained optimisation.
      */
     @Override
-    protected PrimitiveMatrix calculateAssetWeights() {
+    protected Primitive64Matrix calculateAssetWeights() {
 
         if (this.getOptimisationOptions().logger_appender != null) {
             BasicLogger.debug();
@@ -318,7 +318,7 @@ public final class MarkowitzModel extends OptimisedPortfolio {
 
     }
 
-    Scalar<?> calculatePortfolioReturn(final Access1D<?> weightsVctr, final PrimitiveMatrix returnsVctr) {
+    Scalar<?> calculatePortfolioReturn(final Access1D<?> weightsVctr, final Primitive64Matrix returnsVctr) {
         return super.calculatePortfolioReturn(MATRIX_FACTORY.columns(weightsVctr), returnsVctr);
     }
 

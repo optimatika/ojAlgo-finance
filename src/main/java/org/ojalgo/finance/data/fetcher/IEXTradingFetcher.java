@@ -24,7 +24,7 @@ public class IEXTradingFetcher implements DataFetcher {
 
         mySymbol = symbol;
 
-        myResourceLocator = new ResourceLocator().host("api.iextrading.com").path("/1.0/stock/" + symbol + "/chart/5y").query("format", "csv");
+        myResourceLocator = new ResourceLocator().host("cloud.iexapis.com").path("/1.0/stock/" + symbol + "/chart/5y").query("format", "csv");
     }
 
     /**

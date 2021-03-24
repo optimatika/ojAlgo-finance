@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.ojalgo.function.constant.BigMath;
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
 import org.ojalgo.optimisation.Optimisation.Result;
 
@@ -48,14 +48,14 @@ public final class EfficientFrontier extends OptimisedPortfolio {
         myOptimisationModel = this.makeModel(CONSTRAINTS);
     }
 
-    public EfficientFrontier(final MarketEquilibrium marketEquilibrium, final PrimitiveMatrix expectedExcessReturns) {
+    public EfficientFrontier(final MarketEquilibrium marketEquilibrium, final Primitive64Matrix expectedExcessReturns) {
 
         super(marketEquilibrium, expectedExcessReturns);
 
         myOptimisationModel = this.makeModel(CONSTRAINTS);
     }
 
-    public EfficientFrontier(final PrimitiveMatrix covarianceMatrix, final PrimitiveMatrix expectedExcessReturns) {
+    public EfficientFrontier(final Primitive64Matrix covarianceMatrix, final Primitive64Matrix expectedExcessReturns) {
 
         super(covarianceMatrix, expectedExcessReturns);
 
@@ -63,7 +63,7 @@ public final class EfficientFrontier extends OptimisedPortfolio {
     }
 
     @Override
-    protected PrimitiveMatrix calculateAssetWeights() {
+    protected Primitive64Matrix calculateAssetWeights() {
 
         myOptimisationModel.getExpression(VARIANCE).weight(this.getRiskAversion().doubleValue() / 2.0);
 

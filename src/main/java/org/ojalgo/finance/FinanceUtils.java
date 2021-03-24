@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import java.util.Map.Entry;
 import org.ojalgo.array.Array1D;
 import org.ojalgo.function.aggregator.Aggregator;
 import org.ojalgo.function.constant.PrimitiveMath;
-import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.matrix.decomposition.Eigenvalue;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PhysicalStore;
@@ -43,6 +43,7 @@ import org.ojalgo.random.RandomNumber;
 import org.ojalgo.random.RandomUtils;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.random.process.GeometricBrownianMotion;
+import org.ojalgo.scalar.Scalar;
 import org.ojalgo.series.CalendarDateSeries;
 import org.ojalgo.series.CoordinationSet;
 import org.ojalgo.series.primitive.PrimitiveSeries;
@@ -81,7 +82,7 @@ public abstract class FinanceUtils {
         return retVal;
     }
 
-    public static CalendarDateSeries<RandomNumber> forecast(CalendarDateSeries<? extends Number> series, int pointCount, CalendarDateUnit timeUnit,
+    public static CalendarDateSeries<RandomNumber> forecast(CalendarDateSeries<? extends Comparable<?>> series, int pointCount, CalendarDateUnit timeUnit,
             boolean includeOriginalSeries) {
 
         CalendarDateSeries<RandomNumber> retVal = new CalendarDateSeries<>(timeUnit);
@@ -91,13 +92,13 @@ public abstract class FinanceUtils {
         GeometricBrownianMotion tmpProcess = GeometricBrownianMotion.estimate(series.asPrimitive(), tmpSamplePeriod);
 
         if (includeOriginalSeries) {
-            for (Entry<CalendarDate, ? extends Number> tmpEntry : series.entrySet()) {
+            for (Entry<CalendarDate, ? extends Comparable<?>> tmpEntry : series.entrySet()) {
                 retVal.put(tmpEntry.getKey(), new Deterministic(tmpEntry.getValue()));
             }
         }
 
         CalendarDate tmpLastKey = series.lastKey();
-        double tmpLastValue = series.lastValue().doubleValue();
+        double tmpLastValue = Scalar.doubleValue(series.lastValue());
 
         tmpProcess.setValue(tmpLastValue);
 
@@ -120,7 +121,7 @@ public abstract class FinanceUtils {
     /**
      * @return Annualised covariances
      */
-    public static <V extends Number> PrimitiveMatrix makeCovarianceMatrix(Collection<CalendarDateSeries<V>> timeSeriesCollection) {
+    public static <V extends Comparable<V>> Primitive64Matrix makeCovarianceMatrix(Collection<CalendarDateSeries<V>> timeSeriesCollection) {
 
         CoordinationSet<V> tmpCoordinator = new CoordinationSet<>(timeSeriesCollection).prune();
 
@@ -140,7 +141,7 @@ public abstract class FinanceUtils {
 
         int tmpSize = timeSeriesCollection.size();
 
-        PrimitiveMatrix.DenseReceiver retValStore = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
+        Primitive64Matrix.DenseReceiver retValStore = Primitive64Matrix.FACTORY.makeDense(tmpSize, tmpSize);
 
         double tmpToYearFactor = (double) CalendarDateUnit.YEAR.toDurationInMillis() / (double) tmpCoordinator.getResolution().toDurationInMillis();
 
@@ -167,7 +168,7 @@ public abstract class FinanceUtils {
      * @param mayBeMissingValues Individual series may be missing some values - try to fix this or not
      * @return Annualised covariances
      */
-    public static <N extends Number> PrimitiveMatrix makeCovarianceMatrix(List<CalendarDateSeries<N>> listOfTimeSeries, boolean mayBeMissingValues) {
+    public static <N extends Comparable<N>> Primitive64Matrix makeCovarianceMatrix(List<CalendarDateSeries<N>> listOfTimeSeries, boolean mayBeMissingValues) {
 
         int tmpSize = listOfTimeSeries.size();
 
@@ -179,7 +180,7 @@ public abstract class FinanceUtils {
 
         CoordinationSet<N> tmpCoordinated = tmpUncoordinated.prune(tmpDataResolution);
 
-        PrimitiveMatrix.DenseReceiver tmpMatrixBuilder = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
+        Primitive64Matrix.DenseReceiver tmpMatrixBuilder = Primitive64Matrix.FACTORY.makeDense(tmpSize, tmpSize);
 
         double tmpToYearFactor = (double) CalendarDateUnit.YEAR.toDurationInMillis() / (double) tmpDataResolution.toDurationInMillis();
 
@@ -343,7 +344,7 @@ public abstract class FinanceUtils {
         return PrimitiveMath.EXPM1.invoke(growthRate * tmpGrowthRateUnitsPerYear);
     }
 
-    public static PrimitiveMatrix toCorrelations(Access2D<?> covariances) {
+    public static Primitive64Matrix toCorrelations(Access2D<?> covariances) {
         return FinanceUtils.toCorrelations(covariances, false);
     }
 
@@ -351,11 +352,11 @@ public abstract class FinanceUtils {
      * Will extract the correlation coefficients from the input covariance matrix. If "cleaning" is enabled
      * small and negative eigenvalues of the covariance matrix will be replaced with a new minimal value.
      */
-    public static PrimitiveMatrix toCorrelations(Access2D<?> covariances, boolean clean) {
+    public static Primitive64Matrix toCorrelations(Access2D<?> covariances, boolean clean) {
 
         int size = Math.toIntExact(Math.min(covariances.countRows(), covariances.countColumns()));
 
-        MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE.makeWrapper(covariances).get();
+        MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE64.makeWrapper(covariances).get();
 
         if (clean) {
 
@@ -377,7 +378,7 @@ public abstract class FinanceUtils {
             covarianceMtrx = mtrxV.multiply(mtrxD).multiply(mtrxV.transpose());
         }
 
-        PrimitiveMatrix.DenseReceiver retVal = PrimitiveMatrix.FACTORY.makeDense(size, size);
+        Primitive64Matrix.DenseReceiver retVal = Primitive64Matrix.FACTORY.makeDense(size, size);
 
         double[] volatilities = new double[size];
         for (int ij = 0; ij < size; ij++) {
@@ -415,11 +416,11 @@ public abstract class FinanceUtils {
      * Vill constract a covariance matrix from the standard deviations (volatilities) and correlation
      * coefficient,
      */
-    public static PrimitiveMatrix toCovariances(Access1D<?> volatilities, Access2D<?> correlations) {
+    public static Primitive64Matrix toCovariances(Access1D<?> volatilities, Access2D<?> correlations) {
 
         int tmpSize = (int) volatilities.count();
 
-        PrimitiveMatrix.DenseReceiver retVal = PrimitiveMatrix.FACTORY.makeDense(tmpSize, tmpSize);
+        Primitive64Matrix.DenseReceiver retVal = Primitive64Matrix.FACTORY.makeDense(tmpSize, tmpSize);
 
         for (int j = 0; j < tmpSize; j++) {
             double tmpColumnVolatility = volatilities.doubleValue(j);
@@ -460,7 +461,7 @@ public abstract class FinanceUtils {
         return tmpAnnualGrowthRate * tmpYearsPerGrowthRateUnit;
     }
 
-    public static PrimitiveMatrix toVolatilities(Access2D<?> covariances) {
+    public static Primitive64Matrix toVolatilities(Access2D<?> covariances) {
         return FinanceUtils.toVolatilities(covariances, false);
     }
 
@@ -468,15 +469,15 @@ public abstract class FinanceUtils {
      * Will extract the standard deviations (volatilities) from the input covariance matrix. If "cleaning" is
      * enabled small variances will be replaced with a new minimal value.
      */
-    public static PrimitiveMatrix toVolatilities(Access2D<?> covariances, boolean clean) {
+    public static Primitive64Matrix toVolatilities(Access2D<?> covariances, boolean clean) {
 
         int size = Math.toIntExact(Math.min(covariances.countRows(), covariances.countColumns()));
 
-        PrimitiveMatrix.DenseReceiver retVal = PrimitiveMatrix.FACTORY.makeDense(size);
+        Primitive64Matrix.DenseReceiver retVal = Primitive64Matrix.FACTORY.makeDense(size);
 
         if (clean) {
 
-            MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE.makeWrapper(covariances).get();
+            MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE64.makeWrapper(covariances).get();
 
             double largest = covarianceMtrx.aggregateDiagonal(Aggregator.LARGEST);
             double limit = largest * size * PrimitiveMath.RELATIVELY_SMALL;

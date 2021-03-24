@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2019 Optimatika
+ * Copyright 1997-2021 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import org.ojalgo.TestUtils;
 import org.ojalgo.finance.portfolio.SimpleAsset;
 import org.ojalgo.finance.portfolio.SimplePortfolio;
 import org.ojalgo.function.constant.PrimitiveMath;
-import org.ojalgo.matrix.store.PrimitiveDenseStore;
+import org.ojalgo.matrix.store.Primitive64Store;
 import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.random.process.GeometricBrownian1D;
 import org.ojalgo.random.process.GeometricBrownianMotion;
@@ -126,7 +126,7 @@ public class MultidimensionalSimulatorTest extends PortfolioSimulatorTests {
     @Test
     public void testStepping() {
 
-        final PrimitiveDenseStore tmpCorrelation = PrimitiveDenseStore.FACTORY.makeEye(3, 3);
+        final Primitive64Store tmpCorrelation = Primitive64Store.FACTORY.makeEye(3, 3);
 
         final GeometricBrownianMotion tmpOrgProc1 = new SimpleAsset(0.0, 0.01, PrimitiveMath.THIRD).forecast();
         final GeometricBrownianMotion tmpOrgProc2 = new SimpleAsset(0.0, 0.02, PrimitiveMath.THIRD).forecast();
