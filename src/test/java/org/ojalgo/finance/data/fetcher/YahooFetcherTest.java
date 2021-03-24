@@ -24,6 +24,7 @@ package org.ojalgo.finance.data.fetcher;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
@@ -40,6 +41,7 @@ import org.ojalgo.type.CalendarDateUnit;
  * @author apete
  */
 @Tag("unstable")
+@Disabled
 public class YahooFetcherTest {
 
     @Test

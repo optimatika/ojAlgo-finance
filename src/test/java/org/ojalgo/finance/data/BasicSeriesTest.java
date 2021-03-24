@@ -24,6 +24,7 @@ package org.ojalgo.finance.data;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ojalgo.TestUtils;
 import org.ojalgo.function.constant.PrimitiveMath;
@@ -34,6 +35,7 @@ import org.ojalgo.type.CalendarDateUnit;
 /**
  * @author apete
  */
+@Disabled
 public class BasicSeriesTest extends FinanceDataTests {
 
     public BasicSeriesTest() {
