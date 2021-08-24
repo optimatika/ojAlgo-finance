@@ -86,7 +86,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
         // TestUtils.assertTrue(markowitzModel.getOptimisationState().isOptimal());
 
         for (final BigDecimal tmpBigDecimal : re) {
-            if ((tmpBigDecimal.compareTo(BigMath.ZERO) == -1) || (tmpBigDecimal.compareTo(BigMath.ONE) == 1)) {
+            if (tmpBigDecimal.compareTo(BigMath.ZERO) == -1 || tmpBigDecimal.compareTo(BigMath.ONE) == 1) {
                 TestUtils.fail("!(0.0 <= " + tmpBigDecimal + " <= 1.0)");
             }
         }
@@ -126,7 +126,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
             final List<BigDecimal> tmpWeights = tmpMarkowitz.getWeights();
 
             for (final BigDecimal tmpBigDecimal : tmpWeights) {
-                if ((tmpBigDecimal.compareTo(BigMath.ZERO) == -1) || (tmpBigDecimal.compareTo(BigMath.ONE) == 1)) {
+                if (tmpBigDecimal.compareTo(BigMath.ZERO) == -1 || tmpBigDecimal.compareTo(BigMath.ONE) == 1) {
                     TestUtils.fail("!(0.0 <= " + tmpBigDecimal + " <= 1.0)");
                 }
             }
@@ -299,7 +299,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
         tmpMarkowitz.setRiskAversion(tmpInitialRiskAversion);
 
         // test evaluation context
-        final NumberContext tmpPrecision = StandardType.PERCENT.newPrecision(4);
+        final NumberContext tmpPrecision = StandardType.PERCENT.withPrecision(4);
 
         for (int r = 0; r < tmpPortfolioReturn.length; r++) {
             tmpMarkowitz.setRiskAversion(tmpInitialRiskAversion);
@@ -338,7 +338,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
         List<BigDecimal> tmpWeights = markowitz.getWeights();
         TestUtils.assertTrue(markowitz.optimiser().getState().isFeasible());
 
-        final NumberContext tmpTestPrecision = StandardType.PERCENT.newPrecision(4);
+        final NumberContext tmpTestPrecision = StandardType.PERCENT.withPrecision(4);
 
         // Solution reachable without shorting, but since it is allowed the optimal solution is different
         TestUtils.assertEquals(0.82745, tmpWeights.get(0).doubleValue(), tmpTestPrecision); // 0.82745
@@ -382,7 +382,7 @@ public class PortfolioProblems extends FinancePortfolioTests {
         final MarkowitzModel markowitzModel = new MarkowitzModel(marketEq, returns);
 
         for (int r = 0; r <= 10; r++) {
-            final BigDecimal targetReturn = StandardType.PERCENT.enforce(new BigDecimal(0.2 + (0.02 * r)));
+            final BigDecimal targetReturn = StandardType.PERCENT.enforce(new BigDecimal(0.2 + 0.02 * r));
             markowitzModel.setTargetReturn(targetReturn);
 
             markowitzModel.optimiser().validate(false);
@@ -397,7 +397,8 @@ public class PortfolioProblems extends FinancePortfolioTests {
             TestUtils.assertTrue("Optimiser completed normally", markowitzModel.optimiser().getState().isOptimal());
             TestUtils.assertTrue("Weights sum to 100%",
                     tmpWeights.get(0).add(tmpWeights.get(1)).setScale(2, RoundingMode.HALF_EVEN).compareTo(BigMath.ONE) == 0);
-            TestUtils.assertEquals("Return is close to target", targetReturn, markowitzModel.getMeanReturn(), StandardType.PERCENT.newPrecision(2).newScale(2));
+            TestUtils.assertEquals("Return is close to target", targetReturn, markowitzModel.getMeanReturn(),
+                    StandardType.PERCENT.withPrecision(2).withScale(2));
         }
 
     }
