@@ -34,13 +34,13 @@ import java.util.Map.Entry;
 import org.ojalgo.array.Array1D;
 import org.ojalgo.function.aggregator.Aggregator;
 import org.ojalgo.function.constant.PrimitiveMath;
+import org.ojalgo.function.special.ErrorFunction;
 import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.matrix.decomposition.Eigenvalue;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PhysicalStore;
 import org.ojalgo.random.Deterministic;
 import org.ojalgo.random.RandomNumber;
-import org.ojalgo.random.RandomUtils;
 import org.ojalgo.random.SampleSet;
 import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.scalar.Scalar;
@@ -54,15 +54,15 @@ import org.ojalgo.type.CalendarDateUnit;
 
 public abstract class FinanceUtils {
 
-    public static double calculateValueAtRisk(double expRet, double stdDev, double confidence, double time) {
+    public static double calculateValueAtRisk(final double expRet, final double stdDev, final double confidence, final double time) {
 
-        double tmpConfidenceScale = SQRT_TWO * RandomUtils.erfi(ONE - (TWO * (ONE - confidence)));
+        double tmpConfidenceScale = SQRT_TWO * ErrorFunction.erfi(ONE - TWO * (ONE - confidence));
 
-        return PrimitiveMath.MAX.invoke((PrimitiveMath.SQRT.invoke(time) * stdDev * tmpConfidenceScale) - (time * expRet), ZERO);
+        return PrimitiveMath.MAX.invoke(PrimitiveMath.SQRT.invoke(time) * stdDev * tmpConfidenceScale - time * expRet, ZERO);
     }
 
-    public static GeometricBrownianMotion estimateExcessDiffusionProcess(CalendarDateSeries<?> priceSeries, CalendarDateSeries<?> riskFreeInterestRateSeries,
-            CalendarDateUnit timeUnit) {
+    public static GeometricBrownianMotion estimateExcessDiffusionProcess(final CalendarDateSeries<?> priceSeries,
+            final CalendarDateSeries<?> riskFreeInterestRateSeries, final CalendarDateUnit timeUnit) {
 
         SampleSet tmpSampleSet = FinanceUtils.makeExcessGrowthRateSampleSet(priceSeries, riskFreeInterestRateSeries);
 
@@ -75,15 +75,15 @@ public abstract class FinanceUtils {
         double tmpVar = tmpSampleSet.getVariance();
 
         double tmpDiff = PrimitiveMath.SQRT.invoke(tmpVar / tmpStepSize);
-        double tmpDrift = (tmpExp / tmpStepSize) + ((tmpDiff * tmpDiff) / TWO);
+        double tmpDrift = tmpExp / tmpStepSize + tmpDiff * tmpDiff / TWO;
 
         GeometricBrownianMotion retVal = new GeometricBrownianMotion(tmpDrift, tmpDiff);
 
         return retVal;
     }
 
-    public static CalendarDateSeries<RandomNumber> forecast(CalendarDateSeries<? extends Comparable<?>> series, int pointCount, CalendarDateUnit timeUnit,
-            boolean includeOriginalSeries) {
+    public static CalendarDateSeries<RandomNumber> forecast(final CalendarDateSeries<? extends Comparable<?>> series, final int pointCount,
+            final CalendarDateUnit timeUnit, final boolean includeOriginalSeries) {
 
         CalendarDateSeries<RandomNumber> retVal = new CalendarDateSeries<>(timeUnit);
         retVal.name(series.getName()).colour(series.getColour());
@@ -103,13 +103,14 @@ public abstract class FinanceUtils {
         tmpProcess.setValue(tmpLastValue);
 
         for (int i = 1; i <= pointCount; i++) {
-            retVal.put(tmpLastKey.millis + (i * timeUnit.toDurationInMillis()), tmpProcess.getDistribution(i));
+            retVal.put(tmpLastKey.millis + i * timeUnit.toDurationInMillis(), tmpProcess.getDistribution(i));
         }
 
         return retVal;
     }
 
-    public static CalendarDateSeries<BigDecimal> makeCalendarPriceSeries(double[] prices, Calendar startCalendar, CalendarDateUnit resolution) {
+    public static CalendarDateSeries<BigDecimal> makeCalendarPriceSeries(final double[] prices, final Calendar startCalendar,
+            final CalendarDateUnit resolution) {
 
         CalendarDateSeries<BigDecimal> retVal = new CalendarDateSeries<>(resolution);
 
@@ -121,7 +122,7 @@ public abstract class FinanceUtils {
     /**
      * @return Annualised covariances
      */
-    public static <V extends Comparable<V>> Primitive64Matrix makeCovarianceMatrix(Collection<CalendarDateSeries<V>> timeSeriesCollection) {
+    public static <V extends Comparable<V>> Primitive64Matrix makeCovarianceMatrix(final Collection<CalendarDateSeries<V>> timeSeriesCollection) {
 
         CoordinationSet<V> tmpCoordinator = new CoordinationSet<>(timeSeriesCollection).prune();
 
@@ -168,7 +169,8 @@ public abstract class FinanceUtils {
      * @param mayBeMissingValues Individual series may be missing some values - try to fix this or not
      * @return Annualised covariances
      */
-    public static <N extends Comparable<N>> Primitive64Matrix makeCovarianceMatrix(List<CalendarDateSeries<N>> listOfTimeSeries, boolean mayBeMissingValues) {
+    public static <N extends Comparable<N>> Primitive64Matrix makeCovarianceMatrix(final List<CalendarDateSeries<N>> listOfTimeSeries,
+            final boolean mayBeMissingValues) {
 
         int tmpSize = listOfTimeSeries.size();
 
@@ -208,7 +210,7 @@ public abstract class FinanceUtils {
         return tmpMatrixBuilder.get();
     }
 
-    public static CalendarDateSeries<BigDecimal> makeDatePriceSeries(double[] prices, Date startDate, CalendarDateUnit resolution) {
+    public static CalendarDateSeries<BigDecimal> makeDatePriceSeries(final double[] prices, final Date startDate, final CalendarDateUnit resolution) {
 
         CalendarDateSeries<BigDecimal> retVal = new CalendarDateSeries<>(resolution);
 
@@ -223,7 +225,7 @@ public abstract class FinanceUtils {
      *        means 5.0% annualized risk free return)
      * @return A sample set of price growth rates adjusted for risk free return
      */
-    public static SampleSet makeExcessGrowthRateSampleSet(CalendarDateSeries<?> priceSeries, CalendarDateSeries<?> riskFreeInterestRateSeries) {
+    public static SampleSet makeExcessGrowthRateSampleSet(final CalendarDateSeries<?> priceSeries, final CalendarDateSeries<?> riskFreeInterestRateSeries) {
 
         if (priceSeries.size() != riskFreeInterestRateSeries.size()) {
             throw new IllegalArgumentException("The two series must have the same size (number of elements).");
@@ -272,7 +274,8 @@ public abstract class FinanceUtils {
      *        means 5.0% annualized risk free return)
      * @return A sample set of price growth rates adjusted for risk free return
      */
-    public static CalendarDateSeries<Double> makeNormalisedExcessPrice(CalendarDateSeries<?> priceSeries, CalendarDateSeries<?> riskFreeInterestRateSeries) {
+    public static CalendarDateSeries<Double> makeNormalisedExcessPrice(final CalendarDateSeries<?> priceSeries,
+            final CalendarDateSeries<?> riskFreeInterestRateSeries) {
 
         if (priceSeries.size() != riskFreeInterestRateSeries.size()) {
             throw new IllegalArgumentException("The two series must have the same size (number of elements).");
@@ -327,7 +330,7 @@ public abstract class FinanceUtils {
      * @param growthFactorUnit A growth factor unit
      * @return Annualised return (percentage per year)
      */
-    public static double toAnnualReturnFromGrowthFactor(double growthFactor, CalendarDateUnit growthFactorUnit) {
+    public static double toAnnualReturnFromGrowthFactor(final double growthFactor, final CalendarDateUnit growthFactorUnit) {
         double tmpGrowthFactorUnitsPerYear = growthFactorUnit.convert(CalendarDateUnit.YEAR);
         return PrimitiveMath.POW.invoke(growthFactor, tmpGrowthFactorUnitsPerYear) - PrimitiveMath.ONE;
     }
@@ -339,12 +342,12 @@ public abstract class FinanceUtils {
      * @param growthRateUnit A growth rate unit
      * @return Annualised return (percentage per year)
      */
-    public static double toAnnualReturnFromGrowthRate(double growthRate, CalendarDateUnit growthRateUnit) {
+    public static double toAnnualReturnFromGrowthRate(final double growthRate, final CalendarDateUnit growthRateUnit) {
         double tmpGrowthRateUnitsPerYear = growthRateUnit.convert(CalendarDateUnit.YEAR);
         return PrimitiveMath.EXPM1.invoke(growthRate * tmpGrowthRateUnitsPerYear);
     }
 
-    public static Primitive64Matrix toCorrelations(Access2D<?> covariances) {
+    public static Primitive64Matrix toCorrelations(final Access2D<?> covariances) {
         return FinanceUtils.toCorrelations(covariances, false);
     }
 
@@ -352,7 +355,7 @@ public abstract class FinanceUtils {
      * Will extract the correlation coefficients from the input covariance matrix. If "cleaning" is enabled
      * small and negative eigenvalues of the covariance matrix will be replaced with a new minimal value.
      */
-    public static Primitive64Matrix toCorrelations(Access2D<?> covariances, boolean clean) {
+    public static Primitive64Matrix toCorrelations(final Access2D<?> covariances, final boolean clean) {
 
         int size = Math.toIntExact(Math.min(covariances.countRows(), covariances.countColumns()));
 
@@ -393,7 +396,7 @@ public abstract class FinanceUtils {
             for (int i = j + 1; i < size; i++) {
                 double rowVol = volatilities[i];
 
-                if ((rowVol <= PrimitiveMath.ZERO) || (colVol <= PrimitiveMath.ZERO)) {
+                if (rowVol <= PrimitiveMath.ZERO || colVol <= PrimitiveMath.ZERO) {
 
                     retVal.set(i, j, PrimitiveMath.ZERO);
                     retVal.set(j, i, PrimitiveMath.ZERO);
@@ -416,7 +419,7 @@ public abstract class FinanceUtils {
      * Vill constract a covariance matrix from the standard deviations (volatilities) and correlation
      * coefficient,
      */
-    public static Primitive64Matrix toCovariances(Access1D<?> volatilities, Access2D<?> correlations) {
+    public static Primitive64Matrix toCovariances(final Access1D<?> volatilities, final Access2D<?> correlations) {
 
         int tmpSize = (int) volatilities.count();
 
@@ -442,7 +445,7 @@ public abstract class FinanceUtils {
      * @param growthFactorUnit A growth factor unit
      * @return A growth factor per unit (day, week, month, year...)
      */
-    public static double toGrowthFactorFromAnnualReturn(double annualReturn, CalendarDateUnit growthFactorUnit) {
+    public static double toGrowthFactorFromAnnualReturn(final double annualReturn, final CalendarDateUnit growthFactorUnit) {
         double tmpAnnualGrowthFactor = PrimitiveMath.ONE + annualReturn;
         double tmpYearsPerGrowthFactorUnit = CalendarDateUnit.YEAR.convert(growthFactorUnit);
         return PrimitiveMath.POW.invoke(tmpAnnualGrowthFactor, tmpYearsPerGrowthFactorUnit);
@@ -455,13 +458,13 @@ public abstract class FinanceUtils {
      * @param growthRateUnit A growth rate unit
      * @return A growth rate per unit (day, week, month, year...)
      */
-    public static double toGrowthRateFromAnnualReturn(double annualReturn, CalendarDateUnit growthRateUnit) {
+    public static double toGrowthRateFromAnnualReturn(final double annualReturn, final CalendarDateUnit growthRateUnit) {
         double tmpAnnualGrowthRate = PrimitiveMath.LOG1P.invoke(annualReturn);
         double tmpYearsPerGrowthRateUnit = CalendarDateUnit.YEAR.convert(growthRateUnit);
         return tmpAnnualGrowthRate * tmpYearsPerGrowthRateUnit;
     }
 
-    public static Primitive64Matrix toVolatilities(Access2D<?> covariances) {
+    public static Primitive64Matrix toVolatilities(final Access2D<?> covariances) {
         return FinanceUtils.toVolatilities(covariances, false);
     }
 
@@ -469,7 +472,7 @@ public abstract class FinanceUtils {
      * Will extract the standard deviations (volatilities) from the input covariance matrix. If "cleaning" is
      * enabled small variances will be replaced with a new minimal value.
      */
-    public static Primitive64Matrix toVolatilities(Access2D<?> covariances, boolean clean) {
+    public static Primitive64Matrix toVolatilities(final Access2D<?> covariances, final boolean clean) {
 
         int size = Math.toIntExact(Math.min(covariances.countRows(), covariances.countColumns()));
 
@@ -509,7 +512,8 @@ public abstract class FinanceUtils {
         return retVal.get();
     }
 
-    private static <K extends Comparable<? super K>> void copyValues(CalendarDateSeries<BigDecimal> series, CalendarDate firstKey, double[] values) {
+    private static <K extends Comparable<? super K>> void copyValues(final CalendarDateSeries<BigDecimal> series, final CalendarDate firstKey,
+            final double[] values) {
 
         CalendarDate tmpKey = firstKey;
 

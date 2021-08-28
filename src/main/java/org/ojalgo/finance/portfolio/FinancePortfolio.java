@@ -27,8 +27,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.ojalgo.function.constant.PrimitiveMath;
+import org.ojalgo.function.special.ErrorFunction;
 import org.ojalgo.matrix.Primitive64Matrix;
-import org.ojalgo.random.RandomUtils;
 import org.ojalgo.random.process.GeometricBrownianMotion;
 import org.ojalgo.type.StandardType;
 import org.ojalgo.type.TypeUtils;
@@ -127,9 +127,8 @@ public abstract class FinancePortfolio implements Comparable<FinancePortfolio> {
     public final double getSharpeRatio(final Number riskFreeReturn) {
         if (riskFreeReturn != null) {
             return (this.getMeanReturn() - riskFreeReturn.doubleValue()) / this.getVolatility();
-        } else {
-            return this.getMeanReturn() / this.getVolatility();
         }
+        return this.getMeanReturn() / this.getVolatility();
     }
 
     /**
@@ -141,10 +140,10 @@ public abstract class FinancePortfolio implements Comparable<FinancePortfolio> {
         final double aReturn = this.getMeanReturn();
         final double aStdDev = this.getVolatility();
 
-        final double tmpConfidenceScale = SQRT_TWO * RandomUtils.erfi(ONE - (TWO * (ONE - confidenceLevel.doubleValue())));
+        final double tmpConfidenceScale = SQRT_TWO * ErrorFunction.erfi(ONE - TWO * (ONE - confidenceLevel.doubleValue()));
         final double tmpTimePeriod = timePeriod.doubleValue();
 
-        return PrimitiveMath.MAX.invoke((PrimitiveMath.SQRT.invoke(tmpTimePeriod) * aStdDev * tmpConfidenceScale) - (tmpTimePeriod * aReturn), ZERO);
+        return PrimitiveMath.MAX.invoke(PrimitiveMath.SQRT.invoke(tmpTimePeriod) * aStdDev * tmpConfidenceScale - tmpTimePeriod * aReturn, ZERO);
     }
 
     public final double getValueAtRisk95() {

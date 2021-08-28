@@ -1,8 +1,24 @@
-# v3.0.0: [Not yet released]
+# Changelog
 
-> corresponds to changes in the `develop` branch since the last release
+Added / Changed / Deprecated / Fixed / Removed / Security
 
-# v2.1.0: 2019-04-11
+## [Unreleased]
+
+> Corresponds to changes in the `develop` branch since the last release
+
+## [2.4.0] – 2021-08-24
+
+### Fixed
+
+- Just some minor code updates to make it compile and run with the latest version version of ojAlgo (v49.0.2)
+
+## [2.3.0] - 2021-03-24
+
+### Changed
+
+- A lot of stuff related to downloading historical data stopped working. Just turned off the failing test cases.
+
+## [2.1.0] - 2019-04-11
 
 ### Added
 
@@ -12,7 +28,7 @@
 
 * Adjustements to ojAlgo v47.1
 
-# v2.0.0: 2018-12-17
+## [2.0.0] - 2018-12-17
 
 ### Added
 
@@ -33,13 +49,13 @@
 * Removed old code to download historical financial data from Yahoo Finance
 * Removed old code to download historical financial data from Google Finance
 
-# v1.1.0: 2018-06-09
+## [1.1.0] - 2018-06-09
 
 ### Changed
 
 * Just to make it compatible with newer versions of ojAlgo.
 
-# v1.0.0: 2017-09-27
+## [1.0.0] - 2017-09-27
 
 ### Added
 
