@@ -49,17 +49,20 @@
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.org.junit.jupiter>5.8.1</version.org.junit.jupiter>
+        <version.org.openjdk.jmh>1.33</version.org.openjdk.jmh>
+        <version.org.ojalgo>49.2.1</version.org.ojalgo>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.ojalgo</groupId>
             <artifactId>ojalgo</artifactId>
-            <version>49.2.0</version>
+            <version>${version.org.ojalgo}</version>
         </dependency>
         <dependency>
             <groupId>org.ojalgo</groupId>
             <artifactId>ojalgo</artifactId>
-            <version>48.4.2</version>
+            <version>${version.org.ojalgo}</version>
             <classifier>tests</classifier>
             <type>test-jar</type>
             <scope>test</scope>
@@ -67,19 +70,19 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.8.1</version>
+            <version>${version.org.junit.jupiter}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.8.1</version>
+            <version>${version.org.junit.jupiter}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.8.1</version>
+            <version>${version.org.junit.jupiter}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
