@@ -49,7 +49,7 @@
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.org.junit.jupiter>5.8.1</version.org.junit.jupiter>
+        <version.org.junit.jupiter>5.8.2</version.org.junit.jupiter>
         <version.org.openjdk.jmh>1.33</version.org.openjdk.jmh>
         <version.org.ojalgo>49.2.1</version.org.ojalgo>
     </properties>
