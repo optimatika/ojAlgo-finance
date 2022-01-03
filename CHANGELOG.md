@@ -6,6 +6,12 @@ Added / Changed / Deprecated / Fixed / Removed / Security
 
 > Corresponds to changes in the `develop` branch since the last release
 
+## [2.4.1] – 2022-01-04
+
+### Fixed
+
+- Just some minor code updates to make it compile and run with the latest version version of ojAlgo (v50.0.0)
+
 ## [2.4.0] – 2021-08-24
 
 ### Fixed

@@ -79,21 +79,15 @@ final class Amount extends ExactDecimal<Amount> {
 
     public static Amount valueOf(final Comparable<?> number) {
 
-        if (number != null) {
-
-            if (number instanceof Amount) {
-
-                return (Amount) number;
-
-            } else {
-
-                return Amount.valueOf(Scalar.doubleValue(number));
-            }
-
-        } else {
-
+        if (number == null) {
             return ZERO;
         }
+
+        if (number instanceof Amount) {
+            return (Amount) number;
+        }
+
+        return Amount.valueOf(Scalar.doubleValue(number));
     }
 
     public Amount() {

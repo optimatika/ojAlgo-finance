@@ -162,7 +162,7 @@ public abstract class FinanceUtils {
             }
         }
 
-        return retValStore.build();
+        return retValStore.get();
     }
 
     /**
@@ -360,7 +360,7 @@ public abstract class FinanceUtils {
 
         int size = Math.toIntExact(Math.min(covariances.countRows(), covariances.countColumns()));
 
-        MatrixStore<Double> covarianceMtrx = Primitive64Store.FACTORY.makeWrapper(covariances).get();
+        MatrixStore<Double> covarianceMtrx = Primitive64Store.FACTORY.makeWrapper(covariances);
 
         if (clean) {
 
@@ -481,9 +481,9 @@ public abstract class FinanceUtils {
 
         if (clean) {
 
-            MatrixStore<Double> covarianceMtrx = Primitive64Store.FACTORY.makeWrapper(covariances).get();
+            MatrixStore<Double> covarianceMtrx = Primitive64Store.FACTORY.makeWrapper(covariances);
 
-            double largest = covarianceMtrx.aggregateDiagonal(Aggregator.LARGEST);
+            double largest = covarianceMtrx.aggregateDiagonal(Aggregator.LARGEST).doubleValue();
             double limit = largest * size * PrimitiveMath.RELATIVELY_SMALL;
             double smallest = PrimitiveMath.SQRT.invoke(limit);
 

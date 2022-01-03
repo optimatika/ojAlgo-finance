@@ -79,21 +79,15 @@ final class Quantity extends ExactDecimal<Quantity> {
 
     public static Quantity valueOf(final Comparable<?> number) {
 
-        if (number != null) {
-
-            if (number instanceof Quantity) {
-
-                return (Quantity) number;
-
-            } else {
-
-                return Quantity.valueOf(Scalar.doubleValue(number));
-            }
-
-        } else {
-
+        if (number == null) {
             return ZERO;
         }
+
+        if (number instanceof Quantity) {
+            return (Quantity) number;
+        }
+
+        return Quantity.valueOf(Scalar.doubleValue(number));
     }
 
     public Quantity() {

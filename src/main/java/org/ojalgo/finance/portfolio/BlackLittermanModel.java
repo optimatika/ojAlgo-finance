@@ -71,9 +71,8 @@ public final class BlackLittermanModel extends EquilibriumModel {
         public double getMeanReturn() {
             if (myMeanReturn != null) {
                 return myMeanReturn.doubleValue();
-            } else {
-                return PrimitiveMath.ZERO;
             }
+            return PrimitiveMath.ZERO;
         }
 
         @Override
@@ -83,23 +82,21 @@ public final class BlackLittermanModel extends EquilibriumModel {
 
                 return myReturnVariance.doubleValue();
 
+            }
+            final Primitive64Matrix tmpWeights = MATRIX_FACTORY.columns(myWeights);
+
+            BigDecimal retVal = myModel.calculateVariance(tmpWeights);
+
+            if (myScale != null) {
+
+                retVal = retVal.multiply(myScale);
+
             } else {
 
-                final Primitive64Matrix tmpWeights = MATRIX_FACTORY.columns(myWeights);
-
-                BigDecimal retVal = myModel.calculateVariance(tmpWeights);
-
-                if (myScale != null) {
-
-                    retVal = retVal.multiply(myScale);
-
-                } else {
-
-                    retVal = retVal.multiply(myModel.getConfidence().toBigDecimal());
-                }
-
-                return retVal.doubleValue();
+                retVal = retVal.multiply(myModel.getConfidence().toBigDecimal());
             }
+
+            return retVal.doubleValue();
         }
 
         @Override

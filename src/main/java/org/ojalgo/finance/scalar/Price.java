@@ -79,21 +79,15 @@ final class Price extends ExactDecimal<Price> {
 
     public static Price valueOf(final Comparable<?> number) {
 
-        if (number != null) {
-
-            if (number instanceof Price) {
-
-                return (Price) number;
-
-            } else {
-
-                return Price.valueOf(Scalar.doubleValue(number));
-            }
-
-        } else {
-
+        if (number == null) {
             return ZERO;
         }
+
+        if (number instanceof Price) {
+            return (Price) number;
+        }
+
+        return Price.valueOf(Scalar.doubleValue(number));
     }
 
     public Price() {

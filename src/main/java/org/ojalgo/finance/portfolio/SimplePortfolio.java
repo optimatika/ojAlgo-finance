@@ -72,7 +72,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
         super();
 
-        if ((someAssets.size() != correlationsMatrix.countRows()) || (someAssets.size() != correlationsMatrix.countColumns())) {
+        if (someAssets.size() != correlationsMatrix.countRows() || someAssets.size() != correlationsMatrix.countColumns()) {
             throw new IllegalArgumentException("Input dimensions don't match!");
         }
 
@@ -91,7 +91,7 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
 
         final List<BigDecimal> tmpWeights = weightsPortfolio.getWeights();
 
-        if ((tmpWeights.size() != myCorrelations.countRows()) || (tmpWeights.size() != myCorrelations.countColumns())) {
+        if (tmpWeights.size() != myCorrelations.countRows() || tmpWeights.size() != myCorrelations.countColumns()) {
             throw new IllegalArgumentException("Input dimensions don't match!");
         }
 
@@ -178,18 +178,15 @@ public final class SimplePortfolio extends FinancePortfolio implements Context {
         final Primitive64Matrix tmpCovariances = myCovariances;
 
         if (tmpCovariances != null) {
-
             return tmpCovariances.doubleValue(row, col);
-
-        } else {
-
-            final double tmpRowRisk = this.getVolatility(row);
-            final double tmpColRisk = this.getVolatility(col);
-
-            final double tmpCorrelation = this.getCorrelation(row, col);
-
-            return tmpRowRisk * tmpCorrelation * tmpColRisk;
         }
+
+        final double tmpRowRisk = this.getVolatility(row);
+        final double tmpColRisk = this.getVolatility(col);
+
+        final double tmpCorrelation = this.getCorrelation(row, col);
+
+        return tmpRowRisk * tmpCorrelation * tmpColRisk;
     }
 
     public Primitive64Matrix getCovariances() {
