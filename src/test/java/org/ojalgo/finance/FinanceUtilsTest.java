@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2021 Optimatika
+ * Copyright 1997-2022 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ public class FinanceUtilsTest extends FinanceTests {
 
         Primitive64Matrix original = Primitive64Matrix.FACTORY.rows(rawOriginal);
 
-        SingularValue<Double> svd = SingularValue.make(original);
+        SingularValue<Double> svd = SingularValue.PRIMITIVE.make(original);
         svd.decompose(original);
         double refCondition = svd.getCondition();
         int refRank = svd.getRank();
@@ -81,7 +81,7 @@ public class FinanceUtilsTest extends FinanceTests {
         int newRank = svd.getRank();
 
         TestUtils.assertTrue("Made the condition worse! " + refCondition + " => " + newCondition,
-                (newCondition <= refCondition) || !ACCEPTABLE_ACCURACY.isDifferent(refCondition, newCondition));
+                newCondition <= refCondition || !ACCEPTABLE_ACCURACY.isDifferent(refCondition, newCondition));
         TestUtils.assertTrue("Made the rank worse!", newRank >= refRank);
         TestUtils.assertEquals("Not full rank!", rawOriginal.length, newRank);
 

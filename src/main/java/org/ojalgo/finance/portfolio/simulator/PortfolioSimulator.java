@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2021 Optimatika
+ * Copyright 1997-2022 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ public class PortfolioSimulator {
 
         super();
 
-        if ((assetProcesses == null) || (assetProcesses.size() < 1)) {
+        if (assetProcesses == null || assetProcesses.size() < 1) {
             throw new IllegalArgumentException();
         }
 
@@ -81,13 +81,13 @@ public class PortfolioSimulator {
         }
         final List<BigDecimal> tmpWeights = new SimplePortfolio(tmpValues).normalise().getWeights();
 
-        final Array2D<Double> tmpRealisationValues = Array2D.PRIMITIVE64.makeZero(aNumberOfRealisations, aNumberOfSteps);
+        final Array2D<Double> tmpRealisationValues = Array2D.PRIMITIVE64.make(aNumberOfRealisations, aNumberOfSteps);
 
         for (int r = 0; r < aNumberOfRealisations; r++) {
 
             for (int s = 0; s < aNumberOfSteps; s++) {
 
-                if ((rebalancingInterval != null) && (s != 0) && ((s % rebalancingInterval) == 0)) {
+                if (rebalancingInterval != null && s != 0 && s % rebalancingInterval == 0) {
 
                     final double tmpPortfolioValue = tmpRealisationValues.doubleValue(r, s - 1);
 

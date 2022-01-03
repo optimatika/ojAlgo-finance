@@ -1,5 +1,5 @@
 /*
- * Copyright 1997-2021 Optimatika
+ * Copyright 1997-2022 Optimatika
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
         HIGH(1), LOW(4), NO(9), SOME(2), TOP(0), WHATEVER(3);
 
-        private double BASE = PrimitiveMath.SQRT.invoke(PrimitiveMath.TEN);
+        private final double BASE = PrimitiveMath.SQRT.invoke(PrimitiveMath.TEN);
 
         public static Confidence getInstance(final int exponent) {
 
@@ -76,7 +76,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
             }
         }
 
-        private int myExponent;
+        private final int myExponent;
 
         Confidence(final int exponent) {
             myExponent = exponent;
@@ -160,7 +160,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
                 tmpLargestEffectiveWeight = Math.max(tmpLargestEffectiveWeight, Math.abs(tmpViewWeight * tmpMarketWeight));
             }
 
-            tmpImpliedInsecurity = (PrimitiveMath.ONE / tmpLargestEffectiveWeight) / tmpMarketSize;
+            tmpImpliedInsecurity = PrimitiveMath.ONE / tmpLargestEffectiveWeight / tmpMarketSize;
         }
 
         double tmpBaseFactor = evaluator.getViewScaleBaseFactor();
@@ -265,7 +265,7 @@ public interface MarketView extends BusinessObject, ModernPortfolio {
 
         final FinancePortfolio tmpDefinitionPortfolio = marketView.toDefinitionPortfolio();
         final double tmpMarketViewReturn = marketView.getMarketViewReturn();
-        final List<BigDecimal> tmpWeights = Array1D.BIG.makeZero(market.toDefinitionPortfolio().size());
+        final List<BigDecimal> tmpWeights = Array1D.BIG.make(market.toDefinitionPortfolio().size());
         tmpWeights.set(asset.index(), BigMath.ONE);
 
         return new FinancePortfolio() {
