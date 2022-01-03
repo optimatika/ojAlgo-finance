@@ -39,6 +39,7 @@ import org.ojalgo.matrix.Primitive64Matrix;
 import org.ojalgo.matrix.decomposition.Eigenvalue;
 import org.ojalgo.matrix.store.MatrixStore;
 import org.ojalgo.matrix.store.PhysicalStore;
+import org.ojalgo.matrix.store.Primitive64Store;
 import org.ojalgo.random.Deterministic;
 import org.ojalgo.random.RandomNumber;
 import org.ojalgo.random.SampleSet;
@@ -242,7 +243,7 @@ public abstract class FinanceUtils {
         double[] tmpPrices = priceSeries.asPrimitive().toRawCopy1D();
         double[] tmpRiskFreeInterestRates = riskFreeInterestRateSeries.asPrimitive().toRawCopy1D();
 
-        Array1D<Double> retVal = Array1D.PRIMITIVE64.makeZero(tmpPrices.length - 1);
+        Array1D<Double> retVal = Array1D.PRIMITIVE64.make(tmpPrices.length - 1);
 
         CalendarDateUnit tmpUnit = priceSeries.getResolution();
         double tmpThisRiskFree, tmpNextRiskFree, tmpAvgRiskFree, tmpRiskFreeGrowthRate, tmpThisPrice, tmpNextPrice, tmpPriceGrowthFactor, tmpPriceGrowthRate,
@@ -359,7 +360,7 @@ public abstract class FinanceUtils {
 
         int size = Math.toIntExact(Math.min(covariances.countRows(), covariances.countColumns()));
 
-        MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE64.makeWrapper(covariances).get();
+        MatrixStore<Double> covarianceMtrx = Primitive64Store.FACTORY.makeWrapper(covariances).get();
 
         if (clean) {
 
@@ -480,7 +481,7 @@ public abstract class FinanceUtils {
 
         if (clean) {
 
-            MatrixStore<Double> covarianceMtrx = MatrixStore.PRIMITIVE64.makeWrapper(covariances).get();
+            MatrixStore<Double> covarianceMtrx = Primitive64Store.FACTORY.makeWrapper(covariances).get();
 
             double largest = covarianceMtrx.aggregateDiagonal(Aggregator.LARGEST);
             double limit = largest * size * PrimitiveMath.RELATIVELY_SMALL;
