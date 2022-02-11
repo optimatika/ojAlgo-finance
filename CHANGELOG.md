@@ -6,6 +6,8 @@ Added / Changed / Deprecated / Fixed / Removed / Security
 
 > Corresponds to changes in the `develop` branch since the last release
 
+- Moved back to be part of ojAlgo. ojAlgo-finance is no longer maintained as a separate project.
+
 ## [2.4.1] – 2022-01-04
 
 ### Fixed
