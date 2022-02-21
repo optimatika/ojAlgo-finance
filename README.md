@@ -6,7 +6,7 @@ Historically the development of ojAlgo was motivated by various financial applic
 - ojAlgo v44.0.0 <> ojAlgo-finance v1.0.0 (first release as a separate artifact)
 - ojAlgo v50.0.0 <> ojAlgo-finance v2.4.1 (last release as a separate artifact)
 
-This repository has simply been left as it was, but its contents have been copied to the core project (ojAlgo) and will be mainted further there. In the copy-process the package names also changed. Here's a table mapping out the repository/artifact and package move:
+This repository has simply been left as it was, but its contents have been copied to the core project (ojAlgo) and will be maintained further there. In the copy-process the package names also changed. Here's a table mapping out the repository/artifact and package move:
 
 | ojAlgo-finance | ojAlgo |
 | --- | --- |
